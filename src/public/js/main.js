@@ -93,7 +93,7 @@ $(document).ready(function() {
 
   addTooltip();
 
-  if(window.innerWidth <= 468) {
+  if(window.innerWidth <= 568) {
     $(document).on("click.sidebar",function(event) {
       var target = $(event.target);   
       // console.log($('.grab_audio').hasClass('d-none'));
@@ -115,7 +115,7 @@ $(document).ready(function() {
     $('.sidebar').toggle('d-none');
     let container = document.querySelector('.container');
     container.classList.toggle('extend-block-left');
-    if(window.innerWidth <= 468) {
+    if(window.innerWidth <= 568) {
       let blockContainer = document.querySelector('.block__container__sidebar');
       if(blockContainer.classList.contains('d-none')) {
         blockContainer.classList.remove('d-none');
