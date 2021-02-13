@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="icon" type="image/png" href="/img/logo-cotipelishd3.PNG">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/dropdown.css" />
+    <link rel="stylesheet" href="/css/preloader.css">
+    <link rel="stylesheet" href="/css/pagination.css">
+    <script
+      src="https://kit.fontawesome.com/9ac3f17ed5.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/glider-js@1.7.3/glider.min.css"
+    />
+    <link>
+    <link href="/libs/pace/themes/blue/pace-theme-flash.css" rel="stylesheet" />
+  <script src="/libs/pace/pace.js"></script>
+  </head>
+  <body>
+    <script>
+      paceOptions = {
+        catchupTime: 100,
+        initialRate: .03,
+        minTime: 250,
+        ghostTime: 100,
+        maxProgressPerFrame: 20,
+        easeFactor: 1.25,
+        startOnPageLoad: true,
+        restartOnPushState: true,
+        restartOnRequestAfter: 500,
+        target: 'body',
+        elements: {
+          checkInterval: 100,
+          selectors: ['body']
+        },
+        eventLag: {
+          minSamples: 10,
+          sampleCount: 3,
+          lagThreshold: 3
+        },
+        ajax: {
+          trackMethods: ['GET'],
+          trackWebSockets: true,
+          ignoreURLs: []
+        }
+      }
+      Pace.start();
+      </script>
+    <div class="block__container__sidebar d-none">
+
+    </div>
+    <%- include ('partials/navbar') %>
+    <%- include ('partials/sidebar') %>
+    <script>
+      if(window.innerWidth <= 468) {
+        let titleLogo = document.querySelector('.title__logo__navbar');
+        titleLogo.innerHTML = 'CP';
+      }
+      window.onresize = function() {
+        let titleLogo = document.querySelector('.title__logo__navbar');
+        if(this.innerWidth <= 468) {
+          titleLogo.innerHTML = 'CP';
+        } else {
+          titleLogo.innerHTML = 'CotiPelisTV';
+        }
+      }
+    </script>
+   <div class="container container_stream animate__animated animate__fadeIn">
+    <div class="card__preview">
+      <div class="card__video">
+        <div class="img__video__stream">
+          <img src="<%= image %>" alt="">
+        </div>
+        <div class="card__info">
+          <div class="title__video">
+            <%= titleVideo %> (<%= year %>): Temporada <%= episode.season %>, Capitulo <%= episode.episode %> - Episode <%= episode.episode %>
+          </div>
+          <div class="title__original">
+            @ <%= titleOriginal %>
+          </div>
+          <div class="title__indicator__description">
+            Sinopsis:
+          </div>
+          <div class="description__video">
+            <%= description %>
+          </div>
+          <div class="country__video">
+            <div class="indicator">
+              País:
+            </div>
+            <%= country %>
+          </div>
+          <div class="release__date__video">
+            <div class="indicator">
+              Fecha:
+            </div>
+            <%= release %>
+          </div>
+        </div>
+        <div class="info__preview__extend">
+          <div class="other__titles">
+            <div class="indicator">
+              Otros títulos
+            </div>
+            ..
+          </div>
+          <div class="info__extend">
+            <div class="year__date">
+              <div class="indicator">Año:</div>
+              <%= year %>
+            </div>
+            <div class="genres__video">
+              <div class="indicator">Generos</div>
+              <% genres.forEach((item) => { %>
+                <div class="genre__video__unic">
+                  <%= item %>
+                </div>
+              <% }) %>
+            </div>
+            <div class="rating__video">
+              <div class="indicator">Rating</div>
+              <%= score %>
+            </div>
+            <div class="movie__trailer" id="btnModalTrailer" data-target-search="<%= titleVideo %> (<%= year %>) - Trailer">
+              Trailer
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stream__video">
+      <div class="preloading__stream">
+        <div class="la-ball-clip-rotate la-light la-sm">
+          <div></div>
+        </div>
+      </div>
+      <div class="tab options__stream">
+        <% episode.embedUrls.forEach((item, i) => { %>
+          <% let nameItem = ''; %>
+          <% if(item.includes('streamsb.net')) { %>
+            <% nameItem = 'SBFast'; %>
+          <% } %>
+          <% if(item.includes('pelisplushd.me')) { %>
+            <% nameItem = 'PlusTo'; %>
+          <% } %>
+          <% if(item.includes('dood.to')) { %>
+            <% nameItem = 'DoodStream'; %>
+          <% } %>
+          <% if(item.includes('videos.sh')) { %>
+            <% nameItem = 'VideoS'; %>
+          <% } %>
+          <% if(item.includes('embed.mystream.to')) { %>
+            <% nameItem = 'Mystream'; %>
+          <% } %>
+          <% if(item.includes('upstream.to')) { %>
+            <% nameItem = 'Upfast'; %>
+          <% } %>
+          <% if(item.includes('uqload.com')) { %>
+            <% nameItem = 'Uqload'; %>
+          <% } %>
+          <% if(i == 0) { %>
+            <button class="option__available tablinks active__stream" data-target-video="<%= item %>">
+              <%= nameItem %>
+            </button>
+          <% } else { %>
+            <button class="option__available tablinks" data-target-video="<%= item %>">
+              <%= nameItem %>
+            </button>
+          <% } %>
+        <% }) %>
+      </div>
+      <iframe id="stream__media" src="<%= episode.embedUrls[0] %>" frameborder="0" width="100%" height="400px" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <!-- The Modal -->
+    <div id="modalTrailer" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p class="title__modal__trailer"><%= titleVideo %> (<%= year %>) - Trailer</p>
+        <iframe id="player__trailer" src="" frameborder="0" allowfullscreen="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" width="100%" height="600px"></iframe>
+        <div class="preloading__stream__trailer">
+          <div class="la-ball-clip-rotate la-light la-sm">
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/glider-js@1.7.3/glider.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.js"
+      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <!-- BLAZY IMAGENES -->
+    <!-- <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/blazy/1.8.2/blazy.min.js"
+      integrity="sha512-Yrd3VqXNBUzyCQWVBlL65mTdE1snypc9E3XnGJba0zJmxweyJAqDNp6XSARxxAO6hWdwMpKQOIGE5uvGdG0+Yw=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://rawgithub.com/dinbror/blazy/master/blazy.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/twbs-pagination@1.4.1/jquery.twbsPagination.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>
