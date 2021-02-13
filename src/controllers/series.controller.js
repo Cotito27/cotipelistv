@@ -86,7 +86,9 @@ ctrl.episodeStream = async (req, res) => {
     episode: result,
     pagesInactive: true,
     genreIndicate: false,
-    extraTitles
+    extraTitles,
+    _id: video._id,
+    seasons: video.seasons
   });
 }
 

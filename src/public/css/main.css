@@ -736,6 +736,30 @@ body {
   background-color: rgb(63, 89, 168) !important;
 }
 
+.action__episode {
+  width: 100%;
+  background-color: #4c6af3;
+  padding: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--color-text-navbar);
+  cursor: pointer;
+}
+
+.action__episode:hover {
+  opacity: 0.8;
+}
+
+.extend__episode__actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 0.6em;
+}
+
 .stream__video {
   position: relative;
   padding: 10px;
@@ -765,7 +789,7 @@ body {
 }
 
 .seasons__stream {
-  background-color: #0b68da;
+  background-color: royalblue;
   display: flex;
   flex-direction: row;
   overflow: auto;

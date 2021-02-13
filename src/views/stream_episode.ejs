@@ -145,6 +145,34 @@
             <div class="movie__trailer" id="btnModalTrailer" data-target-search="<%= titleVideo %> (<%= year %>) - Trailer">
               Trailer
             </div>
+            <div class="extend__episode__actions">
+              <% if(episode.episode > 1) { %>
+                <a href="/serie/<%= _id %>/temporada/<%= episode.season %>/capitulo/<%= episode.episode - 1 %>" class="action__episode prev__episode">
+                  Capitulo Anterior
+                </a>
+              <% } %>
+              
+              <a href="/serie/<%= _id %>" class="action__episode all__episodes">
+                Todos los capitulos
+              </a>
+              <% let seasonsNumber = seasons.filter(el => el.season == episode.season); %>
+                <% if(episode.episode < seasonsNumber.length) { %>
+                  <a href="/serie/<%= _id %>/temporada/<%= episode.season %>/capitulo/<%= episode.episode + 1 %>" class="action__episode next__episode">
+                    Capitulo Siguiente
+                  </a>
+                <% } else { %>
+                  <% let seasonsProx = seasons.map(el => el.season).indexOf(episode.season + 1); %>
+                  <% if(seasonsProx != -1) { %>
+                    <a href="/serie/<%= _id %>/temporada/<%= seasons[seasonsProx].season %>/capitulo/<%= seasons[seasonsProx].episode %>" class="action__episode next__episode">
+                      Capitulo Siguiente
+                    </a>
+                  <% } else { %>
+                  <% } %>
+                <% } %>
+              
+              
+              
+            </div>
           </div>
         </div>
       </div>
