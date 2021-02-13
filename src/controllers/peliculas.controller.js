@@ -52,13 +52,15 @@ ctrl.find = async (req, res) => {
 ctrl.streamVideo = async (req, res) => {
   let id = req.params.id;
   let video = await Pelicula.findOne({_id: id});
+  let extraTitles = await Pelicula.find({genres: video.genres}, {title: 1}).limit(6);
   res.render('index', {
     title: 'CotiPelisTV',
     video,
     videoStream: true,
     section: 'Peliculas',
     pagesInactive: true,
-    genreIndicate: false
+    genreIndicate: false,
+    extraTitles
   });
 }
 

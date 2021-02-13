@@ -60,8 +60,9 @@ ctrl.search = async (req, res) => {
   let page = req.query.page || 1;
   // title = quitarAcentos(title);
   // console.log(title);
-  let peliculas = await Pelicula.find({title :{'$regex' : `^${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}});
-  let series = await Serie.find({title :{'$regex' : `^${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}});
+  
+  let peliculas = await Pelicula.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
+  let series = await Serie.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24, page);
   let pages = Math.ceil(dataPrevideos.length / 24);
@@ -77,8 +78,8 @@ ctrl.searchDirect = async (req, res) => {
   let page = req.query.page || 1;
   // title = quitarAcentos(title);
   // console.log(title);
-  let peliculas = await Pelicula.find({title :{'$regex' : `^${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}});
-  let series = await Serie.find({title :{'$regex' : `^${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}});
+  let peliculas = await Pelicula.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
+  let series = await Serie.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24, page);
   let pages = Math.ceil(dataPrevideos.length / 24);

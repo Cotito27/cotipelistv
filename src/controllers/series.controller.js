@@ -52,13 +52,15 @@ ctrl.find = async (req, res) => {
 ctrl.streamVideo = async (req, res) => {
   let id = req.params.id;
   let video = await Serie.findOne({_id: id});
+  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).limit(6);
   res.render('index', {
     title: 'CotiPelisTV',
     video,
     videoStream: true,
     section: 'Series',
     pagesInactive: true,
-    genreIndicate: false
+    genreIndicate: false,
+    extraTitles
   });
 }
 
@@ -67,6 +69,7 @@ ctrl.episodeStream = async (req, res) => {
   let temporada = req.params.temporada;
   let capitulo = req.params.capitulo;
   let video = await Serie.findOne({_id: id});
+  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).limit(6);
   let result = video.seasons.find((v) => v.season == temporada && v.episode == capitulo);
   res.render('stream_episode',{
     title: 'CotiPelisTV',
@@ -82,7 +85,8 @@ ctrl.episodeStream = async (req, res) => {
     score: video.score,
     episode: result,
     pagesInactive: true,
-    genreIndicate: false
+    genreIndicate: false,
+    extraTitles
   });
 }
 

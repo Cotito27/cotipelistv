@@ -117,24 +117,35 @@
                   <div class="indicator">
                     Otros títulos
                   </div>
-                  ..
+                  <% extraTitles.forEach((item, i, vec) => { %>
+                    <a href="/search/<%= item.title %>" class="titles__extra">
+                      <%= item.title %>
+                    </a>
+                    <% if(i != vec.length - 1) { %>
+                      ,
+                    <% } %>
+                  <% }) %>
                 </div>
                 <div class="info__extend">
                   <div class="year__date">
                     <div class="indicator">Año:</div>
-                    <%= video.year %>
+                    <a href="/year/<%= video.year %>" class="year__content">
+                      <%= video.year %>
+                    </a>
                   </div>
                   <div class="genres__video">
                     <div class="indicator">Generos</div>
                     <% video.genres.forEach((item) => { %>
-                      <div class="genre__video__unic">
+                      <a href="/generos/<%= item %>" class="genre__video__unic">
                         <%= item %>
-                      </div>
+                      </a>
                     <% }) %>
                   </div>
                   <div class="rating__video">
                     <div class="indicator">Rating</div>
-                    <%= video.score %>
+                    <div class="score__rating">
+                      <%= video.score %>
+                    </div>
                   </div>
                   <div class="movie__trailer" id="btnModalTrailer" data-target-search="<%= video.title %> (<%= video.year %>) - Trailer">
                     Trailer
@@ -225,24 +236,35 @@
                   <div class="indicator">
                     Otros títulos
                   </div>
-                  ..
+                  <% extraTitles.forEach((item, i, vec) => { %>
+                    <a href="/search/<%= item.title %>" class="titles__extra">
+                      <%= item.title %>
+                    </a>
+                    <% if(i != vec.length - 1) { %>
+                      ,
+                    <% } %>
+                  <% }) %>
                 </div>
                 <div class="info__extend">
                   <div class="year__date">
                     <div class="indicator">Año:</div>
-                    <%= video.year %>
+                    <a href="/year/<%= video.year %>" class="year__content">
+                      <%= video.year %>
+                    </a>
                   </div>
                   <div class="genres__video">
                     <div class="indicator">Generos</div>
                     <% video.genres.forEach((item) => { %>
-                      <div class="genre__video__unic">
+                      <a href="/generos/<%= item %>" class="genre__video__unic">
                         <%= item %>
-                      </div>
+                      </a>
                     <% }) %>
                   </div>
                   <div class="rating__video">
                     <div class="indicator">Rating</div>
-                    <%= video.score %>
+                    <div class="score__rating">
+                      <%= video.score %>
+                    </div>
                   </div>
                   <div class="movie__trailer" id="btnModalTrailer" data-target-search="<%= video.title %> (<%= video.year %>) - Trailer">
                     Trailer

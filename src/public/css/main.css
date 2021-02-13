@@ -669,6 +669,31 @@ body {
   flex-wrap: wrap;
 }
 
+.genre__video__unic,
+.year__content,
+.score__rating {
+  color: #29b4ff;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+.titles__extra {
+  color: #29b4ff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.score__rating {
+  cursor: auto;
+}
+
+.genre__video__unic:hover,
+.year__content:hover,
+.titles__extra:hover {
+  opacity: 0.7;
+}
+
 .info__extend .indicator,
 .other__titles .indicator {
   color: #7da0ff;
