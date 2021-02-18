@@ -58,7 +58,11 @@
             <% if(yearActive) { %>
               <% titlePelis = `Lista completa de ${section} Año: ${year} pagina ${page} latino Online Gratis HD`; %>
             <% } else { %>
-              <% titlePelis = `Estas buscando: ${titleSearch} pagina ${currentPage} latino HD`; %> 
+              <% if(titleSearch) { %>
+                <% titlePelis = `Estas buscando: ${titleSearch} pagina ${currentPage} latino HD`; %> 
+              <% } else { %>
+                <% titlePelis = `Mi lista - pagina ${currentPage}`; %> 
+              <% } %>
             <% } %>
             
           <% } else { %>
@@ -155,7 +159,7 @@
             <% movies.forEach((peli) => { %>
               <% if(!peli.seasons) { %>
                 <a
-                href="/<%= 'pelicula' %>/<%= peli._id %>"
+                href="/<%= 'pelicula' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
                 class="carousel__elemento wave tooltip_auto"
                 data-tippy-content="<%= peli.title %> (<%= peli.year %>)"
               >
@@ -174,7 +178,7 @@
               </a>
               <% } else { %>
                 <a
-              href="/<%= 'serie' %>/<%= peli._id %>"
+              href="/<%= 'serie' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
               class="carousel__elemento wave tooltip_auto"
               data-tippy-content="<%= peli.title %> (<%= peli.year %>)"
             >
@@ -214,9 +218,11 @@
     <% if(genreIndicate) { %>
       <% if(!genero) { %>
         <% if(!yearActive) { %>
-          <script>
-            let titleSearchInit = '<%= titleSearch %>'
-          </script>
+          <% if(titleSearch) { %>
+            <script>
+              let titleSearchInit = '<%= titleSearch %>'
+            </script>
+          <% } %>
         <% } %>
       <% } %>
     <% } %>

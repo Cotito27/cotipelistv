@@ -21,6 +21,7 @@ function diacriticSensitiveRegex(string = '') {
 }
 
 ctrl.index = async (req, res) => {
+  let user = req.user;
   let titleSearch = req.query.title;
   if(titleSearch) {
   let peliculas = await Pelicula.find({title: {$regex: titleSearch}});
@@ -32,12 +33,14 @@ ctrl.index = async (req, res) => {
       dataVideos,
       section: 'Peliculas y Series',
       pagesInactive: false,
-      videoStream: false
+      videoStream: false,
+      user
     })
     return;
   }
   let peliculas = await Pelicula.find({}).limit(24);
   let popularVideos = await Pelicula.find({}).sort({'score':-1}).limit(10);
+  console.log(peliculas[0].title);
   // let popularVideos = peliculas.sort(function (a, b) { return parseFloat(b.score.split('/')[0]) - parseFloat(a.score.split('/')[0]); }).slice(0, 10);
   res.render('index', {
     title: 'CotiPelisTV',
@@ -46,7 +49,8 @@ ctrl.index = async (req, res) => {
     pagesInactive: true,
     popularVideos,
     videoStream: false,
-    genreIndicate: false
+    genreIndicate: false,
+    user
   })
 }
 
@@ -74,6 +78,7 @@ ctrl.search = async (req, res) => {
 }
 
 ctrl.searchDirect = async (req, res) => {
+  let user = req.user;
   let title = req.params.title;
   let page = req.query.page || 1;
   // title = quitarAcentos(title);
@@ -94,11 +99,54 @@ ctrl.searchDirect = async (req, res) => {
     pages,
     genero: false,
     titleSearch: title,
-    yearActive: false
+    yearActive: false,
+    user
+  });
+}
+
+ctrl.searchAll = async (req, res) => {
+  let page = req.query.page || 1;
+  let title = '';
+  let peliculas = await Pelicula.find({});
+  let series = await Serie.find({});
+  let dataPrevideos = peliculas.concat(series);
+  let dataVideos = paginate(dataPrevideos, 24, page)
+  console.log(dataVideos);
+  let pages = Math.ceil(dataPrevideos.length / 24);
+  res.json({
+    movies: dataVideos,
+    pages,
+    page
+  });
+}
+
+ctrl.searchAllDirect = async (req, res) => {
+  let user = req.user;
+  let page = req.query.page || 1;
+  let title = '';
+  let peliculas = await Pelicula.find({});
+  let series = await Serie.find({});
+  let dataPrevideos = peliculas.concat(series);
+  let dataVideos = paginate(dataPrevideos, 24, page);
+  let pages = Math.ceil(dataPrevideos.length / 24);
+  res.render('index', {
+    title: 'CotiPelisTV',
+    movies: dataVideos,
+    section: 'Peliculas y Series',
+    currentPage: page,
+    pagesInactive: false,
+    videoStream: false,
+    genreIndicate: true,
+    pages,
+    genero: false,
+    titleSearch: title,
+    yearActive: false,
+    user
   });
 }
 
 ctrl.findByGenre = async (req, res) => {
+  let user = req.user;
   let page = req.query.page || 1;
   let genero = req.params.genero;
   let peliculas = await Pelicula.find({genres: {$regex: genero}});
@@ -116,7 +164,8 @@ ctrl.findByGenre = async (req, res) => {
     videoStream: false,
     genreIndicate: true,
     genero,
-    yearActive: false
+    yearActive: false,
+    user
   });
 }
 
@@ -149,6 +198,7 @@ ctrl.getFindGenreType = async (req, res) => {
 }
 
 ctrl.findTypeGenre = async (req, res) => {
+  let user = req.user;
   let type = req.params.type;
   if(type == 'peliculas') {
     let page = req.query.page || 1;
@@ -167,7 +217,8 @@ ctrl.findTypeGenre = async (req, res) => {
       videoStream: false,
       genreIndicate: true,
       genero,
-      yearActive: false
+      yearActive: false,
+      user
     });
   } else if(type == 'series') {
     let page = req.query.page || 1;
@@ -186,13 +237,15 @@ ctrl.findTypeGenre = async (req, res) => {
       videoStream: false,
       genreIndicate: true,
       genero,
-      yearActive: false
+      yearActive: false,
+      user
     });
   }
   
 }
 
 ctrl.findByYear = async (req, res) => {
+  let user = req.user;
   let page = req.query.page || 1;
   let year = req.params.year;
   let peliculas = await Pelicula.find({year});
@@ -212,7 +265,8 @@ ctrl.findByYear = async (req, res) => {
     genreIndicate: true,
     genero: false,
     yearActive: true,
-    year
+    year,
+    user
   });
 }
 
@@ -245,6 +299,7 @@ ctrl.getFindYearType = async (req, res) => {
 }
 
 ctrl.findTypeYear = async (req, res) => {
+  let user = req.user;
   let type = req.params.type;
   if(type == 'peliculas') {
     let page = req.query.page || 1;
@@ -265,7 +320,8 @@ ctrl.findTypeYear = async (req, res) => {
       genreIndicate: true,
       genero: false,
       yearActive: true,
-      year
+      year,
+      user
     });
   } else if(type == 'series') {
     let page = req.query.page || 1;
@@ -286,7 +342,8 @@ ctrl.findTypeYear = async (req, res) => {
       genreIndicate: true,
       genero: false,
       yearActive: true,
-      year
+      year,
+      user
     });
   }
 }

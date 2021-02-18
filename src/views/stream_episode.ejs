@@ -25,6 +25,7 @@
     <link>
     <link href="/libs/pace/themes/blue/pace-theme-flash.css" rel="stylesheet" />
   <script src="/libs/pace/pace.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <script>
@@ -56,6 +57,11 @@
       }
       Pace.start();
       </script>
+      <script>const socket = io({
+        'reconnect': true,
+        'reconnection delay': 500,
+        'max reconnection attempts': 10
+      });</script>
     <div class="block__container__sidebar d-none">
 
     </div>
@@ -75,6 +81,76 @@
         }
       }
     </script>
+    <!-- The Modal -->
+    <div id="modalLogin" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        
+          <span class="close">&times;</span>
+        <div class="modal__header">
+          <p class="title__login">Ingresa con:</p>
+        </div>
+        <div class="modal__body">
+          <div class="social__options">
+            <div class="google__login">
+              <i class="fa fa-google-plus fa-fw"></i>
+            </div>
+            <div class="fb__login">
+              <i class="fa fa-facebook fa-fw"></i>
+            </div>
+          </div>
+          <div class="division__or">
+            <div class="line 1"></div>
+            <div class="or__login">
+              o
+            </div>
+            <div class="line r"></div>
+          </div>
+          <form action="/verificarLogin" method="POST">
+            <div class="form__login animate__animated animate__fadeIn">
+              <div class="content__email">
+                <input type="text" class="input__email__login" placeholder="Correo | Email" id="username" required>
+              </div>
+              <div class="content__pass">
+                <input type="text" class="input__pass__login" placeholder="Contraseña" id="password" required>
+              </div>
+              <button type="submit" class="login__enter">
+                Login
+              </button>
+            </div>
+          </form>
+          <div class="form__login__register animate__animated animate__fadeIn" style="display: none;">
+            <div class="content__name">
+              <input type="text" class="input__name__login" placeholder="Nombre" id="name" required>
+            </div>
+            <div class="content__email">
+              <input type="text" class="input__email__login" placeholder="Correo | Email" id="username" required>
+            </div>
+            <div class="content__pass">
+              <input type="text" class="input__pass__login" placeholder="Contraseña" id="password" required>
+            </div>
+            <div class="content__pass__repeat">
+              <input type="text" class="input__pass__login__repeat" placeholder="Vuelve a introducir contraseña" required>
+            </div>
+            <button class="login__enter">
+              Crear una cuenta
+            </button>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <div class="forgot login-footer animate__animated animate__fadeIn" style="display: block;">
+              <span>¿No tienes una cuenta?,
+                   <a class="show__register" href="javascript:void(0)">¡Crea una cuenta ya!</a></span>
+          </div>
+          <div class="forgot register-footer animate__animated animate__fadeIn" style="display: none;">
+               <span>¿Ya tienes una cuenta?</span>
+               <a class="show__login" href="javascript:void(0)">¡Entra aquí!</a>
+          </div>
+      </div>
+      </div>
+    </div>
+    <div id="snackbar">Error!, Debes de iniciar sesión para comentar</div>
    <div class="container container_stream animate__animated animate__fadeIn">
     <div class="card__preview">
       <div class="card__video">
@@ -145,6 +221,11 @@
             <div class="movie__trailer" id="btnModalTrailer" data-target-search="<%= titleVideo %> (<%= year %>) - Trailer">
               Trailer
             </div>
+            <% if(savedVideo) { %>
+              <div class="save__lista__video lista__added">Agregado a mi lista</div>
+            <% } else { %>
+              <div class="save__lista__video">Agregar a mi lista</div>
+            <% } %>
             <div class="extend__episode__actions">
               <% if(episode.episode > 1) { %>
                 <a href="/serie/<%= _id %>/temporada/<%= episode.season %>/capitulo/<%= episode.episode - 1 %>" class="action__episode prev__episode">
@@ -183,6 +264,12 @@
           <div></div>
         </div>
       </div>
+      <% let plusToSelect = episode.embedUrls.find((v) => v.includes('pelisplushd.me')); %>
+        <div class="play__stream__plusto d-none">
+          <a href="<%= plusToSelect %>" class="content__plusto">
+            Ver Online Gratis: www.PelisPlusHD.net
+          </a>
+        </div>
       <div class="tab options__stream">
         <% episode.embedUrls.forEach((item, i) => { %>
           <% let nameItem = ''; %>
@@ -220,6 +307,48 @@
       </div>
       <iframe id="stream__media" src="<%= episode.embedUrls[0] %>" frameborder="0" width="100%" height="400px" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
+    <div class="card__reactions__video">
+      <div class="title__indicator__reactions">
+        Reacciones sobre el video
+      </div>
+      <div class="reactions__video">
+        <div class="like__video">
+          <i class="far fa-thumbs-up"></i> Me gusta
+          <div class="calc__number__likes">
+            (<div class="number__likes__video">0</div>)
+          </div>
+        </div>
+        <div class="dislike__video">
+          <i class="far fa-thumbs-down"></i> No me gusta
+          <div class="calc__number__dislikes">
+            (<div class="number__dislikes__video">0</div>)
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card__comment">
+      <div class="indicator__comment">Comentarios</div>
+      <div class="comment__content">
+        <div class="title__comment">Comentario</div>
+        <div class="my__comment__content">
+          <div class="content__my__foto">
+            <img class="my__foto__comment" src="<% if(user) { %> <%= user.foto; %> <% } else { %> <%= '/img/user_change.PNG' %><% } %>" alt="">
+          </div>
+          <div class="description__comment">
+            <textarea
+              class="input__comment"
+              placeholder="Escribe un comentario"
+            ></textarea>
+            <div class="content__btn__comment">
+              <button class="btn__send__comment">Comentar</button>
+            </div>
+          </div>
+        </div>
+        <div class="section__comments">
+
+        </div>
+      </div>
+    </div>
     <!-- The Modal -->
     <div id="modalTrailer" class="modal">
       <!-- Modal content -->
@@ -235,12 +364,24 @@
       </div>
     </div>
   </div>
+  <script>
+    let _id_video = "<%= _id %><%= episode.season %><%= episode.episode %>";
+    let titleVideoS = "<%= titleVideo %>";
+    let imageVideoS = "<%= image %>";
+    let yearVideoS = "<%= year %>";
+    let scoreVideoS = "<%= score %>";
+    socket.emit("getId", _id_video);
+    socket.on('disconnect', function() {
+      socket.emit("getId", _id_video);
+    });
+  </script>
     <script src="https://cdn.jsdelivr.net/npm/glider-js@1.7.3/glider.min.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.5.1.js"
       integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.full.min.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <!-- BLAZY IMAGENES -->

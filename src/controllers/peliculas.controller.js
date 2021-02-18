@@ -1,7 +1,9 @@
 const ctrl = {};
 const Pelicula = require('../models/Pelicula.model');
+const WatchList = require('../models/WatchList.model');
 
 ctrl.index = (req, res) => {
+  let user = req.user;
   let perPage = 24;
   let page = req.params.page || 1;
   Pelicula
@@ -19,7 +21,8 @@ ctrl.index = (req, res) => {
           section: 'Peliculas',
           pagesInactive: false,
           videoStream: false,
-          genreIndicate: false
+          genreIndicate: false,
+          user
         });
       })
     });
@@ -50,9 +53,39 @@ ctrl.find = async (req, res) => {
 }
 
 ctrl.streamVideo = async (req, res) => {
+  let user = req.user;
+  if(!req.user) {
+    let id = req.params.id;
+    let video = await Pelicula.findOne({_id: id});
+    let extraTitles = await Pelicula.find({genres: video.genres}, {title: 1}).limit(6);
+    // let videoWatch = await WatchList.findOne({ video_id: id });
+    let savedVideo = false;
+    // if(videoWatch) {
+      // savedVideo = true;
+    // }
+    res.render('index', {
+      title: 'CotiPelisTV',
+      video,
+      videoStream: true,
+      section: 'Peliculas',
+      pagesInactive: true,
+      genreIndicate: false,
+      extraTitles,
+      validateUser: false,
+      user,
+      savedVideo
+    });
+    return;
+  }
+  
   let id = req.params.id;
   let video = await Pelicula.findOne({_id: id});
   let extraTitles = await Pelicula.find({genres: video.genres}, {title: 1}).limit(6);
+  let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
+  let savedVideo = false;
+  if(videoWatch) {
+    savedVideo = true;
+  }
   res.render('index', {
     title: 'CotiPelisTV',
     video,
@@ -60,7 +93,10 @@ ctrl.streamVideo = async (req, res) => {
     section: 'Peliculas',
     pagesInactive: true,
     genreIndicate: false,
-    extraTitles
+    extraTitles,
+    validateUser: true,
+    user,
+    savedVideo
   });
 }
 

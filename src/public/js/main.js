@@ -126,6 +126,790 @@ $(document).ready(function() {
     }
     // $('.container').toggle('extend-block-left');
   });
+  
+  
+  socket.on("getComment", function (data) {
+    if($('.not__found__comments')[0]) {
+      // $('.section__comments').html(``);
+      $('.not__found__comments').remove();
+    }
+    // if(!$('.comment__content__user')[0]) return;
+    // console.log(data);
+    let calcTime = timeago.format(data.timestamp, 'es');
+    let myFoto = $('#btnModalLogin').attr('data-foto-user');
+    $('.section__comments').prepend(`<div class="comment__total__user" data-id-comment="${data._id}">
+    <div class="comment__original">
+        <div class="comment__content__user">
+          <div class="img__user__comment">
+            <img src="${data.foto}" alt="">
+          </div>
+          <div class="user__comment">
+            <div class="info__user__comment">
+              <div class="nom__user">${data.name}</div>
+              <div class="separating__info__date">•</div>
+              <div class="date__comment">${calcTime}</div>
+            </div>
+            <div class="comment__text">
+              <div class="content__comment__user comment__text__user">${data.comment}</div>
+            </div>
+          </div>
+        </div>
+        <div class="actions__comment">
+          <div class="like__action">
+            <i class="far fa-thumbs-up"></i>
+            <div class="number__likes__comment">${data.likes.length}</div>
+          </div>
+          <div class="dislike__action">
+            <i class="far fa-thumbs-down"></i>
+            <div class="number__dislikes__comment">${data.dislikes.length}</div>
+          </div>
+          <div class="reply__action">
+            Responder
+          </div>
+        </div>
+      </div>
+    <div class="subcomment__original">
+      
+    </div>
+    <div class="indicator__response__user">
+      Respondiendo a <div class="nom__user__destino">${data.name}</div>
+    </div>
+    <div class="my__subcomment__content">
+      <div class="my__img__subcomment">
+        <img class="my__foto__subcomment" src="${myFoto}" alt="">
+      </div>
+      <div class="description__subcomment">
+        <textarea
+          class="input__subcomment"
+          placeholder="Escribe un comentario"
+        ></textarea>
+        <div class="content__btn__subcomment">
+          <button class="btn__send__subcomment">Comentar</button>
+        </div>
+      </div>
+    </div>
+  </div>`);
+  
+  // setInterval(function() {
+  //   let datePrev = $('.date__comment').attr('data-time-stamp');
+  //   let calcTime = timeago.format(datePrev, 'es');
+  //   $('.date__comment').text(calcTime);
+  //   console.log('Actualized');
+  // }, 10000);
+  });
+
+  function verificarListWatch() {
+
+  }
+
+  $('body').on('click', '.save__lista__video', async function() {
+    if(!$('[data-login-start]')[0]) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    // $('#modalWatchList').attr('style', 'display:flex;');
+    if($(this).hasClass('lista__added')) {
+      let video_id = _id_video;
+      let title = titleVideoS;
+      let image = imageVideoS;
+      let year = yearVideoS;
+      let score = scoreVideoS;
+      let user_id = $('#btnModalLogin').attr('data-user-id');
+      let formData = new FormData();
+      formData.set('video_id', video_id);
+      formData.set('user_id', user_id);
+      formData.set('title', title);
+      formData.set('image', image);
+      formData.set('year', year);
+      formData.set('score', score);
+      let seasonsActive = false;
+      if($('.season__part')[0]) {
+        seasonsActive = true;
+      }
+      formData.set('seasons', seasonsActive);
+      // console.log(video_id);
+      let response = await fetch(`/saveWatchList/`, {
+        method: 'POST',
+        body: formData
+      });
+     
+      let res = await response.json();
+      if(res.success) {
+        $(this).html(`Agregar a mi lista`);
+      }
+    } else {
+      let video_id = _id_video;
+      let title = titleVideoS;
+      let image = imageVideoS;
+      let year = yearVideoS;
+      let score = scoreVideoS;
+      let user_id = $('#btnModalLogin').attr('data-user-id');
+      let formData = new FormData();
+      formData.set('video_id', video_id);
+      formData.set('user_id', user_id);
+      formData.set('title', title);
+      formData.set('image', image);
+      formData.set('year', year);
+      formData.set('score', score);
+      let seasonsActive = false;
+      if($('.season__part')[0]) {
+        seasonsActive = true;
+      }
+      formData.set('seasons', seasonsActive);
+      // console.log(video_id);
+      let response = await fetch(`/saveWatchList/`, {
+        method: 'POST',
+        body: formData
+      });
+
+      let res = await response.json();
+      if(res.success) {
+      $(this).html(`Agregado a mi lista`);
+      }
+    }
+    $(this).toggleClass('lista__added');
+    
+  });
+
+  $('body').on('click', '.add__new__list', function() {
+    $('#modalWatchList').find('.modal-content').html(`<span class="close">&times;</span>
+    <div class="modal__header p-t-0">
+      <div class="return__back__list">
+        <i class="fas fa-arrow-left"></i>
+      </div>
+      <div class="title__form__list">
+        Nueva Lista
+      </div>
+    </div>
+    <div class="modal__body">
+      <div class="form__list__watch">
+        <div class="name__list">
+          <label for="#nameList">Nombre</label>
+          <input type="text" id="nameList" placeholder="Nueva Lista">
+        </div>
+        <div class="desc__list">
+          <label for="#descList">Descripción</label>
+          <textarea id="descList" placeholder="Alguna descripción"></textarea>
+        </div>
+        <button class="btnCreateList">Crear Lista</button>
+      </div>
+    </div>`);
+  });
+
+  $('body').on('click', '.return__back__list', function() {
+    $('#modalWatchList').find('.modal-content').html(`<span class="close">&times;</span>
+    <div class="modal__header">
+      Agregar a:
+    </div>
+    <div class="modal__body">
+      <div class="add__new__list">
+        <svg viewBox="0 0 100 100"><path d="M50 23a4 4 0 00-4 4v19H27a4 4 0 100 8h19v19a4 4 0 108 0V54h19a4 4 0 100-8H54V27a4 4 0 00-4-4z" overflow="visible" color="#000" style="text-indent: 0px; text-transform: none;"></path></svg> Nueva Lista
+      </div>
+      <div class="list__watch">
+        <svg viewBox="0 0 100 100"><path d="M50 23a4 4 0 00-4 4v19H27a4 4 0 100 8h19v19a4 4 0 108 0V54h19a4 4 0 100-8H54V27a4 4 0 00-4-4z" overflow="visible" color="#000" style="text-indent: 0px; text-transform: none;"></path></svg> Lista 1
+      </div>
+    </div>`);
+  });
+
+  async function getComments() {
+    $('.section__comments').html(``);
+    let id = _id_video;
+    let getcomments = await fetch(`/getComments/${id}`);
+    let comments = await getcomments.json();
+    let htmlSubComment = '';
+    if(comments.comments.length <= 0) {
+      $('.section__comments').html(`<div class="not__found__comments">No hay comentarios. Sé el primero en comentar</div>`);
+      return;
+    }
+    comments.comments.forEach((comment, i) => {
+    let calcTime = timeago.format(comment.timestamp, 'es');
+    let myFoto = $('#btnModalLogin').attr('data-foto-user');
+    $('.section__comments').append(`<div class="comment__total__user" data-id-comment="${comment._id}">
+    <div class="comment__original">
+      <div class="comment__content__user">
+        <div class="img__user__comment">
+          <img src="${comment.foto}" alt="">
+        </div>
+        <div class="user__comment">
+          <div class="info__user__comment">
+            <div class="nom__user">${comment.name}</div>
+            <div class="separating__info__date">•</div>
+            <div class="date__comment">${calcTime}</div>
+          </div>
+          <div class="comment__text">
+            <div class="content__comment__user comment__text__user">${comment.comment}</div>
+          </div>
+        </div>
+      </div>
+      <div class="actions__comment">
+        <div class="like__action">
+          <i class="far fa-thumbs-up"></i>
+          <div class="number__likes__comment">${comment.likes.length}</div>
+        </div>
+        <div class="dislike__action">
+          <i class="far fa-thumbs-down"></i>
+          <div class="number__dislikes__comment">${comment.dislikes.length}</div>
+        </div>
+        <div class="reply__action">
+          Responder
+        </div>
+      </div>
+    </div>
+    <div class="subcomment__original">
+      
+    </div>
+    <div class="indicator__response__user">
+      Respondiendo a <div class="nom__user__destino">${comment.name}</div>
+    </div>
+    <div class="my__subcomment__content">
+      <div class="my__img__subcomment">
+        <img class="my__foto__subcomment" src="${myFoto}" alt="">
+      </div>
+      <div class="description__subcomment">
+        <textarea
+          class="input__subcomment"
+          placeholder="Escribe un comentario"
+        ></textarea>
+        <div class="content__btn__subcomment">
+          <button class="btn__send__subcomment">Comentar</button>
+        </div>
+      </div>
+    </div>
+  </div>`);
+  htmlSubComment = '';
+  comment.subcomments.forEach((item, indiceY) => {
+    if(indiceY <= 7) {
+      let calcTime = timeago.format(item.timestamp, 'es');
+      htmlSubComment += `
+      <div class="content__subcomments__card" data-id-subcomment="${item.subId}">
+      <div class="subcomment__content__user">
+      <div class="img__user__subcomment">
+        <img src="${item.foto}" alt="">
+      </div>
+      <div class="user__subcomment">
+        <div class="info__user__subcomment">
+          <div class="nom__user">${item.name}</div>
+          <div class="separating__info__date">•</div>
+          <div class="date__subcomment">${calcTime}</div>
+        </div>
+        <div class="subcomment__text">
+          <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
+        </div>
+      </div>
+    </div>
+    <div class="actions__subcomment">
+      <div class="like__action__sub">
+        <i class="far fa-thumbs-up"></i>
+        <div class="number__likes__subcomment">${item.likes.length}</div>
+      </div>
+      <div class="dislike__action__sub">
+        <i class="far fa-thumbs-down"></i>
+        <div class="number__dislikes__subcomment">${item.dislikes.length}</div>
+      </div>
+      <div class="reply__action">
+        Responder
+      </div>
+    </div>
+      </div>`;
+    } else {
+      let calcTime = timeago.format(item.timestamp, 'es');
+      htmlSubComment += `
+      <div class="content__subcomments__card d-none" data-id-subcomment="${item.subId}">
+      <div class="subcomment__content__user">
+      <div class="img__user__subcomment">
+        <img src="${item.foto}" alt="">
+      </div>
+      <div class="user__subcomment">
+        <div class="info__user__subcomment">
+          <div class="nom__user">${item.name}</div>
+          <div class="separating__info__date">•</div>
+          <div class="date__subcomment">${calcTime}</div>
+        </div>
+        <div class="subcomment__text">
+          <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
+        </div>
+      </div>
+    </div>
+    <div class="actions__subcomment">
+      <div class="like__action__sub">
+        <i class="far fa-thumbs-up"></i>
+        <div class="number__likes__subcomment">${item.likes.length}</div>
+      </div>
+      <div class="dislike__action__sub">
+        <i class="far fa-thumbs-down"></i>
+        <div class="number__dislikes__subcomment">${item.dislikes.length}</div>
+      </div>
+      <div class="reply__action">
+        Responder
+      </div>
+    </div>
+      </div>`;
+    }
+});
+  $('.subcomment__original').eq(i).html(htmlSubComment);
+  if(comment.subcomments.length > 8) {
+    $('.subcomment__original').eq(i).append(`<div class="not__found__subcomments">Ver más respuestas</div>`);
+  }
+    });
+    if(comments.moreComments) {
+      $('.section__comments').append(`<div class="more__comments" data-next-page="${comments.page}">Ver más comentarios</div>`);
+    }
+   
+  // console.log(htmlSubComment);
+  
+  
+  }
+
+  $('body').on('click', '.more__comments', async function() {
+    $('.more__comments').css('pointer-events', 'none');
+    $('.more__comments').html(`<div class="la-ball-clip-rotate la-light la-sm">
+    <div></div>
+  </div>`);
+  let numAdici = $('.comment__total__user').length;
+    let id = _id_video;
+    let page = $(this).attr('data-next-page');
+    let getcomments = await fetch(`/getComments/${id}?page=${parseInt(page) + 1}`);
+    let comments = await getcomments.json();
+    comments.comments.forEach((comment, i) => {
+      let calcTime = timeago.format(comment.timestamp, 'es');
+      let myFoto = $('#btnModalLogin').attr('data-foto-user');
+      $('.section__comments').append(`<div class="comment__total__user" data-id-comment="${comment._id}">
+      <div class="comment__original">
+        <div class="comment__content__user">
+          <div class="img__user__comment">
+            <img src="${comment.foto}" alt="">
+          </div>
+          <div class="user__comment">
+            <div class="info__user__comment">
+              <div class="nom__user">${comment.name}</div>
+              <div class="separating__info__date">•</div>
+              <div class="date__comment">${calcTime}</div>
+            </div>
+            <div class="comment__text">
+              <div class="content__comment__user comment__text__user">${comment.comment}</div>
+            </div>
+          </div>
+        </div>
+        <div class="actions__comment">
+          <div class="like__action">
+            <i class="far fa-thumbs-up"></i>
+            <div class="number__likes__comment">${comment.likes.length}</div>
+          </div>
+          <div class="dislike__action">
+            <i class="far fa-thumbs-down"></i>
+            <div class="number__dislikes__comment">${comment.dislikes.length}</div>
+          </div>
+          <div class="reply__action">
+            Responder
+          </div>
+        </div>
+      </div>
+      <div class="subcomment__original">
+        
+      </div>
+      <div class="indicator__response__user">
+        Respondiendo a <div class="nom__user__destino">${comment.name}</div>
+      </div>
+      <div class="my__subcomment__content">
+        <div class="my__img__subcomment">
+          <img class="my__foto__subcomment" src="${myFoto}" alt="">
+        </div>
+        <div class="description__subcomment">
+          <textarea
+            class="input__subcomment"
+            placeholder="Escribe un comentario"
+          ></textarea>
+          <div class="content__btn__subcomment">
+            <button class="btn__send__subcomment">Comentar</button>
+          </div>
+        </div>
+      </div>
+    </div>`);
+    htmlSubComment = '';
+    comment.subcomments.forEach((item, indiceY) => {
+      if(indiceY <= 7) {
+        let calcTime = timeago.format(item.timestamp, 'es');
+        htmlSubComment += `
+        <div class="content__subcomments__card" data-id-subcomment="${item.subId}">
+        <div class="subcomment__content__user">
+        <div class="img__user__subcomment">
+          <img src="${item.foto}" alt="">
+        </div>
+        <div class="user__subcomment">
+          <div class="info__user__subcomment">
+            <div class="nom__user">${item.name}</div>
+            <div class="separating__info__date">•</div>
+            <div class="date__subcomment">${calcTime}</div>
+          </div>
+          <div class="subcomment__text">
+            <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
+          </div>
+        </div>
+      </div>
+      <div class="actions__subcomment">
+        <div class="like__action__sub">
+          <i class="far fa-thumbs-up"></i>
+          <div class="number__likes__subcomment">${item.likes.length}</div>
+        </div>
+        <div class="dislike__action__sub">
+          <i class="far fa-thumbs-down"></i>
+          <div class="number__dislikes__subcomment">${item.dislikes.length}</div>
+        </div>
+        <div class="reply__action">
+          Responder
+        </div>
+      </div>
+        </div>`;
+      } else {
+        let calcTime = timeago.format(item.timestamp, 'es');
+        htmlSubComment += `
+        <div class="content__subcomments__card d-none" data-id-subcomment="${item.subId}">
+        <div class="subcomment__content__user">
+        <div class="img__user__subcomment">
+          <img src="${item.foto}" alt="">
+        </div>
+        <div class="user__subcomment">
+          <div class="info__user__subcomment">
+            <div class="nom__user">${item.name}</div>
+            <div class="separating__info__date">•</div>
+            <div class="date__subcomment">${calcTime}</div>
+          </div>
+          <div class="subcomment__text">
+            <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
+          </div>
+        </div>
+      </div>
+      <div class="actions__subcomment">
+        <div class="like__action__sub">
+          <i class="far fa-thumbs-up"></i>
+          <div class="number__likes__subcomment">${item.likes.length}</div>
+        </div>
+        <div class="dislike__action__sub">
+          <i class="far fa-thumbs-down"></i>
+          <div class="number__dislikes__subcomment">${item.dislikes.length}</div>
+        </div>
+        <div class="reply__action">
+          Responder
+        </div>
+      </div>
+        </div>`;
+      }
+   
+  });
+    
+
+    $('.subcomment__original').eq(i + numAdici).html(htmlSubComment);
+    if(comment.subcomments.length > 8) {
+      $('.subcomment__original').eq(i + numAdici).append(`<div class="not__found__subcomments">Ver más respuestas</div>`);
+    }
+      });
+      $('.more__comments').remove();
+      if(comments.moreComments) {
+        $('.section__comments').append(`<div class="more__comments" data-next-page="${comments.page}">Ver más comentarios</div>`);
+      } else {
+        
+      }
+  });
+
+  $('body').on('click', '.not__found__subcomments', function() {
+    $(this).parent().find('.content__subcomments__card').removeClass('d-none');
+    $(this).remove();
+  });
+  
+  async function getLikesVideo() {
+    let response = await fetch(`/getLikesVideo/${_id_video}`);
+    let res = await response.json();
+    $('.number__likes__video').text(res.likes);
+    $('.number__dislikes__video').text(res.dislikes);
+  }
+
+  if($('.stream__video')[0]) {
+    getLikesVideo();
+    $('.section__comments').html(`<div class="la-ball-clip-rotate la-light la-sm">
+    <div></div>
+  </div>`);
+    getComments();
+  }
+  
+  socket.on('getLikes', (data) => {
+    $(`[data-id-comment=${data.idComment}]`).find('.number__likes__comment').text(data.likes);
+    $(`[data-id-comment=${data.idComment}]`).find('.number__dislikes__comment').text(data.dislikes);
+  });
+
+  socket.on('getsubLikes', (data) => {
+    console.log(data.dislikes);
+    $(`[data-id-subcomment=${data.idSubComment}]`).find('.number__likes__subcomment').text(data.likes);
+    $(`[data-id-subcomment=${data.idSubComment}]`).find('.number__dislikes__subcomment').text(data.dislikes);
+  });
+
+  $('body').on('click', '.like__action__sub', async function() {
+    let idComment = $(this).parent().parent().parent().parent().attr('data-id-comment');
+    let panelThis = $(this).parent().parent();
+    let idSubComment = $(this).parent().parent().attr('data-id-subcomment');
+    let idUser = $('#btnModalLogin').attr('data-user-id');
+    if(!$('[data-login-start]')[0]) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    let response = await fetch(`/likeSubComment/${idComment}?subId=${idSubComment}&user_id=${idUser}`);
+    let res = await response.json();
+    if(res.likes) {
+      socket.emit('sublikeUpdate', {
+        idComment,
+        idSubComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      panelThis.find('.number__likes__subcomment').text(res.likes.length);
+      panelThis.find('.number__dislikes__subcomment').text(res.dislikes.length);
+    } else {
+      console.log('error');
+    }
+  });
+
+  $('body').on('click', '.dislike__action__sub', async function() {
+    let idComment = $(this).parent().parent().parent().parent().attr('data-id-comment');
+    let panelThis = $(this).parent().parent();
+    let idSubComment = $(this).parent().parent().attr('data-id-subcomment');
+    let idUser = $('#btnModalLogin').attr('data-user-id');
+    if(!$('[data-login-start]')[0]) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    let response = await fetch(`/dislikeSubComment/${idComment}?subId=${idSubComment}&user_id=${idUser}`);
+    let res = await response.json();
+    if(res.likes) {
+      socket.emit('sublikeUpdate', {
+        idComment,
+        idSubComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      panelThis.find('.number__likes__subcomment').text(res.likes.length);
+      panelThis.find('.number__dislikes__subcomment').text(res.dislikes.length);
+    } else {
+      console.log('error');
+    }
+  });
+
+  $('body').on('click', '.like__action', async function() {
+    let idComment = $(this).parent().parent().parent().attr('data-id-comment');
+    let idUser = $('#btnModalLogin').attr('data-user-id');
+    if(!idUser) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    let response = await fetch(`/likeComment/${idComment}?user_id=${idUser}`);
+    let res = await response.json();
+    if(res.likes) {
+      socket.emit('likeUpdate', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      $(this).parent().find('.number__likes__comment').text(res.likes.length);
+      $(this).parent().find('.number__dislikes__comment').text(res.dislikes.length);
+    } else {
+      console.log('error');
+    }
+  });
+
+  $('body').on('click', '.dislike__action', async function() {
+    let idComment = $(this).parent().parent().parent().attr('data-id-comment');
+    let idUser = $('#btnModalLogin').attr('data-user-id');
+    if(!$('[data-login-start]')[0]) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    let response = await fetch(`/dislikeComment/${idComment}?user_id=${idUser}`);
+    let res = await response.json();
+    if(res.dislikes) {
+      socket.emit('likeUpdate', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      $(this).parent().find('.number__dislikes__comment').text(res.dislikes.length);
+      $(this).parent().find('.number__likes__comment').text(res.likes.length);
+    } else {
+      console.log('error');
+    }
+  });
+
+  $('body').on('click', '.like__video', async function() {
+    if(!$('[data-login-start]')[0]) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    let video_id = _id_video;
+    let user_id = $('#btnModalLogin').attr('data-user-id');
+    let response = await fetch(`/likeVideo/${video_id}?user_id=${user_id}`);
+    let res = await response.json();
+    if(res.likes) {
+      socket.emit('likeVideoUpdate', {
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      $(this).parent().find('.number__likes__video').text(res.likes.length);
+      $(this).parent().find('.number__dislikes__video').text(res.dislikes.length);
+    } else {
+      console.log('error');
+    }
+  });
+
+  $('body').on('click', '.dislike__video', async function() {
+    if(!$('[data-login-start]')[0]) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    let video_id = _id_video;
+    let user_id = $('#btnModalLogin').attr('data-user-id');
+    let response = await fetch(`/dislikeVideo/${video_id}?user_id=${user_id}`);
+    let res = await response.json();
+    if(res.likes) {
+      socket.emit('likeVideoUpdate', {
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      $(this).parent().find('.number__likes__video').text(res.likes.length);
+      $(this).parent().find('.number__dislikes__video').text(res.dislikes.length);
+    } else {
+      console.log('error');
+    }
+  });
+
+  socket.on('getLikesVideo', (data) => {
+    $(`.number__likes__video`).text(data.likes);
+    $(`.number__dislikes__video`).text(data.dislikes);
+  });
+
+  $('body').on('click', '.btn__send__subcomment', function() {
+    let valueComment = $(this).parent().parent().find('.input__subcomment').val();
+    if(valueComment == '') {
+      errorCommentFunction('Error!, El campo de comentario no puede estar vacio.');
+      return;
+    }
+    if(valueComment.length < 5) {
+      errorCommentFunction('Error!, El comentario debe contener al menos 5 caracteres.');
+      return;
+    }
+    let id = $(this).parent().parent().parent().parent().attr('data-id-comment');
+    let destino = $(this).parent().parent().parent().parent().find('.nom__user__destino').text();
+    let name = $('#btnModalLogin').attr('data-name-user');
+    let foto = $('#btnModalLogin').attr('data-foto-user');
+    socket.emit('subComments', {
+      id,
+      name,
+      comment: valueComment,
+      foto,
+      timestamp: new Date(),
+      likes: [],
+      dislikes: [],
+      destino
+    });
+    $(this).parent().parent().find('.input__subcomment').val('');
+  });
+
+  socket.on('getSubComments', (item) => {
+    let calcTime = timeago.format(item.timestamp, 'es');
+    $(`[data-id-comment=${item.id}]`).find('.subcomment__original').append(`
+    <div class="content__subcomments__card" data-id-subcomment="${item.subId}">
+    <div class="subcomment__content__user">
+    <div class="img__user__subcomment">
+      <img src="${item.foto}" alt="">
+    </div>
+    <div class="user__subcomment">
+      <div class="info__user__subcomment">
+        <div class="nom__user">${item.name}</div>
+        <div class="separating__info__date">•</div>
+        <div class="date__subcomment">${calcTime}</div>
+      </div>
+      <div class="subcomment__text">
+        <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
+      </div>
+    </div>
+  </div>
+  <div class="actions__subcomment">
+    <div class="like__action__sub">
+      <i class="far fa-thumbs-up"></i>
+      <div class="number__likes__subcomment">${item.likes.length}</div>
+    </div>
+    <div class="dislike__action__sub">
+      <i class="far fa-thumbs-down"></i>
+      <div class="number__dislikes__subcomment">${item.dislikes.length}</div>
+    </div>
+    <div class="reply__action">
+      Responder
+    </div>
+  </div>
+  </div>`);
+    // console.log(item);
+  });
+
+  $('body').on('click', '.reply__action', function() {
+    if(!$('#btnModalLogin').attr('data-login-start')) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    let nameFocus = $(this).parent().parent().find('.nom__user').text();
+    // console.log(nameFocus);
+    $(this).parent().parent().parent().parent().find('.nom__user__destino').text(nameFocus);
+    
+    let verifyActiveThis = false;
+    if($(this).hasClass('active__reply')) {
+      verifyActiveThis = true;
+    } 
+    let cardFixedInput;
+    if($(this).parent().parent().parent().hasClass('subcomment__original')) {
+      cardFixedInput = $(this).parent().parent().parent().parent();
+    } else {
+      cardFixedInput = $(this).parent().parent().parent();
+    }
+    cardFixedInput.find('.active__reply').removeClass('active__reply');
+    
+    if(verifyActiveThis) {
+      $(this).removeClass('active__reply');
+      cardFixedInput.find('.indicator__response__user').removeClass('d-flex-show');
+      cardFixedInput.find('.my__subcomment__content').removeClass('d-flex-show');
+    } else {
+      $(this).addClass('active__reply');
+      cardFixedInput.find('.indicator__response__user').addClass('d-flex-show');
+      cardFixedInput.find('.my__subcomment__content').addClass('d-flex-show');
+    }
+    cardFixedInput.find('.input__subcomment').focus();
+  });
+
+  $('.btn__send__comment').on('click', function() {
+    if(!$('[data-login-start]')[0]) {
+      $('#modalLogin').attr('style', 'display:flex;');
+      return;
+    }
+    if($('.input__comment').val() == '') {
+      errorCommentFunction('Error!, El campo de comentario no debe estar vacio.');
+      return;
+    }
+    if($('.input__comment').val().length < 5) {
+      errorCommentFunction('Error!, El comentario debe contener al menos 5 caracteres.');
+      return;
+    }
+    // if(!$('.comment__content__user')[0]) return;
+      // console.log(_id_video);
+      let valComment = $('.input__comment').val();
+      let userName = $('#btnModalLogin').attr('data-name-user');
+      let userFoto = $('#btnModalLogin').attr('data-foto-user');
+      let dateActual = new Date();
+
+      socket.emit('sendComment', {
+        video_id: _id_video,
+        name: userName,
+        foto: userFoto,
+        comment: valComment
+      });
+      $('.input__comment').val('');
+    
+  });
+
+  
 
   $('.tab_peli').on('click', function() {
     $('.peliculas__content').removeClass('d-none');
@@ -206,16 +990,65 @@ $(document).ready(function() {
     
   }
 
+  // setTimeout(function() {
+    
+  // },500);
+  
+  // window.onresize = function() {
+  //   if(window.innerWidth <= 622) {
+  //     resizeElementCard();
+  //   } else {
+  //     $('.content_img_videos .carousel__elemento .title-video').each(function() {
+  //       $(this).removeAttr('style');
+  //     });
+  //   }
+  // }
+
+  
+  function resizeElementCard() {
+    let vecHeightText = [];
+      $('.content_img_videos .carousel__elemento .title-video').each(function() {
+        vecHeightText.push($(this).height());
+        // console.log($(this).height());
+      });
+      // console.log($('.content_img_videos .carousel__elemento').length);
+      let maxHeightText = Math.max(...vecHeightText);
+      $('.content_img_videos .carousel__elemento .title-video').each(function() {
+        $(this).attr('style', `min-height: ${maxHeightText}px !important;`);
+      });
+  }
+  
+  // console.log(maxHeightEl, vecHeightElement);
+  
   $('.btnMoreVideos').on('click', function() {
     location.href = `/${$('button.active').text().toLowerCase()}`;
   });
-
+  if($('#stream__media')[0]) {
+    if($('#stream__media').attr('src').includes('pelisplushd.me')) {
+      $('.play__stream__plusto').removeClass('d-none');
+    } else {
+      $('.play__stream__plusto').addClass('d-none');
+    }
+  }
   $('.option__available').on('click', function(e) {
     $('.preloading__stream').removeClass('d-none');
     $('#stream__media').attr('src', this.dataset.targetVideo);
+    
   });
+  // $('.play__stream__plusto').on('click', function() {
+  //   // window.open(this.dataset.targetVideo,"mywindow","menubar=1,resizable=1,width=350,height=250");
+  // });
   $('#stream__media').on('load', function() {
     $('.preloading__stream').addClass('d-none');
+    if($(this).attr('src').includes('pelisplushd.me')) {
+      $('.play__stream__plusto').removeClass('d-none');
+    } else {
+      $('.play__stream__plusto').addClass('d-none');
+    }
+  });
+
+  $('#stream__media').on('click', function() {
+  
   });
 
   $('.season__part').on('click', function() {
@@ -224,7 +1057,13 @@ $(document).ready(function() {
   });
 
   $('.search__icon').on('click', async function() {
-    if($('.input__search').val() != '') {
+    if($('.input__search').val() == '') {
+      if(confirm('¿Está seguro de buscar todas las peliculas y series?, esto podria tardar un poco.')) {
+
+      } else {
+        return;
+      }
+    }
       $('.search__icon').css('pointer-events', 'none');
       let titleVideo = $('.input__search').val();
         $('.search__icon').html(`<div class="la-ball-clip-rotate la-light la-sm">
@@ -293,6 +1132,9 @@ $(document).ready(function() {
     
           
           if(numVeriPages > 1) {
+            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
+              <div></div>
+          </div></div>`);
               history.pushState(null, "", `/search/${titleVideo}?page=${page}`);
               let response = await fetch(`/searchVideo/${titleVideo}?page=${page}`);
               let res = await response.json();
@@ -331,12 +1173,18 @@ $(document).ready(function() {
     <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
   </svg>`);
   $('.search__icon').css('pointer-events', 'auto');
-    }
+    
   });
   $('.input__search').on('keyup', async function(e) {
     if(e.keyCode == 13) {
       e.preventDefault();
-      if($(this).val() != '') {
+      if($(this).val() == '') {
+        if(confirm('¿Está seguro de buscar todas las peliculas y series?, esto podria tardar un poco.')) {
+
+        } else {
+          return;
+        }
+      }
         let titleVideo = $(this).val();
         $('.search__icon').css('pointer-events', 'none');
         $('.search__icon').html(`<div class="la-ball-clip-rotate la-light la-sm">
@@ -405,6 +1253,9 @@ $(document).ready(function() {
     
           
           if(numVeriPages > 1) {
+            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
+              <div></div>
+          </div></div>`);
               history.pushState(null, "", `/search/${titleVideo}?page=${page}`);
               let response = await fetch(`/searchVideo/${titleVideo}?page=${page}`);
               let res = await response.json();
@@ -444,47 +1295,229 @@ $(document).ready(function() {
   </svg>`);
   $('.search__icon').css('pointer-events', 'auto');
       }
-    }
+    
     
    
   });
-  // Get the modal
-  var modal = document.getElementById("modalTrailer");
 
-  // Get the button that opens the modal
-  var btnModal = document.getElementById("btnModalTrailer");
-
-  // Get the <span> element that closes the modal
-  var span = document.getElementsByClassName("close")[0];
-
-  // When the user clicks the button, open the modal 
-  if(btnModal) {
-    btnModal.onclick = function() {
-      modal.style.display = "block";
-      $('body').addClass('ov__hidden');
-      $('.preloading__stream__trailer').removeClass('d-none');
-    }
+  function showRegisterForm() {
+    $('#formLogin').get(0).reset();
+    $('.error__pass').removeClass('show');
+    $('.invalid__input').removeClass('invalid__input');
+    $('.form__login').hide();
+    $('.form__login__register').show();
+    $('.login-footer').hide();
+    $('.register-footer').show();
   }
+
+  function showLoginForm() {
+    $('#formRegister').get(0).reset();
+    $('.error__pass').removeClass('show');
+    $('.invalid__input').removeClass('invalid__input');
+    $('.form__login').show();
+    $('.form__login__register').hide();
+    $('.login-footer').show();
+    $('.register-footer').hide();
+  }
+  let intervalOut;
+  function errorCommentFunction(text) {
+    var x = document.getElementById("snackbar");
+    x.textContent = text;
+    x.className = "show";
+    clearTimeout(intervalOut);
+    intervalOut = setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+  }
+  $('#snackbar').click(function() {
+    $(this).removeClass('show');
+  });
+  // errorCommentFunction();
+  $('.show__register').on('click', showRegisterForm);
+  $('.show__login').on('click', showLoginForm);
+
+  $('#btnModalTrailer').on('click', function() {
+    // if(!$('[data-trailer-id]')[0]) return;
+    $('#modalTrailer').attr('style', 'display: flex;');
+    $('body').addClass('ov__hidden');
+    $('.preloading__stream__trailer').removeClass('d-none');
+  });
+
+  $(document).on("click.card__info__user",function(event) {
+    var target = $(event.target);   
+    // console.log($('.grab_audio').hasClass('d-none'));
+    if(!$('.card__info__user').hasClass('d-none')) {
+      if (!target.closest(".card__info__user").length && !target.closest("#btnModalLogin").length && !target.closest("#modalAddInfo").length) {
+        // closeMenu(function() {
+        //     $(document).off("click.grab_audio");
+        // });
+        $('.card__info__user').removeClass('d-flex-show');
+      }      
+    }
+  });
+
+  $('#btnModalLogin').on('click', function() {
+    if($(this).attr('data-login-start')) {
+      
+      $('.card__info__user').toggleClass('d-flex-show');
+    } else {
+      $('#modalLogin').attr('style', 'display: flex;');
+      $('body').addClass('ov__hidden');
+    }
+    
+  });
+
+  $('.exit__session').on('click', async function() {
+     let response = await fetch('/logout');
+     let res = await response.json();
+     if(res.success) {
+       $('.img__user').attr('src', '/img/user_change.PNG');
+       $('#btnModalLogin').removeAttr('data-login-start');
+       $(this).parent().removeClass('d-flex-show');
+       $('#btnModalLogin').removeClass('started__login');
+       $('.my__foto__comment').attr('src', '/img/user_change.PNG');
+       $('.my__foto__subcomment').attr('src', '/img/user_change.PNG');
+       $('.my__subcomment__content').removeClass('d-flex-show');
+       $('.save__lista__video').removeClass('lista__added');
+       $('.save__lista__video').html(`Agregar a mi lista`);
+       if(location.href.includes('/my-list')) {
+         location.href = '/';
+       }
+     }
+  });
+
+  $('.my__account').on('click', function() {
+    $('#modalAddInfo').attr('style', 'display: flex;');
+
+  });
+
+  function showSuccessLogin() {
+    $('.success__alert__login').addClass('show');
+      setTimeout(function() {
+        $('.success__alert__login').removeClass('show');
+      },2500);
+  }
+
+  $('#formLogin').on('submit', async function(e) {
+    e.preventDefault();
+    $('.login__enter').html(`<div class="la-ball-clip-rotate la-light la-sm">
+    <div></div>`);
+    let $form = this;
+    let formData = new FormData($form);
+    let response = await fetch('/verificarLogin', {
+      method: 'POST',
+      body: formData,
+    });
+    let res = await response.json();
+    if(res.success) {
+      $('#modalLogin').attr('style', 'display: none;');
+      $('body').removeClass('ov__hidden');
+      showSuccessLogin();
+      $('#btnModalLogin').attr('data-login-start', 'start');
+      $('#btnModalLogin').addClass('started__login');
+      $('.foto__user').find('img').attr('src', res.user.foto);
+      $('.name__user__info').text(res.user.name);
+      $('.email__user__info').text(res.user.user);
+      $('#btnModalLogin').attr('data-name-user', res.user.name);
+      $('#btnModalLogin').attr('data-email-user', res.user.user);
+      $('#btnModalLogin').attr('data-foto-user', res.user.foto);
+      $('#btnModalLogin').attr('data-user-id', res.user.id);
+      // console.log(res.foto);
+      $('.my__foto__comment').attr('src', res.user.foto);
+      $('.my__foto__subcomment').attr('src', res.user.foto);
+      // console.log(res);
+      if($('.stream__video')[0]) {
+        let video_id = _id_video;
+        let veriWatchVideo = res.watchlist.find((v) => v.video_id == video_id);
+        // console.log(veriWatchVideo);
+        if(veriWatchVideo) {
+          $('.save__lista__video').addClass('lista__added');
+          $('.save__lista__video').html(`Agregado a mi lista`);
+        } else {
+          $('.save__lista__video').removeClass('lista__added');
+          $('.save__lista__video').html(`Agregar a mi lista`);
+        }
+      }
+      $('.form__login input').removeClass('invalid__input');
+      $('.error__pass').removeClass('show');
+    } else {
+      $('.form__login input').addClass('invalid__input');
+      errorPassLogin('Datos incorrectos');
+    }
+    $('.login__enter').html(`Crear una cuenta`);
+  });
+
+  function errorPassLogin(msg) {
+    $('.error__pass').addClass('show');
+    $('.msg__text__error').text(msg)
+  }
+
+  function successLogin(msg) {
+    $('.success__alert').addClass('show');
+    setTimeout(function() {
+      $('.msg__success').text(msg);
+      $('.success__alert').removeClass('show');
+    }, 2500);
+  }
+
+  $('#formRegister').on('submit', async function(e) {
+    e.preventDefault();
+    $('.login__enter').html(`<div class="la-ball-clip-rotate la-light la-sm">
+    <div></div>`);
+    let $form = this;
+    let formData = new FormData($form);
+    let name = formData.get('name');
+    let email = formData.get('email');
+    let pass1 = formData.get('password');
+    let pass2 = formData.get('password2');
+    if(pass1 != pass2) {
+      $('.form__login__register #password,.form__login__register #password2').addClass('invalid__input');
+      errorPassLogin('Las contraseñas no coinciden');
+      $('.login__enter').html(`Crear una cuenta`);
+      return;
+    }
+    let response = await fetch('/saveUser', {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        email,
+        password:pass1
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    let res = await response.json();
+    if(res.success) {
+      showLoginForm();
+      successLogin('Se ha registrado exitosamente, por favor ahora inicie sesión.');
+    } else {
+      errorPassLogin('El usuario ingresado ya existe');
+    }
+    $('.login__enter').html(`Crear una cuenta`);
+  });
+  
+  $('body').on('click', '.close', function() {
+    $(this).parent().parent().attr('style', 'display: none;');
+    $('body').removeClass('ov__hidden');
+    if($(this).parent().parent().attr('id') == 'modalTrailer') {
+      $('#player__trailer').removeAttr('src');
+    }
+  }); 
   
 
-  // When the user clicks on <span> (x), close the modal
-  if(span) {
-    span.onclick = function() {
-      modal.style.display = "none";
-      $('#player__trailer').removeAttr('src');
-      $('body').removeClass('ov__hidden');
-    }
-  }
- 
-
   $('.movie__trailer').on('click', async function() {
-    let searchQuery = this.dataset.targetSearch;
+    if(!this.dataset.trailerId) {
+      let searchQueryTrailer = this.dataset.targetSearch;
+      let trailerId = await fetch(`/getTrailer/${searchQueryTrailer}`);
+      let resTrailerId = await trailerId.text();
+      this.dataset.trailerId = resTrailerId;
+    }
+    
+    let resId = this.dataset.trailerId;
     // if($('[data-target-loaded=loaded]')[0]) {
     //   return;
     // }
-    let response = await fetch(`/getTrailer/${searchQuery}`);
-    let res = await response.text();
-    $('#player__trailer').attr('src', `https://www.youtube.com/embed/${res}?autoplay=1`);
+    
+    $('#player__trailer').attr('src', `https://www.youtube.com/embed/${resId}?autoplay=1`);
     $('#player__trailer').attr('data-target-loaded', 'loaded');
     // console.log(res);
   });
@@ -499,6 +1532,7 @@ $(document).ready(function() {
           $('.content_img_videos').html(`<div class="not__found">No se encontraron resultados.</div>`);
           return;
         };
+        
         $('#pagination_container').twbsPagination({
           totalPages: numberPages,
           visiblePages: 4,
@@ -506,9 +1540,13 @@ $(document).ready(function() {
           prev: '<span aria-hidden="true">&laquo;</span>',
           next: '<span aria-hidden="true">&raquo;</span>',
           onPageClick: async function (event, page) {
+            
             numVeriPages ++;
             let response;
             if(numVeriPages > 1) {
+              $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
+              <div></div>
+          </div></div>`);
               if(location.href.includes('/peliculas')) {
                 history.pushState(null, "", `/year/${year}/peliculas?page=${page}`);
                 response = await fetch(`/getFindYearType/${page}/peliculas?year=${year}`);
@@ -553,7 +1591,8 @@ $(document).ready(function() {
                 top: 0,
                 behavior: 'smooth'
               });
-            }       
+            }   
+  
           }
       });
       } else
@@ -574,6 +1613,9 @@ $(document).ready(function() {
       
             
             if(numVeriPages > 1) {
+              $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
+              <div></div>
+          </div></div>`);
                 history.pushState(null, "", `/search/${titleSearchInit}?page=${page}`);
                 let response = await fetch(`/searchVideo/${titleSearchInit}?page=${page}`);
                 let res = await response.json();
@@ -608,6 +1650,63 @@ $(document).ready(function() {
             }       
           }
       });
+      } else if(location.href.includes('/my-list')) {
+        // console.log(numberPages);
+        let numVeriPages = 0;
+      if(numberPages == 0) {
+        $('.content_img_videos').html(`<div class="not__found">No se encontraron resultados.</div>`);
+        return;
+      };
+      $('#pagination_container').twbsPagination({
+        totalPages: numberPages,
+        visiblePages: 4,
+        startPage: parseInt(currentPage),
+        prev: '<span aria-hidden="true">&laquo;</span>',
+        next: '<span aria-hidden="true">&raquo;</span>',
+        onPageClick: async function (event, page) {
+          numVeriPages ++;
+          let response;
+          if(numVeriPages > 1) {
+            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
+              <div></div>
+          </div></div>`);
+              history.pushState(null, "", `/my-list/${page}`);
+              response = await fetch(`/findMyList/${page}`);
+              
+              let res = await response.json();
+              let newHTML = '';
+              res.watchs.forEach((v) => {
+                if(!v.seasons) {
+                  newHTML += `<a href="/${'pelicula'}/${v.video_id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                  <div class="type__video__indicator__peli">Película</div>
+                  <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                  <p class="title-video">${v.title} (${v.year})</p>
+                  <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                </a>`;
+                } else {
+                  newHTML += `<a href="/${'serie'}/${v.video_id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                  <div class="type__video__indicator__serie">Serie</div>
+                  <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                  <p class="title-video">${v.title} (${v.year})</p>
+                  <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                </a>`;
+                }
+                
+              });
+              $('.content_img_videos').html(newHTML);
+              $('.title_videos_last').html(`Mi lista - pagina ${page}`);
+              addPreLoadingImg();
+              addTooltip();
+              // 
+    
+              // location.href = `/peliculas/pages/${page}`;
+            window.scroll({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }       
+        }
+    });
       } else {
         let numVeriPages = 0;
         if(numberPages == 0) {
@@ -625,6 +1724,9 @@ $(document).ready(function() {
       
             
             if(numVeriPages > 1) {
+              $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
+              <div></div>
+          </div></div>`);
               if(sectionPage == 'Peliculas') {
                 
                 history.pushState(null, "", `/peliculas/${page}`);
@@ -690,6 +1792,9 @@ $(document).ready(function() {
           numVeriPages ++;
           let response;
           if(numVeriPages > 1) {
+            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
+              <div></div>
+          </div></div>`);
             if(location.href.includes('/peliculas')) {
               history.pushState(null, "", `/generos/${genero}/peliculas?page=${page}`);
               response = await fetch(`/getFindGenreType/${page}/peliculas?genero=${genero}`);
@@ -821,6 +1926,16 @@ window.addEventListener('load', function() {
         }
       ]
     });
+    // let vecHeightTextP = [];
+    // $('.carousel__lista .carousel__elemento .title-video').each(function() {
+    //   vecHeightTextP.push($(this).height());
+    //   // console.log($(this).height());
+    // });
+    // // console.log($('.carousel__lista .carousel__elemento').length);
+    // let maxHeightTextP = Math.max(...vecHeightTextP);
+    // $('.carousel__lista .carousel__elemento .title-video').each(function() {
+    //   $(this).attr('style', `min-height: ${maxHeightTextP}px !important;`);
+    // });
   }
   
 });

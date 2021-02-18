@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
-    <link rel="icon" type="image/png" href="/img/logo-cotipelishd3.PNG">
+    <link rel="icon" type="image/png" href="/img/logo-cotipelishd3.PNG" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/dropdown.css" />
-    <link rel="stylesheet" href="/css/preloader.css">
-    <link rel="stylesheet" href="/css/pagination.css">
+    <link rel="stylesheet" href="/css/preloader.css" />
+    <link rel="stylesheet" href="/css/pagination.css" />
     <script
       src="https://kit.fontawesome.com/9ac3f17ed5.js"
       crossorigin="anonymous"
@@ -22,15 +22,20 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/glider-js@1.7.3/glider.min.css"
     />
-    <link>
+    <link />
     <link href="/libs/pace/themes/blue/pace-theme-flash.css" rel="stylesheet" />
-  <script src="/libs/pace/pace.js"></script>
+    <link
+      rel="stylesheet"
+      href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
+    />
+    <script src="/libs/pace/pace.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <script>
       paceOptions = {
         catchupTime: 100,
-        initialRate: .03,
+        initialRate: 0.03,
         minTime: 250,
         ghostTime: 100,
         maxProgressPerFrame: 20,
@@ -38,290 +43,640 @@
         startOnPageLoad: true,
         restartOnPushState: true,
         restartOnRequestAfter: 500,
-        target: 'body',
+        target: "body",
         elements: {
           checkInterval: 100,
-          selectors: ['body']
+          selectors: ["body"],
         },
         eventLag: {
           minSamples: 10,
           sampleCount: 3,
-          lagThreshold: 3
+          lagThreshold: 3,
         },
         ajax: {
-          trackMethods: ['GET'],
+          trackMethods: ["GET"],
           trackWebSockets: true,
-          ignoreURLs: []
-        }
-      }
+          ignoreURLs: [],
+        },
+      };
       Pace.start();
-      </script>
-    <div class="block__container__sidebar d-none">
-
-    </div>
-    <%- include ('partials/navbar') %>
-    <%- include ('partials/sidebar') %>
-    <script>
-      if(window.innerWidth <= 468) {
-        let titleLogo = document.querySelector('.title__logo__navbar');
-        titleLogo.innerHTML = 'CP';
-      }
-      window.onresize = function() {
-        let titleLogo = document.querySelector('.title__logo__navbar');
-        if(this.innerWidth <= 468) {
-          titleLogo.innerHTML = 'CP';
-        } else {
-          titleLogo.innerHTML = 'CotiPelisTV';
-        }
-      }
     </script>
+    <script>const socket = io({
+      'reconnect': true,
+      'reconnection delay': 500,
+      'max reconnection attempts': 10
+    });</script>
+    <div class="block__container__sidebar d-none"></div>
+    <%- include ('partials/navbar') %> <%- include ('partials/sidebar') %>
+    <div class="success__alert__login">
+      <i class="fas fa-check"></i>
+      <span class="msg__success__login"
+        >Bienvenido, has iniciado sesión.</span
+      >
+    </div>
+    <div id="modalWatchList" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal__header">
+          Agregar a:
+        </div>
+        <div class="modal__body">
+          <div class="add__new__list">
+            <svg viewBox="0 0 100 100"><path d="M50 23a4 4 0 00-4 4v19H27a4 4 0 100 8h19v19a4 4 0 108 0V54h19a4 4 0 100-8H54V27a4 4 0 00-4-4z" overflow="visible" color="#000" style="text-indent: 0px; text-transform: none;"></path></svg> Nueva Lista
+          </div>
+          <div class="list__watch">
+            <svg viewBox="0 0 100 100"><path d="M50 23a4 4 0 00-4 4v19H27a4 4 0 100 8h19v19a4 4 0 108 0V54h19a4 4 0 100-8H54V27a4 4 0 00-4-4z" overflow="visible" color="#000" style="text-indent: 0px; text-transform: none;"></path></svg> Lista 1
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div id="modalWatchList" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal__header">
+          <div class="return__back__list">
+            <i class="fas fa-arrow-left"></i>
+          </div>
+          <div class="title__form__list">
+            Nueva Lista
+          </div>
+        </div>
+        <div class="modal__body">
+          <div class="form__list__watch">
+            <div class="name__list">
+              <label for="#nameList">Nombre</label>
+              <input type="text" id="nameList" placeholder="Nueva Lista">
+            </div>
+            <div class="desc__list">
+              <label for="#descList">Descripción</label>
+              <textarea id="descList" placeholder="Alguna descripción"></textarea>
+            </div>
+            <button class="btnCreateList">Crear Lista</button>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div> -->
+    <!-- The Modal -->
+    <div id="modalLogin" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal__header">
+          <p class="title__login">Ingresa con:</p>
+        </div>
+        <div class="modal__body">
+          <div class="social__options">
+            <a href="/google" class="google__login">
+              <i class="fa fa-google-plus fa-fw"></i>
+            </a>
+            <a href="/facebook" class="fb__login">
+              <i class="fa fa-facebook fa-fw"></i>
+            </a>
+          </div>
+          <div class="division__or">
+            <div class="line 1"></div>
+            <div class="or__login">o</div>
+            <div class="line r"></div>
+          </div>
+          <form id="formLogin" action="/verificarLogin" method="POST">
+            <div class="form__login animate__animated animate__fadeIn">
+              <div class="content__email">
+                <input
+                  type="email"
+                  class="input__email__login"
+                  placeholder="Correo | Email"
+                  name="username"
+                  id="username"
+                  required
+                />
+              </div>
+              <div class="content__pass">
+                <input
+                  type="password"
+                  class="input__pass__login"
+                  placeholder="Contraseña"
+                  name="password"
+                  id="password"
+                  required
+                />
+              </div>
+              <div class="error__pass">
+                <i class="fas fa-ban"></i>
+                <span class="msg__text__error"
+                  >Las contraseñas no coinciden</span
+                >
+              </div>
+              <button type="submit" class="login__enter">Login</button>
+            </div>
+          </form>
+          <form id="formRegister">
+            <div
+              class="form__login__register animate__animated animate__fadeIn"
+              style="display: none"
+            >
+              <div class="content__name">
+                <input
+                  type="text"
+                  class="input__name__login"
+                  placeholder="Nombre"
+                  name="name"
+                  id="name"
+                  required
+                />
+              </div>
+              <div class="content__email">
+                <input
+                  type="email"
+                  class="input__email__login"
+                  placeholder="Correo | Email"
+                  name="email"
+                  id="username"
+                  required
+                />
+              </div>
+              <div class="content__pass">
+                <input
+                  type="password"
+                  class="input__pass__login"
+                  placeholder="Contraseña"
+                  name="password"
+                  id="password" minlength="6"
+                  required
+                />
+              </div>
+              <div class="content__pass__repeat">
+                <input
+                  type="password"
+                  class="input__pass__login__repeat"
+                  placeholder="Vuelve a introducir contraseña"
+                  name="password2" minlength="6"
+                  id="password2"
+                  required
+                />
+              </div>
+              <div class="error__pass">
+                <i class="fas fa-ban"></i>
+                <span class="msg__text__error"
+                  >Las contraseñas no coinciden</span
+                >
+              </div>
+              <button class="login__enter">Crear una cuenta</button>
+            </div>
+          </form>
+        </div>
+        <div class="success__alert">
+          <i class="fas fa-check"></i>
+          <span class="msg__success"
+            >Se ha registrado exitosamente, por favor ahora inicie sesión.</span
+          >
+        </div>
+        <div class="modal-footer">
+          <div
+            class="forgot login-footer animate__animated animate__fadeIn"
+            style="display: block"
+          >
+            <span
+              >¿No tienes una cuenta?,
+              <a class="show__register" href="javascript:void(0)"
+                >¡Crea una cuenta ya!</a
+              ></span
+            >
+          </div>
+          <div
+            class="forgot register-footer animate__animated animate__fadeIn"
+            style="display: none"
+          >
+            <span>¿Ya tienes una cuenta?</span>
+            <a class="show__login" href="javascript:void(0)">¡Entra aquí!</a>
+          </div>
+        </div>
+      </div>
+    </div>
     
-    <% if(!videoStream) { %>
-      <%- include ('partials/container_home') %>
-    <% } else { %>
-      <% if(section == 'Peliculas') { %>
-        <div class="container container_stream animate__animated animate__fadeIn">
-          <div class="card__preview">
-            <div class="card__video">
-              <div class="img__video__stream">
-                <img src="<%= video.image %>" alt="">
-              </div>
-              <div class="card__info">
-                <div class="title__video">
-                  <%= video.title %> (<%= video.year %>)
-                </div>
-                <div class="title__original">
-                  @ <%= video.titleOriginal %>
-                </div>
-                <div class="title__indicator__description">
-                  Sinopsis:
-                </div>
-                <div class="description__video">
-                  <%= video.description %>
-                </div>
-                <div class="country__video">
-                  <div class="indicator">
-                    País:
-                  </div>
-                  <%= video.country %>
-                </div>
-                <div class="release__date__video">
-                  <div class="indicator">
-                    Fecha:
-                  </div>
-                  <%= video.release %>
-                </div>
-              </div>
-              <div class="info__preview__extend">
-                <div class="other__titles">
-                  <div class="indicator">
-                    Otros títulos
-                  </div>
-                  <% extraTitles.forEach((item, i, vec) => { %>
-                    <a href="/search/<%= item.title %>" class="titles__extra">
-                      <%= item.title %>
-                    </a>
-                    <% if(i != vec.length - 1) { %>
-                      ,
-                    <% } %>
-                  <% }) %>
-                </div>
-                <div class="info__extend">
-                  <div class="year__date">
-                    <div class="indicator">Año:</div>
-                    <a href="/year/<%= video.year %>" class="year__content">
-                      <%= video.year %>
-                    </a>
-                  </div>
-                  <div class="genres__video">
-                    <div class="indicator">Generos</div>
-                    <% video.genres.forEach((item) => { %>
-                      <a href="/generos/<%= item %>" class="genre__video__unic">
-                        <%= item %>
-                      </a>
-                    <% }) %>
-                  </div>
-                  <div class="rating__video">
-                    <div class="indicator">Rating</div>
-                    <div class="score__rating">
-                      <%= video.score %>
-                    </div>
-                  </div>
-                  <div class="movie__trailer" id="btnModalTrailer" data-target-search="<%= video.title %> (<%= video.year %>) - Trailer">
-                    Trailer
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="stream__video">
-            <div class="preloading__stream">
-              <div class="la-ball-clip-rotate la-light la-sm">
-                <div></div>
-              </div>
-            </div>
-            <div class="tab options__stream">
-              <% video.embedUrls.forEach((item, i) => { %>
-                <% let nameItem = ''; %>
-                <% if(item.includes('streamsb.net')) { %>
-                  <% nameItem = 'SBFast'; %>
-                <% } %>
-                <% if(item.includes('pelisplushd.me')) { %>
-                  <% nameItem = 'PlusTo'; %>
-                <% } %>
-                <% if(item.includes('dood.to')) { %>
-                  <% nameItem = 'DoodStream'; %>
-                <% } %>
-                <% if(item.includes('videos.sh')) { %>
-                  <% nameItem = 'VideoS'; %>
-                <% } %>
-                <% if(item.includes('embed.mystream.to')) { %>
-                  <% nameItem = 'Mystream'; %>
-                <% } %>
-                <% if(item.includes('upstream.to')) { %>
-                  <% nameItem = 'Upfast'; %>
-                <% } %>
-                <% if(item.includes('uqload.com')) { %>
-                  <% nameItem = 'Uqload'; %>
-                <% } %>
-                <% if(i == 0) { %>
-                  <button class="option__available tablinks active__stream" data-target-video="<%= item %>">
-                    <%= nameItem %>
-                  </button>
-                <% } else { %>
-                  <button class="option__available tablinks" data-target-video="<%= item %>">
-                    <%= nameItem %>
-                  </button>
-                <% } %>
-              <% }) %>
-            </div>
-            <iframe id="stream__media" src="<%= video.embedUrls[0] %>" frameborder="0" width="100%" height="400px" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-        </div>
-      <% } else { %>
-        <div class="container container_stream animate__animated animate__fadeIn">
-          <div class="card__preview">
-            <div class="card__video">
-              <div class="img__video__stream">
-                <img src="<%= video.image %>" alt="">
-              </div>
-              <div class="card__info">
-                <div class="title__video">
-                  <%= video.title %> (<%= video.year %>)
-                </div>
-                <div class="title__original">
-                  @ <%= video.titleOriginal %>
-                </div>
-                <div class="title__indicator__description">
-                  Sinopsis:
-                </div>
-                <div class="description__video">
-                  <%= video.description %>
-                </div>
-                <div class="country__video">
-                  <div class="indicator">
-                    País:
-                  </div>
-                  <%= video.country %>
-                </div>
-                <div class="release__date__video">
-                  <div class="indicator">
-                    Fecha:
-                  </div>
-                  <%= video.release %>
-                </div>
-              </div>
-              <div class="info__preview__extend">
-                <div class="other__titles">
-                  <div class="indicator">
-                    Otros títulos
-                  </div>
-                  <% extraTitles.forEach((item, i, vec) => { %>
-                    <a href="/search/<%= item.title %>" class="titles__extra">
-                      <%= item.title %>
-                    </a>
-                    <% if(i != vec.length - 1) { %>
-                      ,
-                    <% } %>
-                  <% }) %>
-                </div>
-                <div class="info__extend">
-                  <div class="year__date">
-                    <div class="indicator">Año:</div>
-                    <a href="/year/<%= video.year %>" class="year__content">
-                      <%= video.year %>
-                    </a>
-                  </div>
-                  <div class="genres__video">
-                    <div class="indicator">Generos</div>
-                    <% video.genres.forEach((item) => { %>
-                      <a href="/generos/<%= item %>" class="genre__video__unic">
-                        <%= item %>
-                      </a>
-                    <% }) %>
-                  </div>
-                  <div class="rating__video">
-                    <div class="indicator">Rating</div>
-                    <div class="score__rating">
-                      <%= video.score %>
-                    </div>
-                  </div>
-                  <div class="movie__trailer" id="btnModalTrailer" data-target-search="<%= video.title %> (<%= video.year %>) - Trailer">
-                    Trailer
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="stream__video" data-target-id="<%= video._id %>">
-            <div class="tab seasons__stream">
-              <% let numTemp = video.seasons[video.seasons.length - 1].season; %>
-              <% for(let i = 1; i <= numTemp; i++) { %>
-                <% if(i == 1) { %>
-                  <button class="season__part tablinks active__temp" id="temporada-<%= i %>">
-                    Temporada <%= i %>
-                  </button>
-                <% } else { %>
-                  <button class="season__part tablinks" id="temporada-<%= i %>">
-                    Temporada <%= i %>
-                  </button>
-                <% } %>
-                
-              <% } %>
-            </div>
-         
-            <% for(let i = 1; i <= numTemp; i++) { %>
-              <% if(i == 1) { %>
-                <div class="episodes__content d-flex-show" data-target-temp="temporada-<%= i %>">
-                  <% let tempInfo = video.seasons.filter((v) => v.season == i); %>
-                  <% tempInfo.forEach((item) => { %>
-                    <a href="/serie/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>" class="episode__part">
-                      T<%= item.season %> - E<%= item.episode %>: Episode <%= item.episode %>
-                    </a>
-                  <% }) %>
-                </div>
-              <% } else { %>
-                <div class="episodes__content" data-target-temp="temporada-<%= i %>">
-                  <% let tempInfo = video.seasons.filter((v) => v.season == i); %>
-                  <% tempInfo.forEach((item) => { %>
-                    <a href="/serie/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>" class="episode__part">
-                      T<%= item.season %> - E<%= item.episode %>: Episode <%= item.episode %>
-                    </a>
-                  <% }) %>     
-                </div>
-              <% } %>
-              
-            <% } %>
-          </div>
-        </div>
-      <% } %>
+    <script>
+      if (window.innerWidth <= 468) {
+        let titleLogo = document.querySelector(".title__logo__navbar");
+        titleLogo.innerHTML = "CP";
+      }
+      window.onresize = function () {
+        let titleLogo = document.querySelector(".title__logo__navbar");
+        if (this.innerWidth <= 468) {
+          titleLogo.innerHTML = "CP";
+        } else {
+          titleLogo.innerHTML = "CotiPelisTV";
+        }
+      };
+    </script>
+    <% if(user) { %>
       <!-- The Modal -->
+    <div id="modalAddInfo" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p class="title__modal__info">
+          Mi cuenta
+        </p>
+        <div class="info__content__user">
+          <div class="foto__user">
+            <img src="<%= user.foto %>" alt="">
+          </div>
+          <div class="contact__user">
+            <div class="contact__info name__user__info">
+              <%= user.name %>
+            </div>
+            <div class="contact__info email__user__info">
+              <%= user.user %>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="preloading__stream__trailer">
+          <div class="la-ball-clip-rotate la-light la-sm">
+            <div></div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <% } else { %>
+      <!-- The Modal -->
+    <div id="modalAddInfo" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p class="title__modal__info">
+          Mi cuenta
+        </p>
+        <div class="info__content__user">
+          <div class="foto__user">
+            <img src="<%=  %>" alt="">
+          </div>
+          <div class="contact__user">
+            <div class="contact__info name__user__info">
+
+            </div>
+            <div class="contact__info email__user__info">
+  
+            </div>
+          </div>
+        </div>
+        <!-- <div class="preloading__stream__trailer">
+          <div class="la-ball-clip-rotate la-light la-sm">
+            <div></div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <% } %>
+    <div id="snackbar">Error!, Debes de iniciar sesión para comentar</div>
+    <% if(!videoStream) { %> <%- include ('partials/container_home') %> <% }
+    else { %> <% if(section == 'Peliculas') { %>
+    <div class="container container_stream animate__animated animate__fadeIn">
+      <div class="card__preview">
+        <div class="card__video">
+          <div class="img__video__stream">
+            <img src="<%= video.image %>" alt="" />
+          </div>
+          <div class="card__info">
+            <div class="title__video">
+              <%= video.title %> (<%= video.year %>)
+            </div>
+            <div class="title__original">@ <%= video.titleOriginal %></div>
+            <div class="title__indicator__description">Sinopsis:</div>
+            <div class="description__video"><%= video.description %></div>
+            <div class="country__video">
+              <div class="indicator">País:</div>
+              <%= video.country %>
+            </div>
+            <div class="release__date__video">
+              <div class="indicator">Fecha:</div>
+              <%= video.release %>
+            </div>
+          </div>
+          <div class="info__preview__extend">
+            <div class="other__titles">
+              <div class="indicator">Otros títulos</div>
+              <% extraTitles.forEach((item, i, vec) => { %>
+              <a href="/search/<%= item.title %>" class="titles__extra">
+                <%= item.title %>
+              </a>
+              <% if(i != vec.length - 1) { %> , <% } %> <% }) %>
+            </div>
+            <div class="info__extend">
+              <div class="year__date">
+                <div class="indicator">Año:</div>
+                <a href="/year/<%= video.year %>" class="year__content">
+                  <%= video.year %>
+                </a>
+              </div>
+              <div class="genres__video">
+                <div class="indicator">Generos</div>
+                <% video.genres.forEach((item) => { %>
+                <a href="/generos/<%= item %>" class="genre__video__unic">
+                  <%= item %>
+                </a>
+                <% }) %>
+              </div>
+              <div class="rating__video">
+                <div class="indicator">Rating</div>
+                <div class="score__rating"><%= video.score %></div>
+              </div>
+              <div
+                class="movie__trailer"
+                id="btnModalTrailer"
+                data-target-search="<%= video.title %> (<%= video.year %>) - Trailer"
+              >
+                Trailer
+              </div>
+              <% if(savedVideo) { %>
+                <div class="save__lista__video lista__added">Agregado a mi lista</div>
+              <% } else { %>
+                <div class="save__lista__video">Agregar a mi lista</div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stream__video">
+        <div class="preloading__stream">
+          <div class="la-ball-clip-rotate la-light la-sm">
+            <div></div>
+          </div>
+        </div>
+        <% let plusToSelect = video.embedUrls.find((v) =>
+        v.includes('pelisplushd.me')); %>
+        <div class="play__stream__plusto d-none">
+          <a href="<%= plusToSelect %>" class="content__plusto">
+            Ver Online Gratis: www.PelisPlusHD.net
+          </a>
+        </div>
+        <div class="tab options__stream">
+          <% video.embedUrls.forEach((item, i) => { %> <% let nameItem = ''; %>
+          <% if(item.includes('streamsb.net')) { %> <% nameItem = 'SBFast'; %>
+          <% } %> <% if(item.includes('pelisplushd.me')) { %> <% nameItem =
+          'PlusTo'; %> <% } %> <% if(item.includes('dood.to')) { %> <% nameItem
+          = 'DoodStream'; %> <% } %> <% if(item.includes('videos.sh')) { %> <%
+          nameItem = 'VideoS'; %> <% } %> <%
+          if(item.includes('embed.mystream.to')) { %> <% nameItem = 'Mystream';
+          %> <% } %> <% if(item.includes('upstream.to')) { %> <% nameItem =
+          'Upfast'; %> <% } %> <% if(item.includes('uqload.com')) { %> <%
+          nameItem = 'Uqload'; %> <% } %> <% if(i == 0) { %>
+          <button
+            class="option__available tablinks active__stream"
+            data-target-video="<%= item %>"
+          >
+            <%= nameItem %>
+          </button>
+          <% } else { %>
+          <button
+            class="option__available tablinks"
+            data-target-video="<%= item %>"
+          >
+            <%= nameItem %>
+          </button>
+          <% } %> <% }) %>
+        </div>
+        <iframe
+          id="stream__media"
+          src="<%= video.embedUrls[0] %>"
+          frameborder="0"
+          width="100%"
+          height="400px"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="card__reactions__video">
+        <div class="title__indicator__reactions">
+          Reacciones sobre el video
+        </div>
+        <div class="reactions__video">
+          <div class="like__video">
+            <i class="far fa-thumbs-up"></i> Me gusta
+            <div class="calc__number__likes">
+              (<div class="number__likes__video">0</div>)
+            </div>
+          </div>
+          <div class="dislike__video">
+            <i class="far fa-thumbs-down"></i> No me gusta
+            <div class="calc__number__dislikes">
+              (<div class="number__dislikes__video">0</div>)
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card__comment">
+        <div class="indicator__comment">Comentarios</div>
+        <div class="comment__content">
+          <div class="title__comment">Comentario</div>
+          
+          <div class="my__comment__content">
+            <div class="content__my__foto">
+              <img class="my__foto__comment" src="<% if(user) { %> <%= user.foto; %> <% } else { %> <%= '/img/user_change.PNG' %><% } %> " alt="">
+            </div>
+            <div class="description__comment">
+              <textarea
+                class="input__comment"
+                placeholder="Escribe un comentario"
+              ></textarea>
+              <div class="content__btn__comment">
+                <button class="btn__send__comment">Comentar</button>
+              </div>
+            </div>
+          </div>
+          <div class="section__comments">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } else { %>
+    <div class="container container_stream animate__animated animate__fadeIn">
+      <div class="card__preview">
+        <div class="card__video">
+          <div class="img__video__stream">
+            <img src="<%= video.image %>" alt="" />
+          </div>
+          <div class="card__info">
+            <div class="title__video">
+              <%= video.title %> (<%= video.year %>)
+            </div>
+            <div class="title__original">@ <%= video.titleOriginal %></div>
+            <div class="title__indicator__description">Sinopsis:</div>
+            <div class="description__video"><%= video.description %></div>
+            <div class="country__video">
+              <div class="indicator">País:</div>
+              <%= video.country %>
+            </div>
+            <div class="release__date__video">
+              <div class="indicator">Fecha:</div>
+              <%= video.release %>
+            </div>
+          </div>
+          <div class="info__preview__extend">
+            <div class="other__titles">
+              <div class="indicator">Otros títulos</div>
+              <% extraTitles.forEach((item, i, vec) => { %>
+              <a href="/search/<%= item.title %>" class="titles__extra">
+                <%= item.title %>
+              </a>
+              <% if(i != vec.length - 1) { %> , <% } %> <% }) %>
+            </div>
+            <div class="info__extend">
+              <div class="year__date">
+                <div class="indicator">Año:</div>
+                <a href="/year/<%= video.year %>" class="year__content">
+                  <%= video.year %>
+                </a>
+              </div>
+              <div class="genres__video">
+                <div class="indicator">Generos</div>
+                <% video.genres.forEach((item) => { %>
+                <a href="/generos/<%= item %>" class="genre__video__unic">
+                  <%= item %>
+                </a>
+                <% }) %>
+              </div>
+              <div class="rating__video">
+                <div class="indicator">Rating</div>
+                <div class="score__rating"><%= video.score %></div>
+              </div>
+              <div
+                class="movie__trailer"
+                id="btnModalTrailer"
+                data-target-search="<%= video.title %> (<%= video.year %>) - Trailer"
+              >
+                Trailer
+              </div>
+              <% if(savedVideo) { %>
+                <div class="save__lista__video lista__added">Agregado a mi lista</div>
+              <% } else { %>
+                <div class="save__lista__video">Agregar a mi lista</div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stream__video" data-target-id="<%= video._id %>">
+        <div class="tab seasons__stream">
+          <% let numTemp = video.seasons[video.seasons.length - 1].season; %> <%
+          for(let i = 1; i <= numTemp; i++) { %> <% if(i == 1) { %>
+          <button
+            class="season__part tablinks active__temp"
+            id="temporada-<%= i %>"
+          >
+            Temporada <%= i %>
+          </button>
+          <% } else { %>
+          <button class="season__part tablinks" id="temporada-<%= i %>">
+            Temporada <%= i %>
+          </button>
+          <% } %> <% } %>
+        </div>
+
+        <% for(let i = 1; i <= numTemp; i++) { %> <% if(i == 1) { %>
+        <div
+          class="episodes__content d-flex-show"
+          data-target-temp="temporada-<%= i %>"
+        >
+          <% let tempInfo = video.seasons.filter((v) => v.season == i); %> <%
+          tempInfo.forEach((item) => { %>
+          <a
+            href="/serie/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>"
+            class="episode__part"
+          >
+            T<%= item.season %> - E<%= item.episode %>: Episode <%= item.episode
+            %>
+          </a>
+          <% }) %>
+        </div>
+        <% } else { %>
+        <div class="episodes__content" data-target-temp="temporada-<%= i %>">
+          <% let tempInfo = video.seasons.filter((v) => v.season == i); %> <%
+          tempInfo.forEach((item) => { %>
+          <a
+            href="/serie/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>"
+            class="episode__part"
+          >
+            T<%= item.season %> - E<%= item.episode %>: Episode <%= item.episode
+            %>
+          </a>
+          <% }) %>
+        </div>
+        <% } %> <% } %>
+      </div>
+      <div class="card__reactions__video">
+        <div class="title__indicator__reactions">
+          Reacciones sobre el video
+        </div>
+        <div class="reactions__video">
+          <div class="like__video">
+            <i class="far fa-thumbs-up"></i> Me gusta
+            <div class="calc__number__likes">
+              (<div class="number__likes__video">0</div>)
+            </div>
+          </div>
+          <div class="dislike__video">
+            <i class="far fa-thumbs-down"></i> No me gusta
+            <div class="calc__number__dislikes">
+              (<div class="number__dislikes__video">0</div>)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card__comment">
+        <div class="indicator__comment">Comentarios</div>
+        <div class="comment__content">
+          <div class="title__comment">Comentario</div>
+          <div class="my__comment__content">
+            <div class="content__my__foto">
+              <img class="my__foto__comment" src="<% if(user) { %> <%= user.foto; %> <% } else { %> <%= '/img/user_change.PNG' %><% } %> " alt="">
+            </div>
+            <div class="description__comment">
+              <textarea
+                class="input__comment"
+                placeholder="Escribe un comentario"
+              ></textarea>
+              <div class="content__btn__comment">
+                <button class="btn__send__comment">Comentar</button>
+              </div>
+            </div>
+          </div>
+          <div class="section__comments">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <script>
+      let _id_video = "<%= video._id %>";
+      let titleVideoS = "<%= video.title %>";
+      let imageVideoS = "<%= video.image %>";
+      let yearVideoS = "<%= video.year %>";
+      let scoreVideoS = "<%= video.score %>";
+      socket.emit("getId", _id_video);
+      socket.on('disconnect', function() {
+        socket.emit("getId", _id_video);
+      });
+    </script>
+    <!-- The Modal -->
     <div id="modalTrailer" class="modal">
       <!-- Modal content -->
       <div class="modal-content">
         <span class="close">&times;</span>
-        <p class="title__modal__trailer"><%= video.title %> (<%= video.year %>) - Trailer</p>
-        <iframe id="player__trailer" src="" frameborder="0" allowfullscreen="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" width="100%" height="600px"></iframe>
+        <p class="title__modal__trailer">
+          <%= video.title %> (<%= video.year %>) - Trailer
+        </p>
+        <iframe
+          id="player__trailer"
+          src=""
+          frameborder="0"
+          allowfullscreen="1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          width="100%"
+          height="600px"
+        ></iframe>
         <div class="preloading__stream__trailer">
           <div class="la-ball-clip-rotate la-light la-sm">
             <div></div>
@@ -329,15 +684,16 @@
         </div>
       </div>
     </div>
+
     <% } %>
 
-    
     <script src="https://cdn.jsdelivr.net/npm/glider-js@1.7.3/glider.min.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.5.1.js"
       integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.full.min.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <!-- BLAZY IMAGENES -->

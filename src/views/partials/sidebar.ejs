@@ -33,47 +33,18 @@
       <span class="multiple__options"
         ><i class="fas fa-caret-right"></i></span
     ></a>
+    <% let genresInitial = ['Acción', 'Animación', 'Aventura', 'Comedia', 'Crimen', 'Documental', 'Drama', 'Fantasía', 'Foreign', 'Guerra', 'Historia', 'Romance', 'Suspenso', 'Terror', 'Western', 'Misterio']; %>
     <% if(veriGenero != '') { %>
       <div id="myDropdown" class="dropdown-content" style="display: block;">
-        <a class="wave" href="/generos/Acción">Acción</a>
-        <a class="wave" href="/generos/Animación">Animación</a>
-        <a class="wave" href="/generos/Aventura">Aventura</a>
-        <a class="wave" href="/generos/Ciencia Ficción">Ciencia Ficción</a>
-        <a class="wave" href="/generos/Comedia">Comedia</a>
-        <a class="wave" href="/generos/Crimen">Crimen</a>
-        <a class="wave" href="/generos/">Documental</a>
-        <a class="wave" href="/generos/Drama">Drama</a>
-        <a class="wave" href="/generos/Fantasía">Fantasía</a>
-        <a class="wave" href="/generos/Foreign">Foreign</a>
-        <a class="wave" href="/generos/Guerra">Guerra</a>
-        <a class="wave" href="/generos/Historia">Historia</a>
-        <a class="wave" href="/generos/Pelicula De La Televisión">Pelicula De La Televisión</a>
-        <a class="wave" href="/generos/Romance">Romance</a>
-        <a class="wave" href="/generos/Suspenso">Suspenso</a>
-        <a class="wave" href="/generos/Terror">Terror</a>
-        <a class="wave" href="/generos/Western">Western</a>
-        <a class="wave" href="/generos/Misterio">Misterio</a>
+        <% genresInitial.forEach((item) => { %>
+          <a class="wave" href="/generos/<%= item %>"><%= item %></a>
+        <% }) %>
       </div>
     <% } else { %>
       <div id="myDropdown" class="dropdown-content">
-        <a class="wave" href="/generos/Acción">Acción</a>
-        <a class="wave" href="/generos/Animación">Animación</a>
-        <a class="wave" href="/generos/Aventura">Aventura</a>
-        <a class="wave" href="/generos/Ciencia Ficción">Ciencia Ficción</a>
-        <a class="wave" href="/generos/Comedia">Comedia</a>
-        <a class="wave" href="/generos/Crimen">Crimen</a>
-        <a class="wave" href="/generos/">Documental</a>
-        <a class="wave" href="/generos/Drama">Drama</a>
-        <a class="wave" href="/generos/Fantasía">Fantasía</a>
-        <a class="wave" href="/generos/Foreign">Foreign</a>
-        <a class="wave" href="/generos/Guerra">Guerra</a>
-        <a class="wave" href="/generos/Historia">Historia</a>
-        <a class="wave" href="/generos/Pelicula De La Televisión">Pelicula De La Televisión</a>
-        <a class="wave" href="/generos/Romance">Romance</a>
-        <a class="wave" href="/generos/Suspenso">Suspenso</a>
-        <a class="wave" href="/generos/Terror">Terror</a>
-        <a class="wave" href="/generos/Western">Western</a>
-        <a class="wave" href="/generos/Misterio">Misterio</a>
+        <% genresInitial.forEach((item) => { %>
+          <a class="wave" href="/generos/<%= item %>"><%= item %></a>
+        <% }) %>
       </div>
     <% } %>
     <a class="year__extend__button<%= veriYear %>"><i class="fab fa-autoprefixer"></i>Año<span class="multiple__options"
