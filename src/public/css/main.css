@@ -58,6 +58,10 @@ body {
   cursor: pointer;
 }
 
+.search__icon svg {
+  fill: var(--color-text-navbar);
+}
+
 .search__icon:hover {
   background-color: #1e416b;
 }
