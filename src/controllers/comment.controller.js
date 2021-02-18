@@ -9,7 +9,7 @@ ctrl.index = async (req, res) => {
   let videoId = req.params.id;
   let perPage = 8;
   let page = parseInt(req.query.page) || 1;
-  console.log(videoId, page);
+  // console.log(videoId, page);
   const comments = await Comment.find({ video_id: videoId }).skip((perPage * page) - perPage).limit(perPage).sort("-timestamp").lean();
   const nextComments = await Comment.find({ video_id: videoId }).skip((perPage * (parseInt(page) + 1)) - perPage).limit(perPage).sort("-timestamp").lean();
   let moreComments;

@@ -6,14 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
     <link rel="icon" type="image/png" href="/img/logo-cotipelishd3.PNG">
+      <!-- Some Open Graph tags -->
+      <meta name="description" content="<%= description %>" />
+      <meta name="author" content="<%= title %>" />
+      <meta property="og:locale" content="en_US" />
+      <meta property="og:type" content="video" />
+      <meta property="og:title" content="<%= titleVideo %>" />
+      <meta property="og:description" content="<%= description %>" />
+      <meta id="urlShare" property="og:url" content="" />
+      
+      <meta property="og:site_name" content="<%= title %>" />
+      <meta
+        property="article:publisher"
+        content="https://www.facebook.com/groups/700666550639313"
+      />
+      <meta
+        property="article:published_time"
+        content="2021-02-10T20:50:00Z"
+      />
+      <meta property="og:image" content="<%= image.replace('/w154/', '/w1280/') %>">
+  
+      <meta name="twitter:title" content="<%= titleVideo %>" />
+      <meta name="twitter:description" content="<%= description %>" />
+      <meta name="twitter:image" content="<%= image %>" />
+      <meta name="twitter:site" content="@[TWITTER_USERNAME]" />
+      <meta name="twitter:creator" content="@[TWITTER_USERNAME]" />
+      <meta name="twitter:via" content="[TWITTER_USERNAME]" />
+      <meta name="twitter:card" content="photo" />
+      <meta id="urlShareTwitter" name="twitter:url" content="" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
-    <link rel="stylesheet" href="/css/main.css" />
-    <link rel="stylesheet" href="/css/dropdown.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <!-- <link rel="stylesheet" href="/css/dropdown.css" />
     <link rel="stylesheet" href="/css/preloader.css">
-    <link rel="stylesheet" href="/css/pagination.css">
+    <link rel="stylesheet" href="/css/pagination.css"> -->
     <script
       src="https://kit.fontawesome.com/9ac3f17ed5.js"
       crossorigin="anonymous"
@@ -323,6 +351,28 @@
           <div class="calc__number__dislikes">
             (<div class="number__dislikes__video">0</div>)
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="card__share__video">
+      <div class="title__indicator__share">
+        Compartir con
+      </div>
+      <div class="share__options__video">
+        <!-- Buttons, Copy this to your Page Article -->
+        <div class="share-buttons-row">
+          <!--Facebook's Button -->
+          <div class="share-fb"></div>
+          <!--Twitter's Button -->
+          <div class="share-twitter"></div>
+          <!--Facebook's Button -->
+          <div class="share-google-plus"></div>
+          <!--Linkedin's Button -->
+          <div class="share-linkedin"></div>
+          <!--Pinterest's Button -->
+          <div class="share-pinterest"></div>
+          <!--Tumblr's Button -->
+          <div class="share-tumblr"></div>
         </div>
       </div>
     </div>

@@ -40,7 +40,7 @@ ctrl.index = async (req, res) => {
   }
   let peliculas = await Pelicula.find({}).limit(24);
   let popularVideos = await Pelicula.find({}).sort({'score':-1}).limit(10);
-  console.log(peliculas[0].title);
+  // console.log(peliculas[0].title);
   // let popularVideos = peliculas.sort(function (a, b) { return parseFloat(b.score.split('/')[0]) - parseFloat(a.score.split('/')[0]); }).slice(0, 10);
   res.render('index', {
     title: 'CotiPelisTV',
