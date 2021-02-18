@@ -1114,9 +1114,20 @@ $(document).ready(function() {
     $('#stream__media').attr('src', this.dataset.targetVideo);
     
   });
-  // $('.play__stream__plusto').on('click', function() {
-  //   // window.open(this.dataset.targetVideo,"mywindow","menubar=1,resizable=1,width=350,height=250");
-  // });
+
+  function popup(url,ancho,alto) {
+    var posicion_x; 
+    var posicion_y; 
+    posicion_x=(screen.width/2)-(ancho/2); 
+    posicion_y=(screen.height/2)-(alto/2); 
+    window.open(url, url, "width="+ancho+",height="+alto+",menubar=0,toolbar=0,directories=0,scrollbars=no,resizable=no,left="+posicion_x+",top="+posicion_y+"");
+    }
+    
+  $('.play__stream__plusto a').on('click', function(e) {
+    e.preventDefault();
+    window.open(this.href, '_blank')
+  });
+
   $('#stream__media').on('load', function() {
     $('.preloading__stream').addClass('d-none');
     if($(this).attr('src').includes('pelisplushd.me')) {
