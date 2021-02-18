@@ -58,14 +58,13 @@ body {
   cursor: pointer;
 }
 
-.search__icon svg {
-  fill: var(--color-text-navbar);
-}
-
 .search__icon:hover {
   background-color: #1e416b;
 }
 
+.search__icon svg {
+  fill: var(--color-text-navbar);
+}
 .form__search {
   display: flex;
   align-items: center;
@@ -441,7 +440,14 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 1em;
+}
+
+.select__options__show a {
+  margin-right: 1em;
+}
+
+.select__options__show a:last-child {
+  margin-right: 0;
 }
 
 /* a img:hover {
@@ -656,7 +662,14 @@ body {
 .release__date__video {
   display: flex;
   align-items: center;
-  gap: 1em;
+  /* gap: 1rem; */
+}
+.country__video .indicator {
+  margin-right: 1em;
+}
+
+.release__date__video .indicator {
+  margin-right: 1em;
 }
 
 .country__video .indicator,
@@ -669,8 +682,29 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 2em;
+  /* grid-gap: 1em; */
   flex-wrap: wrap;
+}
+
+.info__extend .genres__video,
+.info__extend .rating__video {
+  padding: 1em;
+  padding-right: 2em;
+  padding-top: 0;
+  padding-left: 0;
+}
+.info__extend .year__date {
+  padding: 1em;
+  padding-right: 2em;
+
+  padding-top: 0;
+  padding-left: 0;
+}
+
+.info__extend .movie__trailer {
+  margin: 1em;
+  margin-left: 0;
+  margin-top: 0;
 }
 
 .genre__video__unic,
@@ -707,9 +741,12 @@ body {
 .info__preview__extend {
   display: flex;
   flex-direction: column;
-  gap: 2em;
   padding: 10px;
   width: calc(33% - 20px);
+}
+
+.info__extend {
+  margin-top: 1.5em;
 }
 
 .movie__trailer {
@@ -721,7 +758,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5em;
 }
 
 .movie__trailer:hover {
@@ -765,7 +801,14 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 0.6em;
+}
+
+.extend__episode__actions a {
+  margin-bottom: 0.6em;
+}
+
+.extend__episode__actions a:last-child {
+  margin-bottom: 0;
 }
 
 .stream__video,
@@ -792,6 +835,8 @@ body {
 }
 
 .save__lista__video {
+  margin-top: 15px;
+  margin-bottom: 2em;
   background: transparent;
   border: 1px solid hsl(224, 46%, 78%);
   padding: 8px 10px;
@@ -799,7 +844,7 @@ body {
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   background: 0 0;
   word-spacing: 2px;
@@ -823,16 +868,22 @@ body {
 
 .description__comment {
   display: flex;
-  gap: 0.4em;
   flex-direction: column;
   width: 100%;
 }
 
+.btn__send__comment {
+  margin-top: 0.6em;
+}
+
 .description__subcomment {
   display: flex;
-  gap: 0.4em;
   flex-direction: column;
   width: 100%;
+}
+
+.btn__send__subcomment {
+  margin-top: 0.6em;
 }
 
 .btn__send__comment {
@@ -1048,7 +1099,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2em;
+}
+
+.social__options .fb__login {
+  margin-left: 2em;
 }
 
 .social__options a {
@@ -1372,8 +1426,11 @@ body {
   margin-right: 10px;
   color: rgb(201, 201, 201);
   padding: 15px;
-  gap: 0.4em;
   display: none;
+}
+
+.nom__user__destino {
+  margin-left: 0.4em;
 }
 
 .my__foto__comment {
@@ -1448,7 +1505,6 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.3em;
   cursor: pointer;
 }
 
@@ -1467,7 +1523,7 @@ body {
 
 .card__reactions__video {
   display: flex;
-  gap: 1em;
+
   color: rgb(184, 184, 184);
   flex-direction: column;
   width: calc(100% - 20px);
@@ -1480,7 +1536,6 @@ body {
 
 .reactions__video {
   display: flex;
-  gap: 1em;
   color: rgb(184, 184, 184);
   align-items: center;
   width: calc(100%);
@@ -1502,10 +1557,28 @@ body {
 
 .like__video,
 .dislike__video {
+  margin-top: 15px;
   cursor: pointer;
   padding: 10px;
   display: flex;
-  gap: 0.3em;
+}
+
+.dislike__video {
+  margin-left: 1em;
+}
+
+.like__video i,
+.dislike__video i {
+  margin-right: 5px;
+}
+
+.dislike__video i {
+  margin-top: 2.5px;
+}
+
+.calc__number__dislikes,
+.calc__number__likes {
+  margin-left: 5px;
 }
 
 .like__video:hover,
@@ -1532,8 +1605,14 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.3em;
   cursor: pointer;
+}
+
+.number__likes__comment,
+.number__likes__subcomment,
+.number__dislikes__comment,
+.number__dislikes__subcomment {
+  margin-left: 0.3em;
 }
 
 .dislike__action:hover,
@@ -1689,7 +1768,6 @@ body {
 .episodes__content {
   display: none;
   flex-direction: column;
-  gap: 0.6em;
   background-color: #26364b;
   width: 100%;
   height: auto;
@@ -1698,6 +1776,14 @@ body {
   padding-bottom: 15px;
   /* align-items: center; */
   /* justify-content: center; */
+}
+
+.episodes__content a {
+  margin-bottom: 0.6em;
+}
+
+.episodes__content a:last-child {
+  margin-bottom: 0;
 }
 
 .episode__part {
@@ -1798,7 +1884,7 @@ body {
   padding-left: 15px;
   padding-right: 15px;
   display: flex;
-  gap: 0.5em;
+  gap: 0.5rem;
   align-items: center;
 }
 
@@ -1846,7 +1932,7 @@ body {
 .name__list {
   display: flex;
   flex-direction: column;
-  gap: 0.6em;
+  gap: 0.6rem;
   margin-bottom: 15px;
 }
 
@@ -1869,7 +1955,7 @@ body {
 .desc__list {
   display: flex;
   flex-direction: column;
-  gap: 0.6em;
+  gap: 0.6rem;
   margin-bottom: 25px;
 }
 
