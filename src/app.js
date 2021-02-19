@@ -161,7 +161,9 @@ app.use(require('./routes/index').router);
 
 // 404 handler
 app.use((req, res, next) => {
-  res.status(404).json({message: 'url not found'});
+  res.render('404', {
+    title: 'CotiPelisTV'
+  });
 });
 
 // starting the server

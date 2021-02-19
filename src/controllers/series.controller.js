@@ -58,7 +58,11 @@ ctrl.streamVideo = async (req, res) => {
   let user = req.user;
   if(!req.user) {
     let id = req.params.id;
-    let video = await Serie.findOne({_id: id});
+    let video = await Serie.findOne({_id: id}).catch((err) => {
+      res.render('404', {
+        title: 'CotiPelisTV'
+      });
+    });
     let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
@@ -81,7 +85,11 @@ ctrl.streamVideo = async (req, res) => {
   }
   
   let id = req.params.id;
-  let video = await Serie.findOne({_id: id});
+  let video = await Serie.findOne({_id: id}).catch((err) => {
+    res.render('404', {
+      title: 'CotiPelisTV'
+    });
+  });
   let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;
