@@ -109,7 +109,13 @@ $(document).ready(function() {
   });
 
   function open_window(url, name){
-    window.open(url, name, 'height=320, width=640, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no');
+    var posicion_x; 
+    var posicion_y; 
+    let ancho = 650;
+    let alto = 550;
+    posicion_x=(screen.width/2)-(ancho/2); 
+    posicion_y=(screen.height/2)-(alto/2); 
+    window.open(url, name, "width="+ancho+",height="+alto+",menubar=0,toolbar=0,directories=0,scrollbars=no,resizable=no,left="+posicion_x+",top="+posicion_y+"");
   }
   
   if(isMobile()) {
