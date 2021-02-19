@@ -24,8 +24,8 @@ ctrl.index = async (req, res) => {
   let user = req.user;
   let titleSearch = req.query.title;
   if(titleSearch) {
-  let peliculas = await Pelicula.find({title: {$regex: titleSearch}});
-  let series = await Serie.find({title: {$regex: titleSearch}});
+  let peliculas = await Pelicula.find({title: {$regex: titleSearch}}).sort('-_id');
+  let series = await Serie.find({title: {$regex: titleSearch}}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24, 1);
     res.render('index', {
@@ -38,7 +38,7 @@ ctrl.index = async (req, res) => {
     })
     return;
   }
-  let peliculas = await Pelicula.find({}).limit(24);
+  let peliculas = await Pelicula.find({}).sort('-_id').limit(24);
   let popularVideos = await Pelicula.find({}).sort({'score':-1}).limit(10);
   // console.log(peliculas[0].title);
   // let popularVideos = peliculas.sort(function (a, b) { return parseFloat(b.score.split('/')[0]) - parseFloat(a.score.split('/')[0]); }).slice(0, 10);
@@ -55,7 +55,7 @@ ctrl.index = async (req, res) => {
 }
 
 ctrl.getSerie = async (req, res) => {
-  let series = await Serie.find({}).limit(24);
+  let series = await Serie.find({}).sort('-_id').limit(24);
   res.json(series);
 }
 
@@ -65,8 +65,8 @@ ctrl.search = async (req, res) => {
   // title = quitarAcentos(title);
   // console.log(title);
   
-  let peliculas = await Pelicula.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
-  let series = await Serie.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
+  let peliculas = await Pelicula.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]}).sort('-_id');
+  let series = await Serie.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24, page);
   let pages = Math.ceil(dataPrevideos.length / 24);
@@ -83,8 +83,8 @@ ctrl.searchDirect = async (req, res) => {
   let page = req.query.page || 1;
   // title = quitarAcentos(title);
   // console.log(title);
-  let peliculas = await Pelicula.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
-  let series = await Serie.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]});
+  let peliculas = await Pelicula.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]}).sort('-_id');
+  let series = await Serie.find({$or: [{title :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title)}.*`, '$options' : 'i'}}, {title :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}, {titleOriginal :{'$regex' : `.*${diacriticSensitiveRegex(title).replace(' ', '-')}.*`, '$options' : 'i'}}]}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24, page);
   let pages = Math.ceil(dataPrevideos.length / 24);
@@ -107,8 +107,8 @@ ctrl.searchDirect = async (req, res) => {
 ctrl.searchAll = async (req, res) => {
   let page = req.query.page || 1;
   let title = '';
-  let peliculas = await Pelicula.find({});
-  let series = await Serie.find({});
+  let peliculas = await Pelicula.find({}).sort('-_id');
+  let series = await Serie.find({}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24, page)
   console.log(dataVideos);
@@ -124,8 +124,8 @@ ctrl.searchAllDirect = async (req, res) => {
   let user = req.user;
   let page = req.query.page || 1;
   let title = '';
-  let peliculas = await Pelicula.find({});
-  let series = await Serie.find({});
+  let peliculas = await Pelicula.find({}).sort('-_id');
+  let series = await Serie.find({}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24, page);
   let pages = Math.ceil(dataPrevideos.length / 24);
@@ -149,8 +149,8 @@ ctrl.findByGenre = async (req, res) => {
   let user = req.user;
   let page = req.query.page || 1;
   let genero = req.params.genero;
-  let peliculas = await Pelicula.find({genres: {$regex: genero}});
-  let series = await Serie.find({genres: {$regex: genero}});
+  let peliculas = await Pelicula.find({genres: {$regex: genero}}).sort('-_id');
+  let series = await Serie.find({genres: {$regex: genero}}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24,page || 1);
   let pages = Math.ceil(dataPrevideos.length / 24)
@@ -172,8 +172,8 @@ ctrl.findByGenre = async (req, res) => {
 ctrl.getFindGenre = async (req, res) => {
   let page = req.params.page;
   let genero = req.query.genero;
-  let peliculas = await Pelicula.find({genres: {$regex: genero}});
-  let series = await Serie.find({genres: {$regex: genero}});
+  let peliculas = await Pelicula.find({genres: {$regex: genero}}).sort('-_id');
+  let series = await Serie.find({genres: {$regex: genero}}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24,page || 1);
   res.json(dataVideos);
@@ -184,12 +184,12 @@ ctrl.getFindGenreType = async (req, res) => {
   let genero = req.query.genero;
   let type = req.params.type;
   if(type == 'peliculas') {
-    let peliculas = await Pelicula.find({genres: {$regex: genero}});
+    let peliculas = await Pelicula.find({genres: {$regex: genero}}).sort('-_id');
     let dataPrevideos = peliculas;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     res.json(dataVideos);
   } else if(type == 'series') {
-    let series = await Serie.find({genres: {$regex: genero}});
+    let series = await Serie.find({genres: {$regex: genero}}).sort('-_id');
     let dataPrevideos = series;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     res.json(dataVideos);
@@ -203,7 +203,7 @@ ctrl.findTypeGenre = async (req, res) => {
   if(type == 'peliculas') {
     let page = req.query.page || 1;
     let genero = req.params.genero;
-    let peliculas = await Pelicula.find({genres: {$regex: genero}});
+    let peliculas = await Pelicula.find({genres: {$regex: genero}}).sort('-_id');
     let dataPrevideos = peliculas;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     let pages = Math.ceil(dataPrevideos.length / 24)
@@ -223,7 +223,7 @@ ctrl.findTypeGenre = async (req, res) => {
   } else if(type == 'series') {
     let page = req.query.page || 1;
     let genero = req.params.genero;
-    let series = await Serie.find({genres: {$regex: genero}});
+    let series = await Serie.find({genres: {$regex: genero}}).sort('-_id');
     let dataPrevideos = series;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     let pages = Math.ceil(dataPrevideos.length / 24)
@@ -248,8 +248,8 @@ ctrl.findByYear = async (req, res) => {
   let user = req.user;
   let page = req.query.page || 1;
   let year = req.params.year;
-  let peliculas = await Pelicula.find({year});
-  let series = await Serie.find({year});
+  let peliculas = await Pelicula.find({year}).sort('-_id');
+  let series = await Serie.find({year}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24,page || 1);
   let pages = Math.ceil(dataPrevideos.length / 24)
@@ -273,8 +273,8 @@ ctrl.findByYear = async (req, res) => {
 ctrl.getFindYear = async (req, res) => {
   let page = req.params.page || 1;
   let year = req.query.year;
-  let peliculas = await Pelicula.find({year});
-  let series = await Serie.find({year});
+  let peliculas = await Pelicula.find({year}).sort('-_id');
+  let series = await Serie.find({year}).sort('-_id');
   let dataPrevideos = peliculas.concat(series);
   let dataVideos = paginate(dataPrevideos, 24,page || 1);
   let pages = Math.ceil(dataPrevideos.length / 24)
@@ -286,12 +286,12 @@ ctrl.getFindYearType = async (req, res) => {
   let year = req.query.year;
   let type = req.params.type;
   if(type == 'peliculas') {
-    let peliculas = await Pelicula.find({year});
+    let peliculas = await Pelicula.find({year}).sort('-_id');
     let dataPrevideos = peliculas;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     res.json(dataVideos);
   } else if(type == 'series') {
-    let series = await Serie.find({year});
+    let series = await Serie.find({year}).sort('-_id');
     let dataPrevideos = series;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     res.json(dataVideos);
@@ -304,7 +304,7 @@ ctrl.findTypeYear = async (req, res) => {
   if(type == 'peliculas') {
     let page = req.query.page || 1;
     let year = req.params.year;
-    let peliculas = await Pelicula.find({year});
+    let peliculas = await Pelicula.find({year}).sort('-_id');
     let dataPrevideos = peliculas;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     let pages = Math.ceil(dataPrevideos.length / 24)
@@ -326,7 +326,7 @@ ctrl.findTypeYear = async (req, res) => {
   } else if(type == 'series') {
     let page = req.query.page || 1;
     let year = req.params.year;
-    let series = await Serie.find({year});
+    let series = await Serie.find({year}).sort('-_id');
     let dataPrevideos = series;
     let dataVideos = paginate(dataPrevideos, 24,page || 1);
     let pages = Math.ceil(dataPrevideos.length / 24)

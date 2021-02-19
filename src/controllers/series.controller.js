@@ -8,6 +8,7 @@ ctrl.index = (req, res) => {
   let page = req.params.page || 1;
   Serie
     .find({})
+    .sort('-_id')
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .exec((err, series) => {
@@ -31,8 +32,8 @@ ctrl.index = (req, res) => {
 ctrl.find = async (req, res) => {
   let title = req.query.title;
   if(title) {
-    let peliculas = await Pelicula.find({title: {$regex: title}});
-    let series = await Serie.find({title: {$regex: title}});
+    let peliculas = await Pelicula.find({title: {$regex: title}}).sort('-_id');
+    let series = await Serie.find({title: {$regex: title}}).sort('-_id');
     let dataPrevideos = peliculas.concat(series);
     let dataVideos = paginate(dataPrevideos, 24, 1);
     res.json(dataVideos);
@@ -42,6 +43,7 @@ ctrl.find = async (req, res) => {
   let page = req.params.page || 1;
   Serie
     .find({})
+    .sort('-_id')
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .exec((err, series) => {
@@ -57,7 +59,7 @@ ctrl.streamVideo = async (req, res) => {
   if(!req.user) {
     let id = req.params.id;
     let video = await Serie.findOne({_id: id});
-    let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).limit(6);
+    let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
     // if(videoWatch) {
@@ -80,7 +82,7 @@ ctrl.streamVideo = async (req, res) => {
   
   let id = req.params.id;
   let video = await Serie.findOne({_id: id});
-  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).limit(6);
+  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;
   if(videoWatch) {
@@ -107,7 +109,7 @@ ctrl.episodeStream = async (req, res) => {
     let temporada = req.params.temporada;
     let capitulo = req.params.capitulo;
     let video = await Serie.findOne({_id: id});
-    let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).limit(6);
+    let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
     // if(videoWatch) {
@@ -143,7 +145,7 @@ ctrl.episodeStream = async (req, res) => {
   let temporada = req.params.temporada;
   let capitulo = req.params.capitulo;
   let video = await Serie.findOne({_id: id});
-  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).limit(6);
+  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;
   if(videoWatch) {
