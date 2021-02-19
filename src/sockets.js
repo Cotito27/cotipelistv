@@ -9,6 +9,12 @@ module.exports = [
         socket.videoId = id;
         socket.join(id);
       });
+
+      socket.on('getUser', (id) => {
+        socket.userId = id;
+        socket.join(id);
+      });
+
       socket.on('sendComment', async (data) => {
         // console.log(data,socket.videoId);
         let newComment = await Comment.create(data);
@@ -45,6 +51,9 @@ module.exports = [
         } else {
 
         }
+      });
+      socket.on('deleteListWatch', function(data) {
+        socket.to(socket.userId).emit('getNewList', data);
       });
     }); 
   }

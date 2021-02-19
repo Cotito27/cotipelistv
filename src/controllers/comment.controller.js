@@ -52,7 +52,7 @@ ctrl.like = async (req, res) => {
     //   user_id
     // };
     await comment.save();
-    res.json({likes: comment.likes, dislikes: comment.dislikes})
+    res.json({likes: comment.likes, dislikes: comment.dislikes, focusLike: !verifyRepeatLikes, focusDislike: !verifyRepeatDislikes})
   } else {
     res.status(500).json({error: 'Internal Error'});
   }
@@ -79,7 +79,7 @@ ctrl.dislike = async (req, res) => {
       comment.dislikes.push(user_id);
     }
     await comment.save();
-    res.json({dislikes: comment.dislikes, likes: comment.likes})
+    res.json({dislikes: comment.dislikes, likes: comment.likes, focusLike: !verifyRepeatLikes, focusDislike: !verifyRepeatDislikes})
   } else {
     res.status(500).json({error: 'Internal Error'});
   }
@@ -95,11 +95,13 @@ ctrl.sublike = async (req, res) => {
   let newDislikes = [];
   const comment = await Comment.findOne({_id});
   // console.log(comment)
+  let verifyRepeatLikes;
+  let verifyRepeatDislikes;
   if (comment) {
     comment.subcomments.forEach((item) => {
       if(item.subId == subId) {
-        let verifyRepeatLikes = item.likes.includes(user_id);
-        let verifyRepeatDislikes = item.dislikes.includes(user_id);
+        verifyRepeatLikes = item.likes.includes(user_id);
+        verifyRepeatDislikes = item.dislikes.includes(user_id);
         if(verifyRepeatDislikes) {
           let indexUserR = item.dislikes.indexOf(user_id);
           item.dislikes.splice(indexUserR, 1);
@@ -118,7 +120,7 @@ ctrl.sublike = async (req, res) => {
     let newData = await Comment.findOneAndUpdate({_id}, {$set: comment});
     //, {new: true}
     // let newData = await comment.save();
-    res.json({likes: newLikes, dislikes: newDislikes});
+    res.json({likes: newLikes, dislikes: newDislikes, focusLike: !verifyRepeatLikes, focusDislike: !verifyRepeatDislikes});
   } else {
     res.status(500).json({error: 'Internal Error'});
   }
@@ -134,11 +136,13 @@ ctrl.subdislike = async (req, res) => {
   // console.log(comment)
   let newLikes = [];
   let newDislikes = [];
+  let verifyRepeatLikes;
+  let verifyRepeatDislikes;
   if (comment) {
     comment.subcomments.forEach((item) => {
       if(item.subId == subId) {
-        let verifyRepeatLikes = item.likes.includes(user_id);
-        let verifyRepeatDislikes = item.dislikes.includes(user_id);
+        verifyRepeatLikes = item.likes.includes(user_id);
+        verifyRepeatDislikes = item.dislikes.includes(user_id);
         if(verifyRepeatLikes) {
           let indexUserR = item.likes.indexOf(user_id);
           item.likes.splice(indexUserR, 1);
@@ -151,11 +155,11 @@ ctrl.subdislike = async (req, res) => {
         }
         newLikes = item.likes;
         newDislikes = item.dislikes;
-        console.log(item.likes, item.dislikes);
+        // console.log(item.likes, item.dislikes);
       }
     });
     let newData = await Comment.findOneAndUpdate({_id}, {$set: comment});
-    res.json({dislikes: newDislikes, likes: newLikes})
+    res.json({dislikes: newDislikes, likes: newLikes, focusLike: !verifyRepeatLikes, focusDislike: !verifyRepeatDislikes})
   } else {
     res.status(500).json({error: 'Internal Error'});
   }

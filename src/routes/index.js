@@ -73,6 +73,7 @@ router.get('/findMyList/:page', watchlistController.findMyList);
 router.get('/likeVideo/:id', reactionController.like);
 router.get('/dislikeVideo/:id', reactionController.dislike);
 router.get('/getLikesVideo/:id', reactionController.index);
+router.post('/deleteWatchList/', watchlistController.delete);
 router.get('/logout', loginController.logout);
 
 router.get(

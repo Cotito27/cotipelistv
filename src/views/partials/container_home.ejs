@@ -1,6 +1,11 @@
 <% let sectionIdent = section.substring(0, section.length -
     1).toLowerCase(); %>
     <div class="container container_home animate__animated animate__fadeIn">
+      <div class="loader__my__list">
+        <div class="la-ball-clip-rotate la-light la-sm">
+          <div></div>
+        </div>
+      </div>
       <% if(pagesInactive) { %>
       <div class="preview_imgs_popular">
         <div class="text-white fw-400 title_popular_videos">Más populares</div>
@@ -20,7 +25,7 @@
               <a
                 href="/<%= sectionIdent %>/<%= peli._id %>"
                 class="carousel__elemento wave tooltip_auto"
-                data-tippy-content="<%= peli.title %> (<%= peli.year %>)"
+                data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<%= peli._id %>"
               >
                 <img
                   class="image-loading"
@@ -93,7 +98,7 @@
             <a
               href="/<%= sectionIdent %>/<%= peli._id %>"
               class="carousel__elemento wave tooltip_auto"
-              data-tippy-content="<%= peli.title %> (<%= peli.year %>)"
+              data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<%= peli._id %>"
             >
               <img
                 class="image-loading"
@@ -161,8 +166,9 @@
                 <a
                 href="/<%= 'pelicula' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
                 class="carousel__elemento wave tooltip_auto"
-                data-tippy-content="<%= peli.title %> (<%= peli.year %>)"
+                data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
               >
+              
               <div class="type__video__indicator__peli">Película</div>
                 <img
                   class="image-loading"
@@ -180,7 +186,7 @@
                 <a
               href="/<%= 'serie' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
               class="carousel__elemento wave tooltip_auto"
-              data-tippy-content="<%= peli.title %> (<%= peli.year %>)"
+              data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
             >
             <div class="type__video__indicator__serie">Serie</div>
               <img

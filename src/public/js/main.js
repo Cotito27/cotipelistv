@@ -117,34 +117,104 @@ $(document).ready(function() {
     posicion_y=(screen.height/2)-(alto/2); 
     window.open(url, name, "width="+ancho+",height="+alto+",menubar=0,toolbar=0,directories=0,scrollbars=no,resizable=no,left="+posicion_x+",top="+posicion_y+"");
   }
-  
+
+  if(location.href.includes('/my-list')) {
+    $('.carousel__elemento').on('mouseenter', function() {
+      $('[data-tippy-root]').remove();
+      $(this).append(`<div class="block__delete__list">
+      <div class="delete__content">
+        Quitar
+      </div>
+      <div class="play__video">
+        <svg viewBox="0 0 100 100"><switch><g><path d="M84.2 43.6L24.4 3.8c-5.1-3.4-12 .3-12 6.4v79.5c0 6.2 6.9 9.8 12 6.4l59.8-39.8c4.5-2.9 4.5-9.7 0-12.7z"></path></g></switch></svg>
+      </div>
+    </div>`);
+    });
+    $('.carousel__elemento').on('mouseleave', function() {
+      $('[data-tippy-root]').remove();
+      $(this).find('.block__delete__list').remove();
+    });
+  }
+
+  $('body').on('click', '.delete__content', async function(e) {
+      e.preventDefault();
+      $('.loader__my__list').addClass('d-flex-show');
+      let video_id = $(this).parent().parent().attr('data-video-id');
+      let elementContainer = $(this).parent().parent();
+      let user_id = $('#btnModalLogin').attr('data-user-id');
+      let formData = new FormData();
+      formData.set('video_id', video_id);
+      formData.set('user_id', user_id);
+      // console.log(video_id);
+      let response = await fetch(`/deleteWatchList/`, {
+        method: 'POST',
+        body: formData
+      });
+     
+      let res = await response.json();
+      if(res.success) {
+          elementContainer.remove();
+
+          if($('.carousel__elemento').length < 1) {
+            $('#pagination_container').remove();
+            $('.content_img_videos').html(`<div class="not__found">No se encontraron resultados.</div>`);
+          }
+          socket.emit('deleteListWatch', { item: video_id });
+          $('.loader__my__list').removeClass('d-flex-show');
+        // $(this).html(`Agregar a mi lista`);
+        // $(this).css('pointer-events', 'auto');
+      } else {
+        console.log('error');
+        $('.loader__my__list').removeClass('d-flex-show');
+      }
+  });
+
+  socket.on('getNewList', function(data) {
+    $(`[data-video-id=${data.item}]`).remove();
+    if($('.carousel__elemento').length < 1) {
+      $('#pagination_container').remove();
+      $('.content_img_videos').html(`<div class="not__found">No se encontraron resultados.</div>`);
+    }
+  });
+
   if(isMobile()) {
+    $('body').on('contextmenu', '.carousel__elemento', function(e) {
+      return false;
+    });
+    $('body').on('dragstart', 'img', function(event) {
+       event.preventDefault(); 
+    });
 		let intervalAlert;
     function deleteInterval() {
       clearTimeout(intervalAlert);
     }
     $('body').on('touchstart', '.carousel__elemento', function(e) {
+      $('.carousel__active__element').removeClass('carousel__active__element');
+      $(this).addClass('carousel__active__element');
       deleteInterval();
       intervalAlert = setTimeout(() => {
         showInfoElement(this.querySelector('.title-video').textContent);
-      }, 1000);
+      }, 500);
       // e.stopPropagation();
       // return e.preventDefault();
     });
     $('body').on('touchmove', '.carousel__elemento', function(e) {
+      // $(this).addClass('carousel__active__element');
       deleteInterval();
       intervalAlert = setTimeout(() => {
         showInfoElement(this.querySelector('.title-video').textContent);
-      }, 1000);
+      }, 500);
       // e.stopPropagation();
       // return e.preventDefault();
     });
     $('body').on('touchend', '.carousel__elemento', function(e) {
+      $(this).removeClass('carousel__active__element');
       deleteInterval();
       // e.stopPropagation();
       // return e.preventDefault();
     });
     $('body').on('touchcancel', '.carousel__elemento', function(e) {
+      $(this).removeClass('carousel__active__element');
       deleteInterval();
       // e.stopPropagation();
       // return e.preventDefault();
@@ -292,8 +362,14 @@ $(document).ready(function() {
       $('#modalLogin').attr('style', 'display:flex;');
       return;
     }
+    $(this).css('pointer-events', 'none');
+    $(this).html(`<div class="la-ball-clip-rotate la-light la-sm">
+    <div></div>
+  </div>`);
+  console.log($(this).html());
     // $('#modalWatchList').attr('style', 'display:flex;');
     if($(this).hasClass('lista__added')) {
+
       let video_id = _id_video;
       let title = titleVideoS;
       let image = imageVideoS;
@@ -321,6 +397,7 @@ $(document).ready(function() {
       let res = await response.json();
       if(res.success) {
         $(this).html(`Agregar a mi lista`);
+        $(this).css('pointer-events', 'auto');
       }
     } else {
       let video_id = _id_video;
@@ -349,7 +426,8 @@ $(document).ready(function() {
 
       let res = await response.json();
       if(res.success) {
-      $(this).html(`Agregado a mi lista`);
+        $(this).html(`Agregado a mi lista`);
+        $(this).css('pointer-events', 'auto');
       }
     }
     $(this).toggleClass('lista__added');
@@ -399,6 +477,7 @@ $(document).ready(function() {
   async function getComments() {
     $('.section__comments').html(``);
     let id = _id_video;
+    let user_id = $('#btnModalLogin').attr('data-user-id');
     let getcomments = await fetch(`/getComments/${id}`);
     let comments = await getcomments.json();
     let htmlSubComment = '';
@@ -461,11 +540,21 @@ $(document).ready(function() {
       </div>
     </div>
   </div>`);
+  if(user_id) {
+    if(comment.likes.includes(user_id)) {
+      $('.like__action').eq(i).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+      $('.like__action').eq(i).addClass('reaction__comment__active');
+    }
+    if(comment.dislikes.includes(user_id)) {
+      $('.dislike__action').eq(i).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+      $('.dislike__action').eq(i).addClass('reaction__comment__active');
+    }
+  }
   htmlSubComment = '';
   comment.subcomments.forEach((item, indiceY) => {
     if(indiceY <= 7) {
       let calcTime = timeago.format(item.timestamp, 'es');
-      htmlSubComment += `
+      $('.subcomment__original').eq(i).append( `
       <div class="content__subcomments__card" data-id-subcomment="${item.subId}">
       <div class="subcomment__content__user">
       <div class="img__user__subcomment">
@@ -495,10 +584,10 @@ $(document).ready(function() {
         Responder
       </div>
     </div>
-      </div>`;
+      </div>`);
     } else {
       let calcTime = timeago.format(item.timestamp, 'es');
-      htmlSubComment += `
+      $('.subcomment__original').eq(i).append(`
       <div class="content__subcomments__card d-none" data-id-subcomment="${item.subId}">
       <div class="subcomment__content__user">
       <div class="img__user__subcomment">
@@ -528,10 +617,20 @@ $(document).ready(function() {
         Responder
       </div>
     </div>
-      </div>`;
+      </div>`);
+    }
+    if(user_id) {
+      if(item.likes.includes(user_id)) {
+        $('.comment__total__user').eq(i).find('.like__action__sub').eq(indiceY).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+        $('.comment__total__user').eq(i).find('.like__action__sub').eq(indiceY).addClass('reaction__comment__active');
+      }
+      if(item.dislikes.includes(user_id)) {
+        $('.comment__total__user').eq(i).find('.dislike__action__sub').eq(indiceY).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+        $('.comment__total__user').eq(i).find('.dislike__action__sub').eq(indiceY).addClass('reaction__comment__active');
+      }
     }
 });
-  $('.subcomment__original').eq(i).html(htmlSubComment);
+  // $('.subcomment__original').eq(i).html(htmlSubComment);
   if(comment.subcomments.length > 8) {
     $('.subcomment__original').eq(i).append(`<div class="not__found__subcomments">Ver más respuestas</div>`);
   }
@@ -550,8 +649,9 @@ $(document).ready(function() {
     $('.more__comments').html(`<div class="la-ball-clip-rotate la-light la-sm">
     <div></div>
   </div>`);
-  let numAdici = $('.comment__total__user').length;
+    let numAdici = $('.comment__total__user').length;
     let id = _id_video;
+    let user_id = $('#btnModalLogin').attr('data-user-id');
     let page = $(this).attr('data-next-page');
     let getcomments = await fetch(`/getComments/${id}?page=${parseInt(page) + 1}`);
     let comments = await getcomments.json();
@@ -610,11 +710,21 @@ $(document).ready(function() {
         </div>
       </div>
     </div>`);
+    if(user_id) {
+      if(comment.likes.includes(user_id)) {
+        $('.like__action').eq(i + numAdici).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+        $('.like__action').eq(i + numAdici).addClass('reaction__comment__active');
+      }
+      if(comment.dislikes.includes(user_id)) {
+        $('.dislike__action').eq(i + numAdici).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+        $('.dislike__action').eq(i + numAdici).addClass('reaction__comment__active');
+      }
+    }
     htmlSubComment = '';
     comment.subcomments.forEach((item, indiceY) => {
       if(indiceY <= 7) {
         let calcTime = timeago.format(item.timestamp, 'es');
-        htmlSubComment += `
+        $('.subcomment__original').eq(i + numAdici).append(`
         <div class="content__subcomments__card" data-id-subcomment="${item.subId}">
         <div class="subcomment__content__user">
         <div class="img__user__subcomment">
@@ -644,10 +754,10 @@ $(document).ready(function() {
           Responder
         </div>
       </div>
-        </div>`;
+        </div>`);
       } else {
         let calcTime = timeago.format(item.timestamp, 'es');
-        htmlSubComment += `
+        $('.subcomment__original').eq(i + numAdici).append(`
         <div class="content__subcomments__card d-none" data-id-subcomment="${item.subId}">
         <div class="subcomment__content__user">
         <div class="img__user__subcomment">
@@ -677,13 +787,22 @@ $(document).ready(function() {
           Responder
         </div>
       </div>
-        </div>`;
+        </div>`);
       }
-   
+      if(user_id) {
+        if(item.likes.includes(user_id)) {
+          $('.comment__total__user').eq(i + numAdici).find('.like__action__sub').eq(indiceY).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+          $('.comment__total__user').eq(i + numAdici).find('.like__action__sub').eq(indiceY).addClass('reaction__comment__active');
+        }
+        if(item.dislikes.includes(user_id)) {
+          $('.comment__total__user').eq(i + numAdici).find('.dislike__action__sub').eq(indiceY).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+          $('.comment__total__user').eq(i + numAdici).find('.dislike__action__sub').eq(indiceY).addClass('reaction__comment__active');
+        }
+      }
   });
     
 
-    $('.subcomment__original').eq(i + numAdici).html(htmlSubComment);
+    // $('.subcomment__original').eq(i + numAdici).html(htmlSubComment);
     if(comment.subcomments.length > 8) {
       $('.subcomment__original').eq(i + numAdici).append(`<div class="not__found__subcomments">Ver más respuestas</div>`);
     }
@@ -704,8 +823,19 @@ $(document).ready(function() {
   async function getLikesVideo() {
     let response = await fetch(`/getLikesVideo/${_id_video}`);
     let res = await response.json();
-    $('.number__likes__video').text(res.likes);
-    $('.number__dislikes__video').text(res.dislikes);
+    let user_id = $('#btnModalLogin').attr('data-user-id');
+    $('.number__likes__video').text(res.likes.length);
+    $('.number__dislikes__video').text(res.dislikes.length);
+    if(res.likes.includes(user_id)) {
+      $('.like__video').find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+      $('.dislike__video').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $('.like__video').addClass('reaction__active__video');
+    } 
+    if(res.dislikes.includes(user_id)) {
+      $('.dislike__video').find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+      $('.like__video').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $('.dislike__video').addClass('reaction__active__video');
+    }
   }
 
   if($('.stream__video')[0]) {
@@ -722,7 +852,7 @@ $(document).ready(function() {
   });
 
   socket.on('getsubLikes', (data) => {
-    console.log(data.dislikes);
+    // console.log(data.dislikes);
     $(`[data-id-subcomment=${data.idSubComment}]`).find('.number__likes__subcomment').text(data.likes);
     $(`[data-id-subcomment=${data.idSubComment}]`).find('.number__dislikes__subcomment').text(data.dislikes);
   });
@@ -736,6 +866,8 @@ $(document).ready(function() {
       $('#modalLogin').attr('style', 'display:flex;');
       return;
     }
+    $(this).css('pointer-events', 'none');
+    $(this).parent().find('.dislike__action').css('pointer-events', 'none');
     let response = await fetch(`/likeSubComment/${idComment}?subId=${idSubComment}&user_id=${idUser}`);
     let res = await response.json();
     if(res.likes) {
@@ -745,8 +877,19 @@ $(document).ready(function() {
         likes: res.likes.length,
         dislikes: res.dislikes.length
       });
+      if(res.focusLike) {
+        $(this).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+        $(this).parent().find('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+        $(this).parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+        $(this).addClass('reaction__comment__active');
+      } else {
+        $(this).find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+        $(this).removeClass('reaction__comment__active');
+      }
       panelThis.find('.number__likes__subcomment').text(res.likes.length);
       panelThis.find('.number__dislikes__subcomment').text(res.dislikes.length);
+      $(this).css('pointer-events', 'auto');
+      $(this).parent().find('.dislike__action').css('pointer-events', 'auto');
     } else {
       console.log('error');
     }
@@ -761,6 +904,8 @@ $(document).ready(function() {
       $('#modalLogin').attr('style', 'display:flex;');
       return;
     }
+    $(this).css('pointer-events', 'none');
+    $(this).parent().find('.like__action').css('pointer-events', 'none');
     let response = await fetch(`/dislikeSubComment/${idComment}?subId=${idSubComment}&user_id=${idUser}`);
     let res = await response.json();
     if(res.likes) {
@@ -770,8 +915,19 @@ $(document).ready(function() {
         likes: res.likes.length,
         dislikes: res.dislikes.length
       });
+      if(res.focusDislike) {
+        $(this).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+        $(this).parent().find('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+        $(this).parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+        $(this).addClass('reaction__comment__active');
+      } else {
+        $(this).find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+        $(this).removeClass('reaction__comment__active');
+      }
       panelThis.find('.number__likes__subcomment').text(res.likes.length);
       panelThis.find('.number__dislikes__subcomment').text(res.dislikes.length);
+      $(this).css('pointer-events', 'auto');
+      $(this).parent().find('.like__action').css('pointer-events', 'auto');
     } else {
       console.log('error');
     }
@@ -784,6 +940,8 @@ $(document).ready(function() {
       $('#modalLogin').attr('style', 'display:flex;');
       return;
     }
+    $(this).css('pointer-events', 'none');
+    $(this).parent().find('.dislike__action').css('pointer-events', 'none');
     let response = await fetch(`/likeComment/${idComment}?user_id=${idUser}`);
     let res = await response.json();
     if(res.likes) {
@@ -792,8 +950,19 @@ $(document).ready(function() {
         likes: res.likes.length,
         dislikes: res.dislikes.length
       });
+      if(res.focusLike) {
+        $(this).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+        $(this).parent().find('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+        $(this).parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+        $(this).addClass('reaction__comment__active');
+      } else {
+        $(this).find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+        $(this).removeClass('reaction__comment__active');
+      }
       $(this).parent().find('.number__likes__comment').text(res.likes.length);
       $(this).parent().find('.number__dislikes__comment').text(res.dislikes.length);
+      $(this).css('pointer-events', 'auto');
+      $(this).parent().find('.dislike__action').css('pointer-events', 'auto');
     } else {
       console.log('error');
     }
@@ -806,6 +975,8 @@ $(document).ready(function() {
       $('#modalLogin').attr('style', 'display:flex;');
       return;
     }
+    $(this).css('pointer-events', 'none');
+    $(this).parent().find('.like__action').css('pointer-events', 'none');
     let response = await fetch(`/dislikeComment/${idComment}?user_id=${idUser}`);
     let res = await response.json();
     if(res.dislikes) {
@@ -814,8 +985,19 @@ $(document).ready(function() {
         likes: res.likes.length,
         dislikes: res.dislikes.length
       });
+      if(res.focusDislike) {
+        $(this).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+        $(this).parent().find('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+        $(this).parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+        $(this).addClass('reaction__comment__active');
+      } else {
+        $(this).find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+        $(this).removeClass('reaction__comment__active');
+      }
       $(this).parent().find('.number__dislikes__comment').text(res.dislikes.length);
       $(this).parent().find('.number__likes__comment').text(res.likes.length);
+      $(this).css('pointer-events', 'auto');
+      $(this).parent().find('.like__action').css('pointer-events', 'auto');
     } else {
       console.log('error');
     }
@@ -826,6 +1008,8 @@ $(document).ready(function() {
       $('#modalLogin').attr('style', 'display:flex;');
       return;
     }
+    $(this).css('pointer-events', 'none');
+    $('.dislike__video').css('pointer-events', 'none');
     let video_id = _id_video;
     let user_id = $('#btnModalLogin').attr('data-user-id');
     let response = await fetch(`/likeVideo/${video_id}?user_id=${user_id}`);
@@ -835,8 +1019,19 @@ $(document).ready(function() {
         likes: res.likes.length,
         dislikes: res.dislikes.length
       });
+      if(res.focusLike) {
+        $(this).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+        $('.dislike__video').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+        $('.reaction__active__video').removeClass('reaction__active__video');
+        $(this).addClass('reaction__active__video');
+      } else {
+        $(this).find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+        $(this).removeClass('reaction__active__video');
+      }
       $(this).parent().find('.number__likes__video').text(res.likes.length);
       $(this).parent().find('.number__dislikes__video').text(res.dislikes.length);
+      $(this).css('pointer-events', 'auto');
+      $('.dislike__video').css('pointer-events', 'auto');
     } else {
       console.log('error');
     }
@@ -847,6 +1042,8 @@ $(document).ready(function() {
       $('#modalLogin').attr('style', 'display:flex;');
       return;
     }
+    $(this).css('pointer-events', 'none');
+    $('.like__video').css('pointer-events', 'none');
     let video_id = _id_video;
     let user_id = $('#btnModalLogin').attr('data-user-id');
     let response = await fetch(`/dislikeVideo/${video_id}?user_id=${user_id}`);
@@ -856,8 +1053,19 @@ $(document).ready(function() {
         likes: res.likes.length,
         dislikes: res.dislikes.length
       });
+      if(res.focusDislike) {
+        $(this).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+        $('.like__video').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+        $('.reaction__active__video').removeClass('reaction__active__video');
+        $(this).addClass('reaction__active__video');
+      } else {
+        $(this).find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+        $(this).removeClass('reaction__active__video');
+      }
       $(this).parent().find('.number__likes__video').text(res.likes.length);
       $(this).parent().find('.number__dislikes__video').text(res.dislikes.length);
+      $(this).css('pointer-events', 'auto');
+      $('.like__video').css('pointer-events', 'auto');
     } else {
       console.log('error');
     }
@@ -1116,6 +1324,7 @@ $(document).ready(function() {
     }
   }
   $('.option__available').on('click', function(e) {
+    $('.block__loading__stream').addClass('show');
     $('.preloading__stream').removeClass('d-none');
     $('#stream__media').attr('src', this.dataset.targetVideo);
     
@@ -1134,8 +1343,12 @@ $(document).ready(function() {
     window.open(this.href, '_blank')
   });
 
+  $('.preloading__stream').addClass('d-none');
+  $('.block__loading__stream').removeClass('show');
+
   $('#stream__media').on('load', function() {
     $('.preloading__stream').addClass('d-none');
+    $('.block__loading__stream').removeClass('show');
     if($(this).attr('src').includes('pelisplushd.me')) {
       $('.play__stream__plusto').removeClass('d-none');
     } else {

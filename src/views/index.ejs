@@ -102,12 +102,18 @@
         "max reconnection attempts": 10,
       });
     </script>
+    <% if(user) { %>
+      <script>
+        socket.emit("getUser", '<%= user.id %>');
+      </script>
+    <% } %>
     <div class="block__container__sidebar d-none"></div>
     <%- include ('partials/navbar') %> <%- include ('partials/sidebar') %>
     <div class="success__alert__login">
       <i class="fas fa-check"></i>
       <span class="msg__success__login">Bienvenido, has iniciado sesión.</span>
     </div>
+  
     <div id="modalWatchList" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
@@ -366,7 +372,7 @@
     </div>
     <% } %>
     <div class="content__info__element">
-      <div class="msg__info__element">Barrenderos</div>
+      <div class="msg__info__element"></div>
     </div>
     <div id="snackbar">Error!, Debes de iniciar sesión para comentar</div>
     <% if(!videoStream) { %> <%- include ('partials/container_home') %> <% }
@@ -445,6 +451,7 @@
             <div></div>
           </div>
         </div>
+        <div class="block__loading__stream show"></div>
         <% let plusToSelect = video.embedUrls.find((v) =>
         v.includes('pelisplushd.me')); %>
         <div class="play__stream__plusto d-none">
@@ -756,6 +763,7 @@
         socket.emit("getId", _id_video);
       });
     </script>
+    
     <!-- The Modal -->
     <div id="modalTrailer" class="modal">
       <!-- Modal content -->

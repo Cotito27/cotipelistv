@@ -68,7 +68,16 @@ ctrl.save = async (req, res) => {
 }
 
 ctrl.delete = async (req, res) => {
-
+  let { video_id, user_id } = req.body;
+  let videoDelete = await WatchList.findOneAndDelete({ video_id, user_id }).catch((err) => {
+    res.json({
+      success: false
+    })
+  });
+  // console.log(videoDelete);
+  res.json({
+    success: true
+  });
 }
 
 ctrl.verifyVideo = async (req, res) => {

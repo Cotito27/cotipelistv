@@ -63,6 +63,12 @@ ctrl.streamVideo = async (req, res) => {
         title: 'CotiPelisTV'
       });
     });
+    if(video == null) {
+      res.render('404', {
+        title: 'CotiPelisTV'
+      });
+      return;
+    }
     let extraTitles = await Pelicula.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
@@ -90,6 +96,12 @@ ctrl.streamVideo = async (req, res) => {
       title: 'CotiPelisTV'
     });
   });
+  if(video == null) {
+    res.render('404', {
+      title: 'CotiPelisTV'
+    });
+    return;
+  }
   let extraTitles = await Pelicula.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;

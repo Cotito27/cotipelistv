@@ -5,8 +5,8 @@ ctrl.index = async (req, res) => {
   let _id = req.params.id;
   const reaction = await Reaction.findOne({ video_id: _id });
   res.json({
-    likes: reaction.likes.length,
-    dislikes: reaction.dislikes.length
+    likes: reaction.likes,
+    dislikes: reaction.dislikes
   })
 }
 
@@ -34,7 +34,7 @@ ctrl.like = async (req, res) => {
     //   user_id
     // };
     await reaction.save();
-    res.json({likes: reaction.likes, dislikes: reaction.dislikes})
+    res.json({likes: reaction.likes, dislikes: reaction.dislikes, focusLike: !verifyRepeatLikes, focusDislike: !verifyRepeatDislikes})
   } else {
     let newReaction = new Reaction({
       video_id: _id,
@@ -43,7 +43,7 @@ ctrl.like = async (req, res) => {
       dislikes: []
     });
     let dataNew = await newReaction.save();
-    res.json({likes: dataNew.likes, dislikes: dataNew.dislikes});
+    res.json({likes: dataNew.likes, dislikes: dataNew.dislikes, focusLike: true, focusDislike: false});
     // res.status(500).json({error: 'Internal Error'});
   }
 }
@@ -68,7 +68,7 @@ ctrl.dislike = async (req, res) => {
       reaction.dislikes.push(user_id);
     }
     await reaction.save();
-    res.json({likes: reaction.likes, dislikes: reaction.dislikes})
+    res.json({likes: reaction.likes, dislikes: reaction.dislikes, focusLike: !verifyRepeatLikes, focusDislike: !verifyRepeatDislikes})
   } else {
     let newReaction = new Reaction({
       video_id: _id,
@@ -77,7 +77,7 @@ ctrl.dislike = async (req, res) => {
       dislikes: [user_id]
     });
     let dataNew = await newReaction.save();
-    res.json({likes: dataNew.likes, dislikes: dataNew.dislikes});
+    res.json({likes: dataNew.likes, dislikes: dataNew.dislikes, focusLike: false, focusDislike: true});
     // res.status(500).json({error: 'Internal Error'});
   }
 }
