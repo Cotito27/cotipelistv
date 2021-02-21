@@ -32,7 +32,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(morgan('dev'));
-app.use(cors({origin: '*'}));
+let corsOptions = {
+  origin: 'https://cotipelistv.herokuapp.com/',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions));
 app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
