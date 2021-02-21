@@ -78,6 +78,7 @@ router.post('/deleteWatchList/', watchlistController.delete);
 router.get('/logout', loginController.logout);
 
 router.get('/watch/:id', videoExtendController.index);
+router.get('/videoExtend/:id', videoExtendController.getUrl);
 
 router.get(
   "/google",

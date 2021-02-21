@@ -1366,7 +1366,6 @@ $(document).ready(function() {
       // $('.play__stream__plusto').addClass('d-none');
     }
   });
-
   $('#stream__media').on('click', function() {
   
   });
