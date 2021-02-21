@@ -23,13 +23,13 @@ ctrl.error = (req, res) => {
 }
 
 ctrl.successRedirect = (req, res) => {
-  let antPath = req.session.redirectTo;
+  let antPath = req.session.redirectTo || '/';
   res.redirect(antPath);
   delete req.session.redirectTo;
 }
 
 ctrl.errorRedirect = (req, res) => {
-  let antPath = req.session.redirectTo;
+  let antPath = req.session.redirectTo || '/';
   console.log(antPath);
   res.redirect(antPath);
   delete req.session.redirectTo;

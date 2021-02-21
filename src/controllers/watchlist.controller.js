@@ -6,6 +6,7 @@ ctrl.index = async (req, res) => {
   let perPage = 24;
   let page = req.params.page || 1;
   WatchList.find({ user_id: req.user.id })
+  .sort({_id: -1})
   .skip((perPage * page) - perPage)
   .limit(perPage).exec((err, watchs) => {
     WatchList.countDocuments({ user_id: req.user.id },(err, count) => {
@@ -36,6 +37,7 @@ ctrl.findMyList = async (req, res) => {
   let perPage = 24;
   let page = req.params.page || 1;
   WatchList.find({ user_id: req.user.id })
+  .sort({_id: -1})
   .skip((perPage * page) - perPage)
   .limit(perPage).exec((err, watchs) => {
     WatchList.countDocuments({ user_id: req.user.id },(err, count) => {

@@ -119,7 +119,7 @@ $(document).ready(function() {
   }
 
   if(location.href.includes('/my-list')) {
-    $('.carousel__elemento').on('mouseenter', function() {
+    $('body').on('mouseenter', '.carousel__elemento', function() {
       $('[data-tippy-root]').remove();
       $(this).append(`<div class="block__delete__list">
       <div class="delete__content">
@@ -130,7 +130,7 @@ $(document).ready(function() {
       </div>
     </div>`);
     });
-    $('.carousel__elemento').on('mouseleave', function() {
+    $('body').on('mouseleave', '.carousel__elemento', function() {
       $('[data-tippy-root]').remove();
       $(this).find('.block__delete__list').remove();
     });
@@ -1687,9 +1687,23 @@ $(document).ready(function() {
        $('#btnModalLogin').removeClass('started__login');
        $('.my__foto__comment').attr('src', '/img/user_change.PNG');
        $('.my__foto__subcomment').attr('src', '/img/user_change.PNG');
+       $('.indicator__response__user').removeClass('d-flex-show');
        $('.my__subcomment__content').removeClass('d-flex-show');
        $('.save__lista__video').removeClass('lista__added');
        $('.save__lista__video').html(`Agregar a mi lista`);
+       $('.like__video').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+       $('.like__video').removeClass('reaction__active__video');
+       $('.dislike__video').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+       $('.dislike__video').removeClass('reaction__active__video');
+       $('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+       $('.like__action').removeClass('reaction__comment__active');
+       $('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+       $('.dislike__action').removeClass('reaction__comment__active');
+       $('.like__action__sub').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+       $('.like__action__sub').removeClass('reaction__comment__active');
+       $('.dislike__action__sub').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+       $('.dislike__action__sub').removeClass('reaction__comment__active');
+       $('.active__reply').removeClass('active__reply');
        if(location.href.includes('/my-list')) {
          location.href = '/';
        }
@@ -1991,7 +2005,7 @@ $(document).ready(function() {
               let res = await response.json();
               let newHTML = '';
               res.watchs.forEach((v) => {
-                if(v.type == 'Pelicula') {
+                if(!v.seasons) {
                   newHTML += `<a href="/${'pelicula'}/${v.video_id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__peli">Película</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
