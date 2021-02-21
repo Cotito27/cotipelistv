@@ -2191,6 +2191,19 @@ body {
   visibility: visible !important;
 }
 
+/* VIDEO PLAYER CUSTOM CSS */
+.video-js .vjs-big-play-button {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+.video-js {
+  height: 400px;
+  width: 100%;
+}
+
 @keyframes fadein {
   from {
     opacity: 0;

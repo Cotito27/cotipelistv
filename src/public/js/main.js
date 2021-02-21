@@ -1329,9 +1329,9 @@ $(document).ready(function() {
   });
   if($('#stream__media')[0]) {
     if($('#stream__media').attr('src').includes('pelisplushd.me')) {
-      $('.play__stream__plusto').removeClass('d-none');
+      // $('.play__stream__plusto').removeClass('d-none');
     } else {
-      $('.play__stream__plusto').addClass('d-none');
+      // $('.play__stream__plusto').addClass('d-none');
     }
   }
   $('.option__available').on('click', function(e) {
@@ -1361,9 +1361,9 @@ $(document).ready(function() {
     $('.preloading__stream').addClass('d-none');
     $('.block__loading__stream').removeClass('show');
     if($(this).attr('src').includes('pelisplushd.me')) {
-      $('.play__stream__plusto').removeClass('d-none');
+      // $('.play__stream__plusto').removeClass('d-none');
     } else {
-      $('.play__stream__plusto').addClass('d-none');
+      // $('.play__stream__plusto').addClass('d-none');
     }
   });
 
@@ -1830,6 +1830,7 @@ $(document).ready(function() {
   }); 
   
 
+  
   $('.movie__trailer').on('click', async function() {
     if(!this.dataset.trailerId) {
       let searchQueryTrailer = this.dataset.targetSearch;

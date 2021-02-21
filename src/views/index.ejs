@@ -61,6 +61,7 @@
     />
     <script src="/libs/pace/pace.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    
   </head>
   <body><script>
     let urlShare = document.querySelector('#urlShare').setAttribute('content', location.href);
@@ -462,7 +463,9 @@
         <div class="tab options__stream">
           <% video.embedUrls.forEach((item, i) => { %> <% let nameItem = ''; %>
           <% if(item.includes('streamsb.net')) { %> <% nameItem = 'SBFast'; %>
-          <% } %> <% if(item.includes('pelisplushd.me')) { %> <% nameItem =
+          <% } %> <% if(item.includes('pelisplushd.me')) { %> 
+            <% item = `/watch/${item.split('/').pop()}?image=${video.imageExtra}` %>
+            <% nameItem =
           'PlusTo'; %> <% } %> <% if(item.includes('dood.to')) { %> <% nameItem
           = 'DoodStream'; %> <% } %> <% if(item.includes('videos.sh')) { %> <%
           nameItem = 'VideoS'; %> <% } %> <%
@@ -485,7 +488,18 @@
           </button>
           <% } %> <% }) %>
         </div>
-        <iframe
+        <% if(video.embedUrls[0].includes('pelisplushd.me')) { %>
+          <iframe
+          id="stream__media"
+          src="<%= `/watch/${video.embedUrls[0].split('/').pop()}?image=${video.imageExtra}` %>"
+          frameborder="0"
+          width="100%"
+          height="400px"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+        <% } else { %>
+          <iframe
           id="stream__media"
           src="<%= video.embedUrls[0] %>"
           frameborder="0"
@@ -494,6 +508,9 @@
           allow="autoplay; encrypted-media"
           allowfullscreen
         ></iframe>
+        <% } %>
+        
+        
       </div>
       <div class="card__reactions__video">
         <div class="title__indicator__reactions">Reacciones sobre el video</div>
@@ -800,6 +817,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.full.min.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
+    
+
     <!-- BLAZY IMAGENES -->
     <!-- <script
       src="https://cdnjs.cloudflare.com/ajax/libs/blazy/1.8.2/blazy.min.js"

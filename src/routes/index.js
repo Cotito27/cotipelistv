@@ -11,6 +11,7 @@ const loginController = require('../controllers/login.controller');
 const commentController = require('../controllers/comment.controller');
 const watchlistController = require('../controllers/watchlist.controller');
 const reactionController = require('../controllers/reaction.controller');
+const videoExtendController = require('../controllers/videoextend.controller');
 
 function validarUser(req, res, next) {
   // console.log(req.session);
@@ -75,6 +76,8 @@ router.get('/dislikeVideo/:id', reactionController.dislike);
 router.get('/getLikesVideo/:id', reactionController.index);
 router.post('/deleteWatchList/', watchlistController.delete);
 router.get('/logout', loginController.logout);
+
+router.get('/watch/:id', videoExtendController.index);
 
 router.get(
   "/google",
