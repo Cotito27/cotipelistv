@@ -178,6 +178,7 @@ $(document).ready(function() {
   });
 
   if(isMobile()) {
+    let elementListSelected;
     $('body').on('contextmenu', '.carousel__elemento', function(e) {
       return false;
     });
@@ -189,6 +190,7 @@ $(document).ready(function() {
       clearTimeout(intervalAlert);
     }
     $('body').on('touchstart', '.carousel__elemento', function(e) {
+      // elementListSelected = $(this).attr('data-video-id');
       $('.carousel__active__element').removeClass('carousel__active__element');
       $(this).addClass('carousel__active__element');
       deleteInterval();
@@ -284,6 +286,7 @@ $(document).ready(function() {
   
   
   socket.on("getComment", function (data) {
+    // updateTimeComments();
     if($('.not__found__comments')[0]) {
       // $('.section__comments').html(``);
       $('.not__found__comments').remove();
@@ -302,7 +305,7 @@ $(document).ready(function() {
             <div class="info__user__comment">
               <div class="nom__user">${data.name}</div>
               <div class="separating__info__date">•</div>
-              <div class="date__comment">${calcTime}</div>
+              <div class="date__comment" data-time-stamp="${data.timestamp}">${calcTime}</div>
             </div>
             <div class="comment__text">
               <div class="content__comment__user comment__text__user">${data.comment}</div>
@@ -345,14 +348,21 @@ $(document).ready(function() {
     </div>
   </div>`);
   
-  // setInterval(function() {
-  //   let datePrev = $('.date__comment').attr('data-time-stamp');
-  //   let calcTime = timeago.format(datePrev, 'es');
-  //   $('.date__comment').text(calcTime);
-  //   console.log('Actualized');
-  // }, 10000);
+ 
   });
 
+  function updateTimeComments() {
+    $('.date__comment,.date__subcomment').each(function() {
+      let datePrev = $(this).attr('data-time-stamp');
+      let calcTime = timeago.format(datePrev, 'es');
+      $(this).text(calcTime);
+    });
+    
+  }
+  setInterval(function() {
+    updateTimeComments();
+    // console.log('Actualized');
+  }, 60000);
   function verificarListWatch() {
 
   }
@@ -366,7 +376,7 @@ $(document).ready(function() {
     $(this).html(`<div class="la-ball-clip-rotate la-light la-sm">
     <div></div>
   </div>`);
-  console.log($(this).html());
+  // console.log($(this).html());
     // $('#modalWatchList').attr('style', 'display:flex;');
     if($(this).hasClass('lista__added')) {
 
@@ -498,7 +508,7 @@ $(document).ready(function() {
           <div class="info__user__comment">
             <div class="nom__user">${comment.name}</div>
             <div class="separating__info__date">•</div>
-            <div class="date__comment">${calcTime}</div>
+            <div class="date__comment" data-time-stamp="${comment.timestamp}">${calcTime}</div>
           </div>
           <div class="comment__text">
             <div class="content__comment__user comment__text__user">${comment.comment}</div>
@@ -564,7 +574,7 @@ $(document).ready(function() {
         <div class="info__user__subcomment">
           <div class="nom__user">${item.name}</div>
           <div class="separating__info__date">•</div>
-          <div class="date__subcomment">${calcTime}</div>
+          <div class="date__subcomment" data-time-stamp="${item.timestamp}">${calcTime}</div>
         </div>
         <div class="subcomment__text">
           <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
@@ -597,7 +607,7 @@ $(document).ready(function() {
         <div class="info__user__subcomment">
           <div class="nom__user">${item.name}</div>
           <div class="separating__info__date">•</div>
-          <div class="date__subcomment">${calcTime}</div>
+          <div class="date__subcomment" data-time-stamp="${item.timestamp}">${calcTime}</div>
         </div>
         <div class="subcomment__text">
           <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
@@ -668,7 +678,7 @@ $(document).ready(function() {
             <div class="info__user__comment">
               <div class="nom__user">${comment.name}</div>
               <div class="separating__info__date">•</div>
-              <div class="date__comment">${calcTime}</div>
+              <div class="date__comment" data-time-stamp="${comment.timestamp}">${calcTime}</div>
             </div>
             <div class="comment__text">
               <div class="content__comment__user comment__text__user">${comment.comment}</div>
@@ -734,7 +744,7 @@ $(document).ready(function() {
           <div class="info__user__subcomment">
             <div class="nom__user">${item.name}</div>
             <div class="separating__info__date">•</div>
-            <div class="date__subcomment">${calcTime}</div>
+            <div class="date__subcomment" data-time-stamp="${item.timestamp}">${calcTime}</div>
           </div>
           <div class="subcomment__text">
             <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
@@ -767,7 +777,7 @@ $(document).ready(function() {
           <div class="info__user__subcomment">
             <div class="nom__user">${item.name}</div>
             <div class="separating__info__date">•</div>
-            <div class="date__subcomment">${calcTime}</div>
+            <div class="date__subcomment" data-time-stamp="${item.timestamp}">${calcTime}</div>
           </div>
           <div class="subcomment__text">
             <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
@@ -1104,6 +1114,7 @@ $(document).ready(function() {
   });
 
   socket.on('getSubComments', (item) => {
+    // updateTimeComments();
     let calcTime = timeago.format(item.timestamp, 'es');
     $(`[data-id-comment=${item.id}]`).find('.subcomment__original').append(`
     <div class="content__subcomments__card" data-id-subcomment="${item.subId}">
@@ -1115,7 +1126,7 @@ $(document).ready(function() {
       <div class="info__user__subcomment">
         <div class="nom__user">${item.name}</div>
         <div class="separating__info__date">•</div>
-        <div class="date__subcomment">${calcTime}</div>
+        <div class="date__subcomment" data-time-stamp="${item.timestamp}">${calcTime}</div>
       </div>
       <div class="subcomment__text">
         <div class="content__subcomment__user comment__text__user"><a class="destino__comment">${item.destino}</a> ${item.comment}</div>
@@ -1396,7 +1407,7 @@ $(document).ready(function() {
       $('.container').replaceWith(newHTML);
       let htmlVideos = '';
       res.movies.forEach((item) => {
-        if(!item.seasons) {
+        if(item.type == 'Pelicula') {
           htmlVideos += `<a href="/pelicula/${item._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${item.title} (${item.year})">
           <div class="type__video__indicator__peli">Película</div>
           <img class="image-loaded" src="${item.image}" alt="">
@@ -1447,7 +1458,7 @@ $(document).ready(function() {
               let res = await response.json();
               let newHTML = '';
               res.movies.forEach((v) => {
-                if(!v.seasons) {
+                if(v.type == 'Pelicula') {
                   newHTML += `<a href="/${'pelicula'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__peli">Película</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
@@ -1513,7 +1524,7 @@ $(document).ready(function() {
       $('.container').replaceWith(newHTML);
       let htmlVideos = '';
       res.movies.forEach((item) => {
-        if(!item.seasons) {
+        if(item.type == 'Pelicula') {
           htmlVideos += `<a href="/pelicula/${item._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${item.title} (${item.year})">
           <div class="type__video__indicator__peli">Película</div>
           <img class="image-loaded" src="${item.image}" alt="">
@@ -1564,7 +1575,7 @@ $(document).ready(function() {
               let res = await response.json();
               let newHTML = '';
               res.movies.forEach((v) => {
-                if(!v.seasons) {
+                if(v.type == 'Pelicula') {
                   newHTML += `<a href="/${'pelicula'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__peli">Película</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
@@ -1823,6 +1834,9 @@ $(document).ready(function() {
     // console.log(res);
   });
   $('#player__trailer').on('load',function() {
+    if($('#modalTrailer').is(':hidden')) {
+      $(this).removeAttr('src');
+    }
     $('.preloading__stream__trailer').addClass('d-none');
   });
   if(numberPages) {
@@ -1864,7 +1878,7 @@ $(document).ready(function() {
                 let res = await response.json();
                 let newHTML = '';
                 res.forEach((v) => {
-                  if(!v.seasons) {
+                  if(v.type == 'Pelicula') {
                     newHTML += `<a href="/${'pelicula'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                     <div class="type__video__indicator__peli">Película</div>
                     <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
@@ -1922,7 +1936,7 @@ $(document).ready(function() {
                 let res = await response.json();
                 let newHTML = '';
                 res.movies.forEach((v) => {
-                  if(!v.seasons) {
+                  if(v.type == 'Pelicula') {
                     newHTML += `<a href="/${'pelicula'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                     <div class="type__video__indicator__peli">Película</div>
                     <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
@@ -1977,7 +1991,7 @@ $(document).ready(function() {
               let res = await response.json();
               let newHTML = '';
               res.watchs.forEach((v) => {
-                if(!v.seasons) {
+                if(v.type == 'Pelicula') {
                   newHTML += `<a href="/${'pelicula'}/${v.video_id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__peli">Película</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
@@ -2112,7 +2126,7 @@ $(document).ready(function() {
               let res = await response.json();
               let newHTML = '';
               res.forEach((v) => {
-                if(!v.seasons) {
+                if(v.type == 'Pelicula') {
                   newHTML += `<a href="/${'pelicula'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__peli">Película</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">

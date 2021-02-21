@@ -1,18 +1,19 @@
 const ctrl = {};
 const Serie = require('../models/Serie.model');
 const WatchList = require('../models/WatchList.model');
+const Movie = require('../models/Movie.model');
 
 ctrl.index = (req, res) => {
   let user = req.user;
   let perPage = 24;
   let page = req.params.page || 1;
-  Serie
-    .find({})
-    .sort('-_id')
+  Movie
+    .find({type: 'Serie'})
+    .sort({type: 1, _id: -1})
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .exec((err, series) => {
-      Serie.countDocuments((err, count) => {
+      Movie.countDocuments({type: 'Serie'}, (err, count) => {
         if(err) return next(err);
         res.render('index', {
           title: 'CotiPelisTV',
@@ -30,24 +31,25 @@ ctrl.index = (req, res) => {
 }
 
 ctrl.find = async (req, res) => {
+  let perPage = 24;
+  let page = req.params.page || 1;
   let title = req.query.title;
   if(title) {
-    let peliculas = await Pelicula.find({title: {$regex: title}}).sort('-_id');
-    let series = await Serie.find({title: {$regex: title}}).sort('-_id');
-    let dataPrevideos = peliculas.concat(series);
-    let dataVideos = paginate(dataPrevideos, 24, 1);
+    let dataVideos = await Movie.find({title: {$regex: title}}).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
+    // let series = await Serie.find({title: {$regex: title}}).sort({type: 1, _id: -1});
+    // let dataPrevideos = peliculas.concat(series);
+    // let dataVideos = paginate(dataPrevideos, 24, 1);
     res.json(dataVideos);
     return;
   }
-  let perPage = 24;
-  let page = req.params.page || 1;
-  Serie
-    .find({})
-    .sort('-_id')
+
+  Movie
+    .find({ type: 'Serie' })
+    .sort({type: 1, _id: -1})
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .exec((err, series) => {
-      Serie.countDocuments((err, count) => {
+      Movie.countDocuments({type: 'Serie'}, (err, count) => {
         if(err) return next(err);
         res.send(series);
       })
@@ -58,12 +60,12 @@ ctrl.streamVideo = async (req, res) => {
   let user = req.user;
   if(!req.user) {
     let id = req.params.id;
-    let video = await Serie.findOne({_id: id}).catch((err) => {
+    let video = await Movie.findOne({_id: id, type: 'Serie'}).catch((err) => {
       res.render('404', {
         title: 'CotiPelisTV'
       });
     });
-    let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
+    let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
     // if(videoWatch) {
@@ -85,12 +87,18 @@ ctrl.streamVideo = async (req, res) => {
   }
   
   let id = req.params.id;
-  let video = await Serie.findOne({_id: id}).catch((err) => {
+  let video = await Movie.findOne({_id: id, type: 'Serie'}).catch((err) => {
     res.render('404', {
       title: 'CotiPelisTV'
     });
   });
-  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
+  if(video == null) {
+    res.render('404', {
+      title: 'CotiPelisTV'
+    });
+    return;
+  }
+  let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;
   if(videoWatch) {
@@ -116,8 +124,8 @@ ctrl.episodeStream = async (req, res) => {
     let id = req.params.id;
     let temporada = req.params.temporada;
     let capitulo = req.params.capitulo;
-    let video = await Serie.findOne({_id: id});
-    let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
+    let video = await Movie.findOne({_id: id, type: 'Serie'});
+    let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
     // if(videoWatch) {
@@ -152,8 +160,8 @@ ctrl.episodeStream = async (req, res) => {
   let id = req.params.id;
   let temporada = req.params.temporada;
   let capitulo = req.params.capitulo;
-  let video = await Serie.findOne({_id: id});
-  let extraTitles = await Serie.find({genres: video.genres}, {title: 1}).sort('-_id').limit(6);
+  let video = await Movie.findOne({_id: id, type: 'Serie'});
+  let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;
   if(videoWatch) {

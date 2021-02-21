@@ -162,7 +162,7 @@
           <% } %>
           <div class="content_img_videos peliculas__content">
             <% movies.forEach((peli) => { %>
-              <% if(!peli.seasons) { %>
+              <% if(peli.type == 'Pelicula') { %>
                 <a
                 href="/<%= 'pelicula' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
                 class="carousel__elemento wave tooltip_auto"
