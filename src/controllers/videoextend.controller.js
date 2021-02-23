@@ -1,27 +1,37 @@
 const ctrl = {};
 const fetch = require('node-fetch');
+const FormData = require('form-data');
 
 ctrl.index = async (req, res) => {
- let idVideo = req.params.id || 'e2xr0h-xe5y8wed';
+ let idVideo = req.params.id || '6zk7qs035-ykke-';
  let imageExtra = req.query.image;
+//  let form = new FormData();
+//  form.append('d', 'pelisplushd.me');
+//  form.append('r', '');
+ 
  let response = await fetch(`https://pelisplushd.me/api/source/${idVideo}`, {
   method: 'POST',
+  // headers: {
+  //   'accept': '*/*',
+  //   'accept-encoding': 'gzip, deflate, br',
+  //   'accept-language': 'es-ES,es;q=0.9,en;q=0.8',
+  //   'cache-control': 'max-age=0',
+  //   'cookie': '_ym_d=1613091004; _ym_uid=16130910041012178984; __cfduid=da51dec3244cac02dc5861dd86e7c0a2c1613097690; _ym_isad=1',
+  //   'referer': 'https://pelisplushd.me/',
+  //   'sec-fetch-dest': 'video',
+  //   'sec-fetch-mode': 'navigate',
+  //   'sec-fetch-site': 'same-origin',
+  //   'sec-fetch-user': '?1',
+  //   'upgrade-insecure-requests': '1',
+  //   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+  // },
   headers: {
-    'accept': '*/*',
-    'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'es-ES,es;q=0.9,en;q=0.8',
-    'cache-control': 'max-age=0',
-    'cookie': '_ym_d=1613091004; _ym_uid=16130910041012178984; __cfduid=da51dec3244cac02dc5861dd86e7c0a2c1613097690; _ym_isad=1',
-    'referer': 'http://localhost:3000/',
-    'sec-fetch-dest': 'video',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'same-origin',
-    'sec-fetch-user': '?1',
-    'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
-  }
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+  },
+  body: `r=&d=pelisplushd.me`
  });
  let value = await response.json();
+//  console.log(value);
 //  res.json(value);
 res.render('videoStream', {
   id: idVideo,

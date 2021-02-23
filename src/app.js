@@ -32,11 +32,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(morgan('dev'));
-let corsOptions = {
-  origin: 'https://localhost:3000/',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-app.use(cors(corsOptions));
+app.use(cors({origin: '*'}));
 app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.json());
 

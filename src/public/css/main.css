@@ -1314,7 +1314,10 @@ body {
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
-.nom__user {
+.info__user__subcomment .nom__user {
+}
+
+.info__user__comment .nom__user {
 }
 
 .comment__content,
@@ -1530,10 +1533,14 @@ body {
 
 .content__comment__user {
   color: var(--color-text-navbar);
+  word-break: break-all;
+  letter-spacing: 0.3px;
 }
 
 .content__subcomment__user {
   color: var(--color-text-navbar);
+  word-break: break-all;
+  letter-spacing: 0.3px;
 }
 
 .comment__total__user {
@@ -1724,9 +1731,9 @@ body {
 .block__loading__stream {
   width: calc(100% - 20px);
   height: 400px;
-  top: 70px;
+  top: 85px;
   background-color: var(--color-bg-navbar);
-  display: none;
+  display: none !important;
   z-index: 3;
   position: absolute;
 }
@@ -2370,6 +2377,17 @@ body {
     height: 35px;
   }
 }
+
+@media only screen and (max-width: 339px) {
+  .reply__action,
+  .like__action,
+  .dislike__action,
+  .like__action__sub,
+  .dislike__action__sub {
+    font-size: 14px !important;
+  }
+}
+
 /* 
 @media only screen and (max-width: 1413px) {
   .carousel__lista .carousel__elemento,

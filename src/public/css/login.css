@@ -155,7 +155,7 @@
   width: 100%;
 }
 .login .division .line {
-  border-top: 1px solid #dfdfdf;
+  border-top: 1px solid #393481;
   position: absolute;
   top: 10px;
   width: 34%;
@@ -232,16 +232,16 @@
 }
 .login .form-control {
   border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.09);
+  background-color: rgb(33, 53, 97);
   box-shadow: 0 1px 0px 0px rgba(0, 0, 0, 0.09) inset;
   color: #ffffff;
 }
 .login .form-control:hover {
-  background-color: rgba(0, 0, 0, 0.16);
+  background-color: rgb(33, 53, 97);
 }
 .login .form-control:focus {
-  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.04) inset;
-  background-color: rgba(0, 0, 0, 0.23);
+  box-shadow: 0 1px 0 0 rgb(33, 53, 97) inset;
+  background-color: rgb(33, 53, 97);
   color: #ffffff;
 }
 .login .box .form input[type="text"],

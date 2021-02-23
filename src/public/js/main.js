@@ -1329,15 +1329,37 @@ $(document).ready(function() {
   });
   if($('#stream__media')[0]) {
     if($('#stream__media').attr('src').includes('pelisplushd.me')) {
-      // $('.play__stream__plusto').removeClass('d-none');
+      $('.play__stream__plusto').removeClass('d-none');
     } else {
-      // $('.play__stream__plusto').addClass('d-none');
+      $('.play__stream__plusto').addClass('d-none');
     }
   }
+  let intervalLoaded;
+
   $('.option__available').on('click', function(e) {
+    clearTimeout(intervalLoaded);
     $('.block__loading__stream').addClass('show');
     $('.preloading__stream').removeClass('d-none');
-    $('#stream__media').attr('src', this.dataset.targetVideo);
+    $('#stream__media').remove();
+    $('.video__content').html(`<iframe
+      id="stream__media"
+      src="${this.dataset.targetVideo}"
+      frameborder="0"
+      width="100%"
+      height="400px"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+    ></iframe>`);
+    if(this.dataset.targetVideo.includes('pelisplushd.me')) {
+      $('.play__stream__plusto').removeClass('d-none');
+    } else {
+      $('.play__stream__plusto').addClass('d-none');
+    }
+    addDetectLoadMedia();
+    intervalLoaded = setTimeout(() => {
+      $('.preloading__stream').addClass('d-none');
+    }, 4000);
+    // $('#stream__media').attr('src', this.dataset.targetVideo);
     
   });
 
@@ -1357,17 +1379,17 @@ $(document).ready(function() {
   $('.preloading__stream').addClass('d-none');
   $('.block__loading__stream').removeClass('show');
 
-  $('#stream__media').on('load', function() {
+  function addDetectLoadMedia() {
+    $('#stream__media').on('load', function() {
+      $('.preloading__stream').addClass('d-none');
+    });
+  }
+
+  $('body').on('load', '#stream__media', function() {
     $('.preloading__stream').addClass('d-none');
-    $('.block__loading__stream').removeClass('show');
-    if($(this).attr('src').includes('pelisplushd.me')) {
-      // $('.play__stream__plusto').removeClass('d-none');
-    } else {
-      // $('.play__stream__plusto').addClass('d-none');
-    }
   });
+
   $('#stream__media').on('click', function() {
-  
   });
 
   $('.season__part').on('click', function() {
