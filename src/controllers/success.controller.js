@@ -1,5 +1,6 @@
 const ctrl = {};
 const WatchList = require('../models/WatchList.model');
+const getSocket = require('../sockets')[1];
 
 ctrl.index = async (req, res) => {
   // let antPath = req.session.redirectTo;
@@ -26,6 +27,7 @@ ctrl.successRedirect = (req, res) => {
   let antPath = req.session.redirectTo || '/';
   res.redirect(antPath);
   delete req.session.redirectTo;
+  getSocket().emit('loginMeRedirect');
 }
 
 ctrl.errorRedirect = (req, res) => {

@@ -90,6 +90,11 @@
         'reconnection delay': 500,
         'max reconnection attempts': 10
       });</script>
+      <% if(user) { %>
+        <script>
+          socket.emit("getUser", '<%= user.id %>');
+        </script>
+      <% } %>
     <div class="block__container__sidebar d-none">
 
     </div>
@@ -113,69 +118,138 @@
     <div id="modalLogin" class="modal">
       <!-- Modal content -->
       <div class="modal-content">
-        
-          <span class="close">&times;</span>
+        <span class="close">&times;</span>
         <div class="modal__header">
           <p class="title__login">Ingresa con:</p>
         </div>
         <div class="modal__body">
           <div class="social__options">
-            <div class="google__login">
+            <a href="/google" class="google__login">
               <i class="fa fa-google-plus fa-fw"></i>
-            </div>
-            <div class="fb__login">
+            </a>
+            <a href="/facebook" class="fb__login">
               <i class="fa fa-facebook fa-fw"></i>
-            </div>
+            </a>
           </div>
           <div class="division__or">
             <div class="line 1"></div>
-            <div class="or__login">
-              o
-            </div>
+            <div class="or__login">o</div>
             <div class="line r"></div>
           </div>
-          <form action="/verificarLogin" method="POST">
+          <form id="formLogin" action="/verificarLogin" method="POST">
             <div class="form__login animate__animated animate__fadeIn">
               <div class="content__email">
-                <input type="text" class="input__email__login" placeholder="Correo | Email" id="username" required>
+                <input
+                  type="email"
+                  class="input__email__login"
+                  placeholder="Correo | Email"
+                  name="username"
+                  id="username"
+                  required
+                />
               </div>
               <div class="content__pass">
-                <input type="text" class="input__pass__login" placeholder="Contraseña" id="password" required>
+                <input
+                  type="password"
+                  class="input__pass__login"
+                  placeholder="Contraseña"
+                  name="password"
+                  id="password"
+                  required
+                />
               </div>
-              <button type="submit" class="login__enter">
-                Login
-              </button>
+              <div class="error__pass">
+                <i class="fas fa-ban"></i>
+                <span class="msg__text__error"
+                  >Las contraseñas no coinciden</span
+                >
+              </div>
+              <button type="submit" class="login__enter">Login</button>
             </div>
           </form>
-          <div class="form__login__register animate__animated animate__fadeIn" style="display: none;">
-            <div class="content__name">
-              <input type="text" class="input__name__login" placeholder="Nombre" id="name" required>
+          <form id="formRegister">
+            <div
+              class="form__login__register animate__animated animate__fadeIn"
+              style="display: none"
+            >
+              <div class="content__name">
+                <input
+                  type="text"
+                  class="input__name__login"
+                  placeholder="Nombre"
+                  name="name"
+                  id="name"
+                  required
+                />
+              </div>
+              <div class="content__email">
+                <input
+                  type="email"
+                  class="input__email__login"
+                  placeholder="Correo | Email"
+                  name="email"
+                  id="username"
+                  required
+                />
+              </div>
+              <div class="content__pass">
+                <input
+                  type="password"
+                  class="input__pass__login"
+                  placeholder="Contraseña"
+                  name="password"
+                  id="password"
+                  minlength="6"
+                  required
+                />
+              </div>
+              <div class="content__pass__repeat">
+                <input
+                  type="password"
+                  class="input__pass__login__repeat"
+                  placeholder="Vuelve a introducir contraseña"
+                  name="password2"
+                  minlength="6"
+                  id="password2"
+                  required
+                />
+              </div>
+              <div class="error__pass">
+                <i class="fas fa-ban"></i>
+                <span class="msg__text__error"
+                  >Las contraseñas no coinciden</span
+                >
+              </div>
+              <button class="login__enter">Crear una cuenta</button>
             </div>
-            <div class="content__email">
-              <input type="text" class="input__email__login" placeholder="Correo | Email" id="username" required>
-            </div>
-            <div class="content__pass">
-              <input type="text" class="input__pass__login" placeholder="Contraseña" id="password" required>
-            </div>
-            <div class="content__pass__repeat">
-              <input type="text" class="input__pass__login__repeat" placeholder="Vuelve a introducir contraseña" required>
-            </div>
-            <button class="login__enter">
-              Crear una cuenta
-            </button>
+          </form>
+        </div>
+        <div class="success__alert">
+          <i class="fas fa-check"></i>
+          <span class="msg__success"
+            >Se ha registrado exitosamente, por favor ahora inicie sesión.</span
+          >
+        </div>
+        <div class="modal-footer">
+          <div
+            class="forgot login-footer animate__animated animate__fadeIn"
+            style="display: block"
+          >
+            <span
+              >¿No tienes una cuenta?,
+              <a class="show__register" href="javascript:void(0)"
+                >¡Crea una cuenta ya!</a
+              ></span
+            >
+          </div>
+          <div
+            class="forgot register-footer animate__animated animate__fadeIn"
+            style="display: none"
+          >
+            <span>¿Ya tienes una cuenta?</span>
+            <a class="show__login" href="javascript:void(0)">¡Entra aquí!</a>
           </div>
         </div>
-        
-        <div class="modal-footer">
-          <div class="forgot login-footer animate__animated animate__fadeIn" style="display: block;">
-              <span>¿No tienes una cuenta?,
-                   <a class="show__register" href="javascript:void(0)">¡Crea una cuenta ya!</a></span>
-          </div>
-          <div class="forgot register-footer animate__animated animate__fadeIn" style="display: none;">
-               <span>¿Ya tienes una cuenta?</span>
-               <a class="show__login" href="javascript:void(0)">¡Entra aquí!</a>
-          </div>
-      </div>
       </div>
     </div>
     <div id="snackbar">Error!, Debes de iniciar sesión para comentar</div>

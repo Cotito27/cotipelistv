@@ -367,6 +367,18 @@ $(document).ready(function() {
 
   }
 
+  socket.on('addListMe', function(data) {
+    if(data) {
+      $('.save__lista__video').html(`Agregado a mi lista`);
+      $('.save__lista__video').css('pointer-events', 'auto');
+      $('.save__lista__video').addClass('lista__added');
+    } else {
+      $('.save__lista__video').html(`Agregar a mi lista`);
+      $('.save__lista__video').css('pointer-events', 'auto');
+      $('.save__lista__video').removeClass('lista__added');
+    }
+  });
+
   $('body').on('click', '.save__lista__video', async function() {
     if(!$('[data-login-start]')[0]) {
       $('#modalLogin').attr('style', 'display:flex;');
@@ -408,6 +420,8 @@ $(document).ready(function() {
       if(res.success) {
         $(this).html(`Agregar a mi lista`);
         $(this).css('pointer-events', 'auto');
+        $(this).removeClass('lista__added');
+        socket.emit('addListMe', false);
       }
     } else {
       let video_id = _id_video;
@@ -438,9 +452,10 @@ $(document).ready(function() {
       if(res.success) {
         $(this).html(`Agregado a mi lista`);
         $(this).css('pointer-events', 'auto');
+        $(this).addClass('lista__added');
+        socket.emit('addListMe', true);
       }
     }
-    $(this).toggleClass('lista__added');
     
   });
 
@@ -867,6 +882,22 @@ $(document).ready(function() {
     $(`[data-id-subcomment=${data.idSubComment}]`).find('.number__dislikes__subcomment').text(data.dislikes);
   });
 
+  socket.on('updateSubLikeCommentMe', (data) => {
+    if(data.focusLike) {
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').parent().find('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').addClass('reaction__comment__active');
+    } else {
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').removeClass('reaction__comment__active');
+    }
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').parent().parent().find('.number__likes__subcomment').text(data.likes);
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').parent().parent().find('.number__dislikes__subcomment').text(data.dislikes);
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').css('pointer-events', 'auto');
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action__sub').parent().find('.dislike__action').css('pointer-events', 'auto');
+  });
+
   $('body').on('click', '.like__action__sub', async function() {
     let idComment = $(this).parent().parent().parent().parent().attr('data-id-comment');
     let panelThis = $(this).parent().parent();
@@ -881,12 +912,6 @@ $(document).ready(function() {
     let response = await fetch(`/likeSubComment/${idComment}?subId=${idSubComment}&user_id=${idUser}`);
     let res = await response.json();
     if(res.likes) {
-      socket.emit('sublikeUpdate', {
-        idComment,
-        idSubComment,
-        likes: res.likes.length,
-        dislikes: res.dislikes.length
-      });
       if(res.focusLike) {
         $(this).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
         $(this).parent().find('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
@@ -900,9 +925,38 @@ $(document).ready(function() {
       panelThis.find('.number__dislikes__subcomment').text(res.dislikes.length);
       $(this).css('pointer-events', 'auto');
       $(this).parent().find('.dislike__action').css('pointer-events', 'auto');
+      socket.emit('updateSubLikeCommentMe', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length,
+        focusLike: res.focusLike
+      });
+      socket.emit('sublikeUpdate', {
+        idComment,
+        idSubComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      
     } else {
       console.log('error');
     }
+  });
+
+  socket.on('updateSubDislikeCommentMe', (data) => {
+    if(data.focusDislike) {
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').parent().find('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').addClass('reaction__comment__active');
+    } else {
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').removeClass('reaction__comment__active');
+    }
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').parent().parent().find('.number__likes__subcomment').text(data.likes);
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').parent().parent().find('.number__dislikes__subcomment').text(data.dislikes);
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').css('pointer-events', 'auto');
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action__sub').parent().find('.like__action').css('pointer-events', 'auto');
   });
 
   $('body').on('click', '.dislike__action__sub', async function() {
@@ -919,12 +973,6 @@ $(document).ready(function() {
     let response = await fetch(`/dislikeSubComment/${idComment}?subId=${idSubComment}&user_id=${idUser}`);
     let res = await response.json();
     if(res.likes) {
-      socket.emit('sublikeUpdate', {
-        idComment,
-        idSubComment,
-        likes: res.likes.length,
-        dislikes: res.dislikes.length
-      });
       if(res.focusDislike) {
         $(this).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
         $(this).parent().find('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
@@ -938,9 +986,38 @@ $(document).ready(function() {
       panelThis.find('.number__dislikes__subcomment').text(res.dislikes.length);
       $(this).css('pointer-events', 'auto');
       $(this).parent().find('.like__action').css('pointer-events', 'auto');
+      socket.emit('updateSubDislikeCommentMe', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length,
+        focusDislike: res.focusDislike
+      })
+      socket.emit('sublikeUpdate', {
+        idComment,
+        idSubComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      
     } else {
       console.log('error');
     }
+  });
+
+  socket.on('updateLikeCommentMe', (data) => {
+    if(data.focusLike) {
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action').find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action').parent().find('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action').parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action').addClass('reaction__comment__active');
+    } else {
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.like__action').removeClass('reaction__comment__active');
+    }
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action').parent().find('.number__likes__comment').text(data.likes);
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action').parent().find('.number__dislikes__comment').text(res.dislikes);
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action').css('pointer-events', 'auto');
+    $(`[data-id-comment=${data.idComment}]`).find('.like__action').parent().find('.dislike__action').css('pointer-events', 'auto');
   });
 
   $('body').on('click', '.like__action', async function() {
@@ -955,11 +1032,6 @@ $(document).ready(function() {
     let response = await fetch(`/likeComment/${idComment}?user_id=${idUser}`);
     let res = await response.json();
     if(res.likes) {
-      socket.emit('likeUpdate', {
-        idComment,
-        likes: res.likes.length,
-        dislikes: res.dislikes.length
-      });
       if(res.focusLike) {
         $(this).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
         $(this).parent().find('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
@@ -973,9 +1045,37 @@ $(document).ready(function() {
       $(this).parent().find('.number__dislikes__comment').text(res.dislikes.length);
       $(this).css('pointer-events', 'auto');
       $(this).parent().find('.dislike__action').css('pointer-events', 'auto');
+      socket.emit('updateLikeCommentMe', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length,
+        focusLike: res.focusLike
+      });
+      socket.emit('likeUpdate', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      
     } else {
       console.log('error');
     }
+  });
+
+  socket.on('updateDislikeCommentMe', (data) => {
+    if(data.focusDislike) {
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').parent().find('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').parent().find('.reaction__comment__active').removeClass('reaction__comment__active');
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').addClass('reaction__comment__active');
+    } else {
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').removeClass('reaction__comment__active');
+    }
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').parent().find('.number__dislikes__comment').text(data.dislikes);
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').parent().find('.number__likes__comment').text(data.likes);
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').css('pointer-events', 'auto');
+    $(`[data-id-comment=${data.idComment}]`).find('.dislike__action').parent().find('.like__action').css('pointer-events', 'auto');
   });
 
   $('body').on('click', '.dislike__action', async function() {
@@ -990,11 +1090,6 @@ $(document).ready(function() {
     let response = await fetch(`/dislikeComment/${idComment}?user_id=${idUser}`);
     let res = await response.json();
     if(res.dislikes) {
-      socket.emit('likeUpdate', {
-        idComment,
-        likes: res.likes.length,
-        dislikes: res.dislikes.length
-      });
       if(res.focusDislike) {
         $(this).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
         $(this).parent().find('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
@@ -1008,9 +1103,37 @@ $(document).ready(function() {
       $(this).parent().find('.number__likes__comment').text(res.likes.length);
       $(this).css('pointer-events', 'auto');
       $(this).parent().find('.like__action').css('pointer-events', 'auto');
+      socket.emit('updateDislikeCommentMe', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length,
+        focusDislike: res.focusDislike
+      });
+      socket.emit('likeUpdate', {
+        idComment,
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      
     } else {
       console.log('error');
     }
+  });
+
+  socket.on('updateLikeMe', (data) => {
+    if(data.focusLike) {
+      $('.like__video').find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
+      $('.dislike__video').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $('.reaction__active__video').removeClass('reaction__active__video');
+      $('.like__video').addClass('reaction__active__video');
+    } else {
+      $('.like__video').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $('.like__video').removeClass('reaction__active__video');
+    }
+    $('.like__video').parent().find('.number__likes__video').text(data.likes);
+    $('.like__video').parent().find('.number__dislikes__video').text(data.dislikes);
+    $('.like__video').css('pointer-events', 'auto');
+    $('.dislike__video').css('pointer-events', 'auto');
   });
 
   $('body').on('click', '.like__video', async function() {
@@ -1025,10 +1148,6 @@ $(document).ready(function() {
     let response = await fetch(`/likeVideo/${video_id}?user_id=${user_id}`);
     let res = await response.json();
     if(res.likes) {
-      socket.emit('likeVideoUpdate', {
-        likes: res.likes.length,
-        dislikes: res.dislikes.length
-      });
       if(res.focusLike) {
         $(this).find('i').replaceWith(`<i class="fas fa-thumbs-up"></i>`);
         $('.dislike__video').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
@@ -1042,9 +1161,36 @@ $(document).ready(function() {
       $(this).parent().find('.number__dislikes__video').text(res.dislikes.length);
       $(this).css('pointer-events', 'auto');
       $('.dislike__video').css('pointer-events', 'auto');
+      socket.emit('updateLikeMe', {
+        likes: res.likes.length,
+        dislikes: res.dislikes.length,
+        focusLike: res.focusLike
+      });
+      socket.emit('likeVideoUpdate', {
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      
+      
     } else {
       console.log('error');
     }
+  });
+
+  socket.on('updateDislikeMe', (data) => {
+    if(data.focusDislike) {
+      $('.dislike__video').find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
+      $('.like__video').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $('.reaction__active__video').removeClass('reaction__active__video');
+      $('.dislike__video').addClass('reaction__active__video');
+    } else {
+      $('.dislike__video').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $('.dislike__video').removeClass('reaction__active__video');
+    }
+    $('.dislike__video').parent().find('.number__likes__video').text(data.likes);
+    $('.dislike__video').parent().find('.number__dislikes__video').text(data.dislikes);
+    $('.dislike__video').css('pointer-events', 'auto');
+    $('.like__video').css('pointer-events', 'auto');
   });
 
   $('body').on('click', '.dislike__video', async function() {
@@ -1059,10 +1205,6 @@ $(document).ready(function() {
     let response = await fetch(`/dislikeVideo/${video_id}?user_id=${user_id}`);
     let res = await response.json();
     if(res.likes) {
-      socket.emit('likeVideoUpdate', {
-        likes: res.likes.length,
-        dislikes: res.dislikes.length
-      });
       if(res.focusDislike) {
         $(this).find('i').replaceWith(`<i class="fas fa-thumbs-down"></i>`);
         $('.like__video').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
@@ -1076,6 +1218,16 @@ $(document).ready(function() {
       $(this).parent().find('.number__dislikes__video').text(res.dislikes.length);
       $(this).css('pointer-events', 'auto');
       $('.like__video').css('pointer-events', 'auto');
+      socket.emit('updateDislikeMe', {
+        likes: res.likes.length,
+        dislikes: res.dislikes.length,
+        focusDislike: res.focusDislike
+      });
+      socket.emit('likeVideoUpdate', {
+        likes: res.likes.length,
+        dislikes: res.dislikes.length
+      });
+      
     } else {
       console.log('error');
     }
@@ -1698,13 +1850,10 @@ $(document).ready(function() {
     
   });
 
-  $('.exit__session').on('click', async function() {
-     let response = await fetch('/logout');
-     let res = await response.json();
-     if(res.success) {
+  socket.on('logoutMe', () => {
        $('.img__user').attr('src', '/img/user_change.PNG');
        $('#btnModalLogin').removeAttr('data-login-start');
-       $(this).parent().removeClass('d-flex-show');
+       $('.exit__session').parent().removeClass('d-flex-show');
        $('#btnModalLogin').removeClass('started__login');
        $('.my__foto__comment').attr('src', '/img/user_change.PNG');
        $('.my__foto__subcomment').attr('src', '/img/user_change.PNG');
@@ -1725,6 +1874,36 @@ $(document).ready(function() {
        $('.dislike__action__sub').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
        $('.dislike__action__sub').removeClass('reaction__comment__active');
        $('.active__reply').removeClass('active__reply');
+  });
+
+  $('.exit__session').on('click', async function() {
+     let response = await fetch('/logout');
+     let res = await response.json();
+     if(res.success) {
+      $('.img__user').attr('src', '/img/user_change.PNG');
+      $('#btnModalLogin').removeAttr('data-login-start');
+      $(this).parent().removeClass('d-flex-show');
+      $('#btnModalLogin').removeClass('started__login');
+      $('.my__foto__comment').attr('src', '/img/user_change.PNG');
+      $('.my__foto__subcomment').attr('src', '/img/user_change.PNG');
+      $('.indicator__response__user').removeClass('d-flex-show');
+      $('.my__subcomment__content').removeClass('d-flex-show');
+      $('.save__lista__video').removeClass('lista__added');
+      $('.save__lista__video').html(`Agregar a mi lista`);
+      $('.like__video').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $('.like__video').removeClass('reaction__active__video');
+      $('.dislike__video').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $('.dislike__video').removeClass('reaction__active__video');
+      $('.like__action').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $('.like__action').removeClass('reaction__comment__active');
+      $('.dislike__action').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $('.dislike__action').removeClass('reaction__comment__active');
+      $('.like__action__sub').find('i').replaceWith(`<i class="far fa-thumbs-up"></i>`);
+      $('.like__action__sub').removeClass('reaction__comment__active');
+      $('.dislike__action__sub').find('i').replaceWith(`<i class="far fa-thumbs-down"></i>`);
+      $('.dislike__action__sub').removeClass('reaction__comment__active');
+      $('.active__reply').removeClass('active__reply');
+       socket.emit('logoutMe');
        if(location.href.includes('/my-list')) {
          location.href = '/';
        }
@@ -1742,6 +1921,60 @@ $(document).ready(function() {
         $('.success__alert__login').removeClass('show');
       },2500);
   }
+
+  function generateUUID() {
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return uuid;
+  }
+
+  if(!localStorage.loginId) {
+    localStorage.loginId = generateUUID();
+  }
+
+  socket.emit('getLocalId', localStorage.loginId);
+
+  socket.on('loginMeRedirect', () => {
+    location.reload();
+  });
+
+  socket.on('loginMe', (data) => {
+    $('#modalLogin').attr('style', 'display: none;');
+    $('body').removeClass('ov__hidden');
+    showSuccessLogin();
+    $('#btnModalLogin').attr('data-login-start', 'start');
+    $('#btnModalLogin').addClass('started__login');
+    $('.foto__user').find('img').attr('src', data.user.foto);
+    $('.name__user__info').text(data.user.name);
+    $('.email__user__info').text(data.user.user);
+    $('#btnModalLogin').attr('data-name-user', data.user.name);
+    $('#btnModalLogin').attr('data-email-user', data.user.user);
+    $('#btnModalLogin').attr('data-foto-user', data.user.foto);
+    $('#btnModalLogin').attr('data-user-id', data.user.id);
+    // console.log(res.foto);
+    $('.my__foto__comment').attr('src', data.user.foto);
+    $('.my__foto__subcomment').attr('src', data.user.foto);
+    // console.log(res);
+    if($('.stream__video')[0]) {
+      let video_id = _id_video;
+      let veriWatchVideo = data.watchlist.find((v) => v.video_id == video_id);
+      // console.log(veriWatchVideo);
+      if(veriWatchVideo) {
+        $('.save__lista__video').addClass('lista__added');
+        $('.save__lista__video').html(`Agregado a mi lista`);
+      } else {
+        $('.save__lista__video').removeClass('lista__added');
+        $('.save__lista__video').html(`Agregar a mi lista`);
+      }
+    }
+    $('.form__login input').removeClass('invalid__input');
+    $('.error__pass').removeClass('show');
+    socket.emit('getUser', data.user.id);
+  });
 
   $('#formLogin').on('submit', async function(e) {
     e.preventDefault();
@@ -1785,6 +2018,8 @@ $(document).ready(function() {
       }
       $('.form__login input').removeClass('invalid__input');
       $('.error__pass').removeClass('show');
+      socket.emit('getUser', res.user.id);
+      socket.emit('loginMe', res);
     } else {
       $('.form__login input').addClass('invalid__input');
       errorPassLogin('Datos incorrectos');
