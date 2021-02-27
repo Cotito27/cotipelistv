@@ -527,17 +527,18 @@ body {
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
-  font-size: 17px;
+  font-size: 16px;
   color: white;
   background-color: transparent;
   font-family: Roboto, -apple-system, system-ui, BlinkMacSystemFont, segoe ui,
     helvetica neue, Arial, sans-serif;
-  font-size: 14px;
-  text-transform: uppercase;
+
   margin: 0 !important;
 }
 
 .tab .tabload {
+  font-size: 14px;
+  text-transform: uppercase;
   color: rgb(194, 194, 194) !important;
 }
 
