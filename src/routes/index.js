@@ -5,6 +5,7 @@ const passport = require('passport');
 const homeController = require('../controllers/home.controller');
 const peliculaController = require('../controllers/peliculas.controller');
 const serieController = require('../controllers/series.controller');
+const animeController = require('../controllers/anime.controller');
 const trailerController = require('../controllers/trailer.controller');
 const successController = require('../controllers/success.controller');
 const loginController = require('../controllers/login.controller');
@@ -35,15 +36,21 @@ function validarUserRedirect(req, res, next) {
 router.get('/', validarUser, homeController.index);
 router.post("/verificarLogin", loginController.verify);
 router.get('/getSerie', validarUser, homeController.getSerie);
+router.get('/getAnime', validarUser, homeController.getAnime);
 router.get('/peliculas', validarUser , peliculaController.index);
 router.get('/peliculas/:page', validarUser, peliculaController.index);
 router.get('/series', validarUser, serieController.index);
 router.get('/series/:page', validarUser, serieController.index);
+router.get('/animes', validarUser, animeController.index);
+router.get('/animes/:page', validarUser, animeController.index);
 router.get('/findPeliculas/:page', peliculaController.find);
 router.get('/findSeries/:page', serieController.find);
+router.get('/findAnimes/:page', animeController.find);
 router.get('/pelicula/:id', validarUser, peliculaController.streamVideo);
 router.get('/serie/:id', validarUser, serieController.streamVideo);
-router.get('/serie/:id/temporada/:temporada/capitulo/:capitulo', validarUser, serieController.episodeStream)
+router.get('/serie/:id/temporada/:temporada/capitulo/:capitulo', validarUser, serieController.episodeStream);
+router.get('/anime/:id', validarUser, animeController.streamVideo);
+router.get('/anime/:id/temporada/:temporada/capitulo/:capitulo', validarUser, animeController.episodeStream)
 router.get('/searchVideo/:title', validarUser, homeController.search);
 router.get('/search/:title', validarUser, homeController.searchDirect);
 router.get('/searchVideo', validarUser, homeController.searchAll);

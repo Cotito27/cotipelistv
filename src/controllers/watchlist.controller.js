@@ -52,7 +52,8 @@ ctrl.findMyList = async (req, res) => {
 }
 
 ctrl.save = async (req, res) => {
-  let { video_id, user_id, title, image, year, score, seasons } = req.body;
+  let { video_id, user_id, title, image, year, score, type } = req.body;
+  console.log(type);
   // console.log(video_id);
   let prevWatch = await WatchList.find({ video_id, user_id });
   if(prevWatch.length >= 1) {
@@ -62,7 +63,7 @@ ctrl.save = async (req, res) => {
     })
     return;
   }
-  let newWatch = new WatchList({ video_id, user_id, title, image, year, score, seasons });
+  let newWatch = new WatchList({ video_id, user_id, title, image, year, score, type });
   await newWatch.save();
   res.json({
     success: true

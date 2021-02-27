@@ -446,7 +446,7 @@
           </div>
         </div>
       </div>
-      <div class="stream__video">
+      <div class="stream__video" data-type-video="<%= video.type %>">
         <div class="preloading__stream">
           <div class="la-ball-clip-rotate la-light la-sm">
             <div></div>
@@ -649,7 +649,7 @@
           </div>
         </div>
       </div>
-      <div class="stream__video" data-target-id="<%= video._id %>">
+      <div class="stream__video" data-target-id="<%= video._id %>" data-type-video="<%= video.type %>">
         <div class="tab seasons__stream">
           <% let numTemp = video.seasons[video.seasons.length - 1].season; %> <%
           for(let i = 1; i <= numTemp; i++) { %> <% if(i == 1) { %>
@@ -674,7 +674,7 @@
           <% let tempInfo = video.seasons.filter((v) => v.season == i); %> <%
           tempInfo.forEach((item) => { %>
           <a
-            href="/serie/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>"
+            href="/<%= video.type.toLowerCase() %>/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>"
             class="episode__part"
           >
             T<%= item.season %> - E<%= item.episode %>: Episode <%= item.episode
@@ -687,7 +687,7 @@
           <% let tempInfo = video.seasons.filter((v) => v.season == i); %> <%
           tempInfo.forEach((item) => { %>
           <a
-            href="/serie/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>"
+            href="/<%= video.type.toLowerCase() %>/<%= video._id %>/temporada/<%= i %>/capitulo/<%= item.episode %>"
             class="episode__part"
           >
             T<%= item.season %> - E<%= item.episode %>: Episode <%= item.episode

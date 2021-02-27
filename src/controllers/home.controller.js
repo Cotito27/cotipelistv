@@ -35,7 +35,7 @@ ctrl.index = async (req, res) => {
     res.render('index', {
       title: 'CotiPelisTV',
       dataVideos,
-      section: 'Peliculas y Series',
+      section: 'Peliculas, Series y Animes',
       pagesInactive: false,
       videoStream: false,
       user
@@ -61,6 +61,11 @@ ctrl.index = async (req, res) => {
 ctrl.getSerie = async (req, res) => {
   let series = await Movie.find({type: 'Serie'}).sort({type: 1, _id: -1}).limit(24);
   res.json(series);
+}
+
+ctrl.getAnime = async (req, res) => {
+  let animes = await Movie.find({type: 'Anime'}).sort({type: 1, _id: -1}).limit(24);
+  res.json(animes);
 }
 
 ctrl.search = async (req, res) => {
@@ -103,7 +108,7 @@ ctrl.searchDirect = async (req, res) => {
   res.render('index', {
     title: 'CotiPelisTV',
     movies:dataVideos,
-    section: 'Peliculas y Series',
+    section: 'Peliculas, Series y Animes',
     currentPage: page,
     pagesInactive: false,
     videoStream: false,
@@ -149,7 +154,7 @@ ctrl.searchAllDirect = async (req, res) => {
   res.render('index', {
     title: 'CotiPelisTV',
     movies: dataVideos,
-    section: 'Peliculas y Series',
+    section: 'Peliculas, Series y Animes',
     currentPage: page,
     pagesInactive: false,
     videoStream: false,
@@ -178,7 +183,7 @@ ctrl.findByGenre = async (req, res) => {
   res.render('index', {
     title: 'CotiPelisTV',
     movies: dataVideos,
-    section: 'Peliculas y Series',
+    section: 'Peliculas, Series y Animes',
     currentPage: page,
     pages,
     pagesInactive: false,
@@ -213,6 +218,11 @@ ctrl.getFindGenreType = async (req, res) => {
     res.json(dataVideos);
   } else if(type == 'series') {
     let dataVideos = await Movie.find({type: 'Serie', genres: {$regex: genero}}).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
+    // let dataPrevideos = series;
+    // let dataVideos = paginate(dataPrevideos, 24,page || 1);
+    res.json(dataVideos);
+  } else if(type == 'animes') {
+    let dataVideos = await Movie.find({type: 'Anime', genres: {$regex: genero}}).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
     // let dataPrevideos = series;
     // let dataVideos = paginate(dataPrevideos, 24,page || 1);
     res.json(dataVideos);
@@ -268,6 +278,27 @@ ctrl.findTypeGenre = async (req, res) => {
       yearActive: false,
       user
     });
+  } else if(type == 'animes') {
+    let dataQuery = {type: 'Anime', genres: {$regex: genero}};
+    let dataVideos = await Movie.find(dataQuery).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
+    let pages = await Movie.countDocuments(dataQuery);
+    pages = Math.ceil(pages / perPage);
+    // let dataPrevideos = series;
+    // let dataVideos = paginate(dataPrevideos, 24,page || 1);
+    // let pages = Math.ceil(dataPrevideos.length / 24)
+    res.render('index', {
+      title: 'CotiPelisTV',
+      movies: dataVideos,
+      section: 'Animes',
+      currentPage: page,
+      pages,
+      pagesInactive: false,
+      videoStream: false,
+      genreIndicate: true,
+      genero,
+      yearActive: false,
+      user
+    });
   }
   
 }
@@ -288,7 +319,7 @@ ctrl.findByYear = async (req, res) => {
   res.render('index', {
     title: 'CotiPelisTV',
     movies: dataVideos,
-    section: 'Peliculas y Series',
+    section: 'Peliculas, Series y Animes',
     currentPage: page,
     pages,
     page,
@@ -326,6 +357,11 @@ ctrl.getFindYearType = async (req, res) => {
     res.json(dataVideos);
   } else if(type == 'series') {
     let dataVideos = await Movie.find({ type: 'Serie', year}).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
+    // let dataPrevideos = series;
+    // let dataVideos = paginate(dataPrevideos, 24,page || 1);
+    res.json(dataVideos);
+  } else if(type == 'animes') {
+    let dataVideos = await Movie.find({ type: 'Anime', year}).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
     // let dataPrevideos = series;
     // let dataVideos = paginate(dataPrevideos, 24,page || 1);
     res.json(dataVideos);
@@ -373,6 +409,29 @@ ctrl.findTypeYear = async (req, res) => {
       title: 'CotiPelisTV',
       movies: dataVideos,
       section: 'Series',
+      currentPage: page,
+      pages,
+      page,
+      pagesInactive: false,
+      videoStream: false,
+      genreIndicate: true,
+      genero: false,
+      yearActive: true,
+      year,
+      user
+    });
+  } else if(type == 'animes') {
+    let dataQuery = { type: 'Anime', year};
+    let dataVideos = await Movie.find(dataQuery).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
+    let pages = await Movie.countDocuments(dataQuery);
+    pages = Math.ceil(pages / perPage);
+    // let dataPrevideos = series;
+    // let dataVideos = paginate(dataPrevideos, 24,page || 1);
+    // let pages = Math.ceil(dataPrevideos.length / 24);
+    res.render('index', {
+      title: 'CotiPelisTV',
+      movies: dataVideos,
+      section: 'Animes',
       currentPage: page,
       pages,
       page,

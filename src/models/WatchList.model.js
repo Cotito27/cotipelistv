@@ -9,7 +9,7 @@ const WatchListSchema = new Schema({
   image: { type: String, required: true },
   year: { type: String, required: false },
   score: { type: String },
-  seasons: { type: Boolean }
+  type: { type: String }
 });
 
 module.exports = mongoose.model('WatchList', WatchListSchema);

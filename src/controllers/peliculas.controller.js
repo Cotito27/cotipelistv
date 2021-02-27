@@ -85,7 +85,7 @@ ctrl.streamVideo = async (req, res) => {
       genreIndicate: false,
       extraTitles,
       validateUser: false,
-      user,
+      user, 
       savedVideo
     });
     return;

@@ -423,6 +423,22 @@ body {
   font-weight: bold;
 }
 
+.type__video__indicator__anime {
+  background: rgb(31, 142, 233);
+  padding-left: 8px;
+  padding-right: 8px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 18px;
+  z-index: 1;
+  line-height: 1.5em;
+  border-bottom-left-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .select__options__show a {
   text-decoration: none;
   padding: 10px 15px;
@@ -470,6 +486,8 @@ body {
   padding-top: 20px;
   color: whitesmoke;
   text-align: center;
+  padding-right: 10px;
+  padding-left: 10px;
 }
 
 .extend-block-left {
@@ -512,7 +530,28 @@ body {
   font-size: 17px;
   color: white;
   background-color: transparent;
+  font-family: Roboto, -apple-system, system-ui, BlinkMacSystemFont, segoe ui,
+    helvetica neue, Arial, sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
   margin: 0 !important;
+}
+
+.tab .tabload {
+  color: rgb(194, 194, 194) !important;
+}
+
+.tab .tabload:hover {
+  background-color: #314152 !important;
+  /* border-bottom: 3px solid #314152; */
+  color: white !important;
+}
+
+/* Create an active/current tablink class */
+.tab .tabload.active {
+  background-color: #334458 !important;
+  border-bottom: 3px solid #04a1f4 !important;
+  color: var(--color-text-navbar) !important;
 }
 
 /* Change background color of buttons on hover */
@@ -791,12 +830,16 @@ body {
 }
 
 .action__episode {
-  width: 100%;
+  width: calc(100% - 40px);
   background-color: #4c6af3;
   padding: 8px;
   border-radius: 4px;
   text-decoration: none;
   color: var(--color-text-navbar);
+  font-size: 14px;
+  padding: 8px 20px;
+  font-family: Roboto, -apple-system, system-ui, BlinkMacSystemFont, segoe ui,
+    helvetica neue, Arial, sans-serif;
   cursor: pointer;
 }
 
@@ -1821,7 +1864,8 @@ body {
 }
 
 .active__temp {
-  background-color: #0958b9 !important;
+  background-color: #1b559c !important;
+  /* border-bottom: 5px solid #2f2896 !important; */
 }
 
 .d-flex-show {
@@ -1866,7 +1910,7 @@ body {
 
 .email__user__info {
   color: rgb(148, 148, 148);
-  font-weight: lighter;
+  /* font-weight: lighter; */
   font-family: Nunito, sans-serif;
   font-size: 12px;
 }
@@ -1901,8 +1945,12 @@ body {
   background-color: rgba(68, 96, 255, 0.733);
   padding: 10px;
   color: var(--color-text-navbar);
-  max-width: calc(100% - 20px);
+  max-width: calc(100% - 40px);
   text-decoration: none;
+  font-size: 14px;
+  padding: 8px 20px;
+  font-family: Roboto, -apple-system, system-ui, BlinkMacSystemFont, segoe ui,
+    helvetica neue, Arial, sans-serif;
   cursor: pointer;
 }
 

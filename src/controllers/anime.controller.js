@@ -1,5 +1,5 @@
 const ctrl = {};
-const Serie = require('../models/Serie.model');
+
 const WatchList = require('../models/WatchList.model');
 const Movie = require('../models/Movie.model');
 
@@ -8,19 +8,19 @@ ctrl.index = (req, res) => {
   let perPage = 24;
   let page = req.params.page || 1;
   Movie
-    .find({type: 'Serie'})
+    .find({type: 'Anime'})
     .sort({type: 1, _id: -1})
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .exec((err, series) => {
-      Movie.countDocuments({type: 'Serie'}, (err, count) => {
+      Movie.countDocuments({type: 'Anime'}, (err, count) => {
         if(err) return next(err);
         res.render('index', {
           title: 'CotiPelisTV',
           peliculas: series,
           currentPage: page,
           pages: Math.ceil(count / perPage),
-          section: 'Series',
+          section: 'Animes',
           pagesInactive: false,
           videoStream: false,
           genreIndicate: false,
@@ -36,20 +36,17 @@ ctrl.find = async (req, res) => {
   let title = req.query.title;
   if(title) {
     let dataVideos = await Movie.find({title: {$regex: title}}).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
-    // let series = await Serie.find({title: {$regex: title}}).sort({type: 1, _id: -1});
-    // let dataPrevideos = peliculas.concat(series);
-    // let dataVideos = paginate(dataPrevideos, 24, 1);
     res.json(dataVideos);
     return;
   }
 
   Movie
-    .find({ type: 'Serie' })
+    .find({ type: 'Anime' })
     .sort({type: 1, _id: -1})
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .exec((err, series) => {
-      Movie.countDocuments({type: 'Serie'}, (err, count) => {
+      Movie.countDocuments({type: 'Anime'}, (err, count) => {
         if(err) return next(err);
         res.send(series);
       })
@@ -60,12 +57,12 @@ ctrl.streamVideo = async (req, res) => {
   let user = req.user;
   if(!req.user) {
     let id = req.params.id;
-    let video = await Movie.findOne({_id: id, type: 'Serie'}).catch((err) => {
+    let video = await Movie.findOne({_id: id, type: 'Anime'}).catch((err) => {
       res.render('404', {
         title: 'CotiPelisTV'
       });
     });
-    let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
+    let extraTitles = await Movie.find({type: 'Anime', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
     // if(videoWatch) {
@@ -75,19 +72,19 @@ ctrl.streamVideo = async (req, res) => {
       title: 'CotiPelisTV',
       video,
       videoStream: true,
-      section: 'Series',
+      section: 'Animes',
       pagesInactive: true,
       genreIndicate: false,
       extraTitles,
       validateUser: false, 
       user,
-      savedVideo
+      savedVideo,
     });
     return;
   }
   
   let id = req.params.id;
-  let video = await Movie.findOne({_id: id, type: 'Serie'}).catch((err) => {
+  let video = await Movie.findOne({_id: id, type: 'Anime'}).catch((err) => {
     res.render('404', {
       title: 'CotiPelisTV'
     });
@@ -98,7 +95,7 @@ ctrl.streamVideo = async (req, res) => {
     });
     return;
   }
-  let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
+  let extraTitles = await Movie.find({type: 'Anime', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;
   if(videoWatch) {
@@ -108,7 +105,7 @@ ctrl.streamVideo = async (req, res) => {
     title: 'CotiPelisTV',
     video,
     videoStream: true,
-    section: 'Series',
+    section: 'Animes',
     pagesInactive: true,
     genreIndicate: false,
     extraTitles,
@@ -124,8 +121,8 @@ ctrl.episodeStream = async (req, res) => {
     let id = req.params.id;
     let temporada = req.params.temporada;
     let capitulo = req.params.capitulo;
-    let video = await Movie.findOne({_id: id, type: 'Serie'});
-    let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
+    let video = await Movie.findOne({_id: id, type: 'Anime'});
+    let extraTitles = await Movie.find({type: 'Anime', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
     // let videoWatch = await WatchList.findOne({ video_id: id });
     let savedVideo = false;
     // if(videoWatch) {
@@ -161,8 +158,8 @@ ctrl.episodeStream = async (req, res) => {
   let id = req.params.id;
   let temporada = req.params.temporada;
   let capitulo = req.params.capitulo;
-  let video = await Movie.findOne({_id: id, type: 'Serie'});
-  let extraTitles = await Movie.find({type: 'Serie', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
+  let video = await Movie.findOne({_id: id, type: 'Anime'});
+  let extraTitles = await Movie.find({type: 'Anime', genres: video.genres}, {title: 1}).sort({type: 1, _id: -1}).limit(6);
   let videoWatch = await WatchList.findOne({ video_id: id, user_id: user.id });
   let savedVideo = false;
   if(videoWatch) {

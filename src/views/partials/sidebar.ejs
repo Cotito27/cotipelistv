@@ -5,17 +5,25 @@
       <a href="/" class="option__active"><i class="fas fa-home"></i>Inicio</a>
       <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
       <a href="/series"><i class="fas fa-video"></i>Series</a>
+      <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
     <% } else { %>
       <a href="/"><i class="fas fa-home"></i>Inicio</a>
       <% if(section == 'Peliculas') { %>
       <a href="/peliculas" class="option__active"><i class="fas fa-laptop"></i>Peliculas</a>
       <a href="/series"><i class="fas fa-video"></i>Series</a>
+      <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
       <% } else if(section == 'Series') { %>
       <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
       <a href="/series" class="option__active"><i class="fas fa-video"></i>Series</a>
+      <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
+      <% } else if(section == 'Animes') { %>
+        <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
+        <a href="/series"><i class="fas fa-video"></i>Series</a>
+        <a href="/animes" class="option__active"><i class="fas fa-medal"></i>Animes</a>
       <% } else { %>
         <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
-      <a href="/series"><i class="fas fa-video"></i>Series</a>
+        <a href="/series"><i class="fas fa-video"></i>Series</a>
+        <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
       <% } %>
     <% } %>
     

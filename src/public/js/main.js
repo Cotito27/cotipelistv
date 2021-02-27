@@ -405,11 +405,9 @@ $(document).ready(function() {
       formData.set('image', image);
       formData.set('year', year);
       formData.set('score', score);
-      let seasonsActive = false;
-      if($('.season__part')[0]) {
-        seasonsActive = true;
-      }
-      formData.set('seasons', seasonsActive);
+      let typeVideo = '';
+      typeVideo = $('.stream__video').attr('data-type-video');
+      formData.set('type', typeVideo);
       // console.log(video_id);
       let response = await fetch(`/saveWatchList/`, {
         method: 'POST',
@@ -437,11 +435,9 @@ $(document).ready(function() {
       formData.set('image', image);
       formData.set('year', year);
       formData.set('score', score);
-      let seasonsActive = false;
-      if($('.season__part')[0]) {
-        seasonsActive = true;
-      }
-      formData.set('seasons', seasonsActive);
+      let typeVideo = '';
+      typeVideo = $('.stream__video').attr('data-type-video');
+      formData.set('type', typeVideo);
       // console.log(video_id);
       let response = await fetch(`/saveWatchList/`, {
         method: 'POST',
@@ -1368,19 +1364,19 @@ $(document).ready(function() {
   
 
   $('.tab_peli').on('click', function() {
+    $('.content_img_videos').addClass('d-none');
     $('.peliculas__content').removeClass('d-none');
-    $('.series__content').addClass('d-none');
   });
 
   let verifyLoadedSerie = false;
   $('.tab_serie').on('click', async function() {
     if(verifyLoadedSerie) {
-      $('.peliculas__content').addClass('d-none');
+      $('.content_img_videos').addClass('d-none');
       $('.series__content').removeClass('d-none');
     }
     if(!$(this).hasClass('active') && !verifyLoadedSerie) {
       
-      $('.peliculas__content').addClass('d-none');
+      $('.content_img_videos').addClass('d-none');
       $('.series__content').removeClass('d-none');
       $('.series__content').html(`<div class="la-ball-clip-rotate la-light la-sm">
       <div></div>
@@ -1399,6 +1395,36 @@ $(document).ready(function() {
       addPreLoadingImg();
       addTooltip();
       verifyLoadedSerie = true;
+    }
+  });
+
+  let verifyLoadedAnime = false;
+  $('.tab_anime').on('click', async function() {
+    if(verifyLoadedAnime) {
+      $('.content_img_videos').addClass('d-none');
+      $('.animes__content').removeClass('d-none');
+    }
+    if(!$(this).hasClass('active') && !verifyLoadedAnime) {
+      
+      $('.content_img_videos').addClass('d-none');
+      $('.animes__content').removeClass('d-none');
+      $('.animes__content').html(`<div class="la-ball-clip-rotate la-light la-sm">
+      <div></div>
+  </div>`);
+      let response = await fetch('/getAnime');
+      let res = await response.json();
+      let newHTML = '';
+      res.forEach((v) => {
+        newHTML += `<a href="/${'anime'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+        <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+        <p class="title-video">${v.title} (${v.year})</p>
+        <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+      </a>`;
+      });
+      $('.animes__content').html(newHTML);
+      addPreLoadingImg();
+      addTooltip();
+      verifyLoadedAnime = true;
     }
   });
 
@@ -1590,7 +1616,7 @@ $(document).ready(function() {
             <label class="score">${item.score}</label>
           </div>
         </a> `;
-        } else {
+        } else if(item.type == 'Serie') {
           htmlVideos += `<a href="/serie/${item._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${item.title} (${item.year})">
           <div class="type__video__indicator__serie">Serie</div>
         <img class="image-loaded" src="${item.image}" alt="">
@@ -1600,11 +1626,20 @@ $(document).ready(function() {
           <label class="score">${item.score}</label>
         </div>
       </a> `;
+        } else if(item.type == 'Anime') {
+          htmlVideos += `<a href="/${'anime'}/${item._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${item.title} (${item.year})">
+          <div class="type__video__indicator__anime">Anime</div>
+          <img class="image-loading" src="/img/placeholder-image.png" data-src="${item.image}" alt="">
+          <p class="title-video">${item.title} (${item.year})</p>
+          <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${item.score}</label></div>
+        </a>`;
         }
         
       })
       
       $('.content_img_videos').html(htmlVideos);
+      addPreLoadingImg();
+      addTooltip();
       let numVeriPages = 0;
       if(res.pages == 0) {
         $('.content_img_videos').html(`<div class="not__found">No se encontraron resultados.</div>`);
@@ -1638,13 +1673,20 @@ $(document).ready(function() {
                   <p class="title-video">${v.title} (${v.year})</p>
                   <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
                 </a>`;
-                } else {
+                } else if(v.type == 'Serie') {
                   newHTML += `<a href="/${'serie'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__serie">Serie</div>
                 <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
                 <p class="title-video">${v.title} (${v.year})</p>
                 <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
               </a>`;
+                }else if(v.type == 'Anime') {
+                  newHTML += `<a href="/${'anime'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                  <div class="type__video__indicator__anime">Anime</div>
+                  <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                  <p class="title-video">${v.title} (${v.year})</p>
+                  <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                </a>`;
                 }
                 
               });
@@ -1707,7 +1749,7 @@ $(document).ready(function() {
             <label class="score">${item.score}</label>
           </div>
         </a> `;
-        } else {
+        } else if(item.type == 'Serie') {
           htmlVideos += `<a href="/serie/${item._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${item.title} (${item.year})">
           <div class="type__video__indicator__serie">Serie</div>
         <img class="image-loaded" src="${item.image}" alt="">
@@ -1717,11 +1759,20 @@ $(document).ready(function() {
           <label class="score">${item.score}</label>
         </div>
       </a> `;
+        } else if(item.type == 'Anime') {
+          htmlVideos += `<a href="/${'anime'}/${item._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${item.title} (${item.year})">
+          <div class="type__video__indicator__anime">Anime</div>
+          <img class="image-loading" src="/img/placeholder-image.png" data-src="${item.image}" alt="">
+          <p class="title-video">${item.title} (${item.year})</p>
+          <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${item.score}</label></div>
+        </a>`;
         }
         
       })
       
       $('.content_img_videos').html(htmlVideos);
+      addPreLoadingImg();
+      addTooltip();
       let numVeriPages = 0;
       if(res.pages == 0) {
         $('.content_img_videos').html(`<div class="not__found">No se encontraron resultados.</div>`);
@@ -1755,13 +1806,20 @@ $(document).ready(function() {
                   <p class="title-video">${v.title} (${v.year})</p>
                   <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
                 </a>`;
-                } else {
+                } else if(v.type == 'Serie') {
                   newHTML += `<a href="/${'serie'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__serie">Serie</div>
                 <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
                 <p class="title-video">${v.title} (${v.year})</p>
                 <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
               </a>`;
+                } else if(v.type == 'Anime') {
+                  newHTML += `<a href="/${'anime'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                  <div class="type__video__indicator__anime">Anime</div>
+                  <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                  <p class="title-video">${v.title} (${v.year})</p>
+                  <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                </a>`;
                 }
                 
               });
@@ -2140,6 +2198,9 @@ $(document).ready(function() {
               if(location.href.includes('/series')) {
                 history.pushState(null, "", `/year/${year}/series?page=${page}`);
                 response = await fetch(`/getFindYearType/${page}/series?year=${year}`);
+              } else if(location.href.includes('/animes')) {
+                history.pushState(null, "", `/year/${year}/animes?page=${page}`);
+                response = await fetch(`/getFindYearType/${page}/animes?year=${year}`);
               } else {
                 history.pushState(null, "", `/year/${year}?page=${page}`);
                 response = await fetch(`/getFindYear/${page}?year=${year}`);
@@ -2156,9 +2217,16 @@ $(document).ready(function() {
                     <p class="title-video">${v.title} (${v.year})</p>
                     <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
                   </a>`;
-                  } else {
+                  } else if(v.type == 'Serie') {
                     newHTML += `<a href="/${'serie'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                     <div class="type__video__indicator__serie">Serie</div>
+                    <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                    <p class="title-video">${v.title} (${v.year})</p>
+                    <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                  </a>`;
+                  }else if(v.type == 'Anime') {
+                    newHTML += `<a href="/${'anime'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                    <div class="type__video__indicator__anime">Anime</div>
                     <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
                     <p class="title-video">${v.title} (${v.year})</p>
                     <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
@@ -2214,13 +2282,20 @@ $(document).ready(function() {
                     <p class="title-video">${v.title} (${v.year})</p>
                     <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
                   </a>`;
-                  } else {
+                  } else if(v.type == 'Serie') {
                     newHTML += `<a href="/${'serie'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                     <div class="type__video__indicator__serie">Serie</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
                   <p class="title-video">${v.title} (${v.year})</p>
                   <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
                 </a>`;
+                  } else if(v.type == 'Anime') {
+                    newHTML += `<a href="/${'anime'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                    <div class="type__video__indicator__anime">Anime</div>
+                    <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                    <p class="title-video">${v.title} (${v.year})</p>
+                    <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                  </a>`;
                   }
                   
                 });
@@ -2262,16 +2337,23 @@ $(document).ready(function() {
               let res = await response.json();
               let newHTML = '';
               res.watchs.forEach((v) => {
-                if(!v.seasons) {
+                if(v.type == 'Pelicula') {
                   newHTML += `<a href="/${'pelicula'}/${v.video_id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__peli">Película</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
                   <p class="title-video">${v.title} (${v.year})</p>
                   <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
                 </a>`;
-                } else {
+                } else if(v.type == 'Serie') {
                   newHTML += `<a href="/${'serie'}/${v.video_id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__serie">Serie</div>
+                  <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                  <p class="title-video">${v.title} (${v.year})</p>
+                  <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                </a>`;
+                }else if(v.type == 'Anime') {
+                  newHTML += `<a href="/${'anime'}/${v.video_id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                  <div class="type__video__indicator__anime">Anime</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
                   <p class="title-video">${v.title} (${v.year})</p>
                   <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
@@ -2351,6 +2433,23 @@ $(document).ready(function() {
                 addPreLoadingImg();
                 addTooltip();
                 // 
+              } else if(sectionPage == 'Animes') {
+
+                history.pushState(null, "", `/animes/${page}`);
+                let response = await fetch(`/findAnimes/${page}`);
+                let res = await response.json();
+                let newHTML = '';
+                res.forEach((v) => {
+                  newHTML += `<a href="/${'anime'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                  <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                  <p class="title-video">${v.title} (${v.year})</p>
+                  <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                </a>`;
+                });
+                $('.content_img_videos').html(newHTML);
+                $('.title_videos_last').html(`Lista completa de Animes Pagina: ${page} online en hd gratis`);
+                addPreLoadingImg();
+                addTooltip();
               }
               window.scroll({
                 top: 0,
@@ -2388,6 +2487,9 @@ $(document).ready(function() {
             if(location.href.includes('/series')) {
               history.pushState(null, "", `/generos/${genero}/series?page=${page}`);
               response = await fetch(`/getFindGenreType/${page}/series?genero=${genero}`);
+            } else if(location.href.includes('/animes')) {
+              history.pushState(null, "", `/generos/${genero}/animes?page=${page}`);
+              response = await fetch(`/getFindGenreType/${page}/animes?genero=${genero}`);
             } else {
               history.pushState(null, "", `/generos/${genero}?page=${page}`);
               response = await fetch(`/getFindGenre/${page}?genero=${genero}`);
@@ -2404,9 +2506,16 @@ $(document).ready(function() {
                   <p class="title-video">${v.title} (${v.year})</p>
                   <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
                 </a>`;
-                } else {
+                } else if(v.type == 'Serie') {
                   newHTML += `<a href="/${'serie'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
                   <div class="type__video__indicator__serie">Serie</div>
+                  <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
+                  <p class="title-video">${v.title} (${v.year})</p>
+                  <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
+                </a>`;
+                } else if(v.type == 'Anime') {
+                  newHTML += `<a href="/${'anime'}/${v._id}" class="carousel__elemento wave tooltip_auto" data-tippy-content="${v.title} (${v.year})">
+                  <div class="type__video__indicator__anime">Anime</div>
                   <img class="image-loading" src="/img/placeholder-image.png" data-src="${v.image}" alt="">
                   <p class="title-video">${v.title} (${v.year})</p>
                   <div class="rating icon-star"><i class="fas fa-star"></i> <label class="score">${v.score}</label></div>
