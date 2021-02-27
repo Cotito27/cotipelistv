@@ -391,8 +391,10 @@ $(document).ready(function() {
   // console.log($(this).html());
     // $('#modalWatchList').attr('style', 'display:flex;');
     if($(this).hasClass('lista__added')) {
-
       let video_id = _id_video;
+      if($('.stream__video')[0]) {
+        video_id = $('.stream__video').attr('data-target-id');
+      }
       let title = titleVideoS;
       let image = imageVideoS;
       let year = yearVideoS;
@@ -423,6 +425,9 @@ $(document).ready(function() {
       }
     } else {
       let video_id = _id_video;
+      if($('.stream__video')[0]) {
+        video_id = $('.stream__video').attr('data-target-id');
+      }
       let title = titleVideoS;
       let image = imageVideoS;
       let year = yearVideoS;

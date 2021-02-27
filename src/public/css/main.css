@@ -469,11 +469,7 @@ body {
 }
 
 .select__options__show a {
-  margin-right: 1em;
-}
-
-.select__options__show a:last-child {
-  margin-right: 0;
+  margin-right: 10px;
 }
 
 /* a img:hover {
@@ -579,6 +575,31 @@ body {
   border: none;
   outline: none;
   text-align: center;
+}
+
+.background__loading {
+  animation-duration: 7s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: preloadAnimation;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #0b1c31 18%, #0b1b30 18%, #0c1f38 53%);
+  display: flex;
+  min-height: 100px;
+  width: 154px;
+  height: 315px;
+  flex-direction: column;
+  margin: 10px;
+}
+
+@keyframes preloadAnimation {
+  0% {
+    background-position: -769px 0;
+  }
+  100% {
+    background-position: 769px 0;
+  }
 }
 
 .more__videos__content {
