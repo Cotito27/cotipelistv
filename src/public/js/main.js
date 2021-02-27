@@ -1383,9 +1383,14 @@ $(document).ready(function() {
       
       $('.content_img_videos').addClass('d-none');
       $('.series__content').removeClass('d-none');
-      $('.series__content').html(`<div class="la-ball-clip-rotate la-light la-sm">
-      <div></div>
-  </div>`);
+  //     $('.series__content').html(`<div class="la-ball-clip-rotate la-light la-sm">
+  //     <div></div>
+  // </div>`);
+      let htmlLoading = '';
+      for(let i = 0; i < 24; i++) {
+        htmlLoading += `<div class="background__loading"></div>`
+      }
+      $('.series__content').html(htmlLoading);
       let response = await fetch('/getSerie');
       let res = await response.json();
       let newHTML = '';
@@ -1413,9 +1418,14 @@ $(document).ready(function() {
       
       $('.content_img_videos').addClass('d-none');
       $('.animes__content').removeClass('d-none');
-      $('.animes__content').html(`<div class="la-ball-clip-rotate la-light la-sm">
-      <div></div>
-  </div>`);
+  //     $('.animes__content').html(`<div class="la-ball-clip-rotate la-light la-sm">
+  //     <div></div>
+  // </div>`);
+      let htmlLoading = '';
+      for(let i = 0; i < 24; i++) {
+        htmlLoading += `<div class="background__loading"></div>`
+      }
+      $('.animes__content').html(htmlLoading);
       let response = await fetch('/getAnime');
       let res = await response.json();
       let newHTML = '';
