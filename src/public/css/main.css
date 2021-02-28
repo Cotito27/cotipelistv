@@ -1,3 +1,8 @@
+/* @import "./main.css";
+@import "./dropdown.css";
+@import "./preloader.css";
+@import "./pagination.css";
+@import "./btnsShare.css"; */
 :root {
   --bg-light: rgb(248, 248, 248);
   --bg-dark: rgb(16, 29, 71);
@@ -241,6 +246,7 @@ body {
   position: relative;
   background-color: #1e2b3b;
   padding: 20px;
+  margin-bottom: 0;
 }
 
 .carousel {
@@ -2285,6 +2291,48 @@ body {
   height: 400px;
   width: 100%;
 }
+.content-footer {
+  border-color: transparent;
+  box-shadow: 2px -1px 28px 3px rgb(0 0 0 / 43%);
+  padding: 0 30px;
+  width: calc(100% - 60px - 274px);
+  background-color: #203146;
+  border-top: 1px solid #e9eaec;
+  margin-left: 274px;
+}
+.content-footer .footer {
+  padding: 20px 0;
+  font-size: 90%;
+  font-family: Roboto,-apple-system,system-ui,BlinkMacSystemFont,segoe ui,helvetica neue,Arial,sans-serif;
+}
+.copyright {
+  color: #fff;
+}
+.content-footer .footer .go-right {
+  float: right;
+}
+.content-footer .footer .go-right a {
+  color: white;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+}
+.m-r-15 {
+  margin-right: 15px!important;
+}
+@media only screen and (max-width: 1058px) {
+  .copyright {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .content-footer .footer .go-right {
+    float: none;
+    margin-top: 15px;
+    display: block;
+  }
+}
+
 
 @keyframes fadein {
   from {
@@ -2365,7 +2413,7 @@ body {
 }
 
 @media only screen and (max-width: 850px) {
-  .container {
+  .container, .content-footer {
     margin-left: 0px;
   }
   .sidebar {
@@ -2385,7 +2433,7 @@ body {
     /* max-width: calc(100vw - 100px);
     margin-left: 10px; */
   }
-  .container {
+  .container, .content-footer {
     margin-left: 0px;
   }
   .sidebar {

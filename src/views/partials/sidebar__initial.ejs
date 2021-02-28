@@ -1,0 +1,105 @@
+<div class="sidebar sidebar__content animate__animated animate__fadeIn">
+  <div class="indicator__navegation">Navegación</div>
+  <div class="list__menu__options">
+    <% if(pagesInactive) { %>
+      <a href="/" class="option__active"><i class="fas fa-home"></i>Inicio</a>
+      <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
+      <a href="/series"><i class="fas fa-video"></i>Series</a>
+      <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
+    <% } else { %>
+      <a href="/"><i class="fas fa-home"></i>Inicio</a>
+      <% if(section == 'Peliculas') { %>
+      <a href="/peliculas" class="option__active"><i class="fas fa-laptop"></i>Peliculas</a>
+      <a href="/series"><i class="fas fa-video"></i>Series</a>
+      <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
+      <% } else if(section == 'Series') { %>
+      <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
+      <a href="/series" class="option__active"><i class="fas fa-video"></i>Series</a>
+      <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
+      <% } else if(section == 'Animes') { %>
+        <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
+        <a href="/series"><i class="fas fa-video"></i>Series</a>
+        <a href="/animes" class="option__active"><i class="fas fa-medal"></i>Animes</a>
+      <% } else { %>
+        <a href="/peliculas"><i class="fas fa-laptop"></i>Peliculas</a>
+        <a href="/series"><i class="fas fa-video"></i>Series</a>
+        <a href="/animes"><i class="fas fa-medal"></i>Animes</a>
+      <% } %>
+    <% } %>
+    
+    <% let veriGenero = ''; %>
+    <% let veriYear = ''; %>
+    <% if(genreIndicate) { %>
+      <% if(yearActive) { %>
+        <% veriYear = ' option__active'; %>
+      <% } else { %>
+        <% veriGenero = ' option__active'; %>
+      <% } %>
+    <% } %>
+    <a class="genres__extend__button<%= veriGenero %>"
+      ><i class="fas fa-list-ul"></i>Géneros
+      <span class="multiple__options"
+        ><i class="fas fa-caret-right"></i></span
+    ></a>
+    <% let genresInitial = ['Acción', 'Animación', 'Aventura', 'Comedia', 'Crimen', 'Documental', 'Drama', 'Fantasía', 'Foreign', 'Guerra', 'Historia', 'Romance', 'Suspenso', 'Terror', 'Western', 'Misterio']; %>
+    <% if(veriGenero != '') { %>
+      <div id="myDropdown" class="dropdown-content" style="display: block;">
+        <% genresInitial.forEach((item) => { %>
+          <a class="wave" href="/generos/<%= item %>"><%= item %></a>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div id="myDropdown" class="dropdown-content">
+        <% genresInitial.forEach((item) => { %>
+          <a class="wave" href="/generos/<%= item %>"><%= item %></a>
+        <% }) %>
+      </div>
+    <% } %>
+    <a class="year__extend__button<%= veriYear %>"><i class="fab fa-autoprefixer"></i>Año<span class="multiple__options"
+      ><i class="fas fa-caret-right"></i></span
+  ></a>
+  <% if(veriYear != '') { %>
+    <div id="myDropdown2" class="dropdown-content2" style="display: block;">
+      <div class="options__year__content">
+        <% for(let i = 2021; i >= 1929; i--) { %>
+          <a class="year__option" href="/year/<%= i %>"><%= i %></a>
+        <% } %>
+      </div>
+    </div>
+  <% } else { %>
+    <div id="myDropdown2" class="dropdown-content2">
+      <div class="options__year__content">
+        <% for(let i = 2021; i >= 1929; i--) { %>
+          <a class="year__option" href="/year/<%= i %>"><%= i %></a>
+        <% } %>
+      </div>
+    </div>
+  <% } %>
+  
+  </div>
+</div>
+<% if(genreIndicate) { %>
+  <% if(!yearActive) { %>
+    <script> 
+      let generoSelected = '<%= genero %>';
+      let containerGenres = document.querySelector('.dropdown-content');
+      let vecChildrens = containerGenres.querySelectorAll('.wave');
+      vecChildrens.forEach((item) => {
+        if(item.textContent == generoSelected) {
+          item.classList.add('option__active');
+        }
+      });
+    </script>
+  <% } else { %>
+    <script>
+      let yearSelected = '<%= year %>';
+      let containerYears = document.querySelector('.dropdown-content2');
+      let vecChildrensY = containerYears.querySelectorAll('.year__option');
+      vecChildrensY.forEach((item) => {
+        if(item.textContent == yearSelected) {
+          item.classList.add('option__active');
+        }
+      });
+    </script>
+  <% } %>
+<% } %>

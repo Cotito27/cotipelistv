@@ -1,0 +1,271 @@
+<% let sectionIdent = section.substring(0, section.length -
+    1).toLowerCase(); %>
+    <div class="container container_home animate__animated animate__fadeIn">
+      <div class="loader__my__list">
+        <div class="la-ball-clip-rotate la-light la-sm">
+          <div></div>
+        </div>
+      </div>
+      <% if(pagesInactive) { %>
+      <div class="preview_imgs_popular">
+        <div class="text-white fw-400 title_popular_videos">Más populares</div>
+
+        <div class="carousel">
+          <div class="carousel__contenedor">
+            <button
+              aria-label="Anterior"
+              class="carousel__anterior tooltip_auto"
+              data-tippy-content="Anterior"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="carousel__lista">
+              <% popularVideos.forEach((peli) => { %>
+              <a
+                href="/<%= sectionIdent %>/<%= peli._id %>"
+                class="carousel__elemento wave tooltip_auto"
+                data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<%= peli._id %>"
+              >
+                <img
+                  class="image-loading"
+                  style="background: #072650"
+                  src="/img/placeholder-image.png"
+                  data-src="<%= peli.image %>"
+                  alt="Ver <%= peli.title %> (<%= peli.year %>) Online"
+                />
+                <p class="title-video"><%= peli.title %> (<%= peli.year %>)</p>
+                <div class="rating icon-star">
+                  <i class="fas fa-star"></i>
+                  <label class="score"><%= peli.score %></label>
+                </div>
+              </a>
+              <% }); %>
+            </div>
+
+            <button
+              aria-label="Siguiente"
+              class="carousel__siguiente tooltip_auto"
+              data-tippy-content="Siguiente"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <div role="tablist" class="carousel__indicadores"></div>
+        </div>
+      </div>
+      <% } %> <% let titlePelis = 'Últimos estrenos'; %>
+      
+      <% if(!pagesInactive) { %>
+        <% if(genreIndicate) { %>
+          <% if(!genero) { %>
+            <% if(yearActive) { %>
+              <% titlePelis = `Lista completa de ${section} Año: ${year} pagina ${page} latino Online Gratis HD`; %>
+            <% } else { %>
+              <% if(titleSearch) { %>
+                <% titlePelis = `Estas buscando: ${titleSearch} pagina ${currentPage} latino HD`; %> 
+              <% } else { %>
+                <% titlePelis = `Mi lista - pagina ${currentPage}`; %> 
+              <% } %>
+            <% } %>
+            
+          <% } else { %>
+            <% titlePelis = `Lista completa de ${section} de género ${genero} Pagina: ${currentPage}
+            online en hd gratis`; %> 
+          <% } %>
+        <% } else { %>
+          <% titlePelis = `Lista completa de ${section} Pagina: ${currentPage}
+      online en hd gratis`; %> 
+        <% } %>
+       
+      <script>
+        let numberPages = "<%= pages %>";
+        let currentPage = "<%= currentPage %>";
+        let sectionPage = "<%= section %>";
+      </script>
+      <% } else { %>
+      <div class="tab">
+        <button class="tablinks tabload active tab_peli">Peliculas</button>
+        <button class="tablinks tabload tab_serie">Series</button>
+        <button class="tablinks tabload tab_anime">Animes</button>
+      </div>
+      <% } %>
+      <% if(!genreIndicate) { %>
+        <div class="content_last_videos">
+          <h3 class="title_videos_last"><%= titlePelis %></h3>
+          <div class="content_img_videos peliculas__content">
+            <% peliculas.forEach((peli) => { %>
+            <a
+              href="/<%= sectionIdent %>/<%= peli._id %>"
+              class="carousel__elemento wave tooltip_auto"
+              data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<%= peli._id %>"
+            >
+              <img
+                class="image-loading"
+                src="/img/placeholder-image.png"
+                data-src="<%= peli.image %>"
+                alt=""
+              />
+              <p class="title-video"><%= peli.title %> (<%= peli.year %>)</p>
+              <div class="rating icon-star">
+                <i class="fas fa-star"></i>
+                <label class="score"><%= peli.score %></label>
+              </div>
+            </a>
+            <% }) %>
+          </div>
+          <div class="content_img_videos series__content d-none"></div>
+          <div class="content_img_videos animes__content d-none"></div>
+        </div>
+      <% } else { %>
+        <div class="content_last_videos">
+          
+          <h3 class="title_videos_last"><%= titlePelis %></h3>
+          <% if(genero) { %>
+            <div class="select__options__show">
+              <% if(section == 'Peliculas') { %>
+                <a href="/generos/<%= genero %>">Mostrar Todo</a>
+                <a class="btn_show_active" href="/generos/<%= genero %>/peliculas">Mostrar solo peliculas</a>
+                <a href="/generos/<%= genero %>/series">Mostrar solo series</a>
+                <a href="/generos/<%= genero %>/animes">Mostrar solo animes</a>
+              <% } else if(section == 'Series') { %>
+                <a href="/generos/<%= genero %>">Mostrar Todo</a>
+                <a href="/generos/<%= genero %>/peliculas">Mostrar solo peliculas</a>
+                <a class="btn_show_active" href="/generos/<%= genero %>/series">Mostrar solo series</a>
+                <a href="/generos/<%= genero %>/animes">Mostrar solo animes</a>
+              <% } else if(section == 'Animes') { %>
+                <a href="/generos/<%= genero %>">Mostrar Todo</a>
+                <a href="/generos/<%= genero %>/peliculas">Mostrar solo peliculas</a>
+                <a href="/generos/<%= genero %>/series">Mostrar solo series</a>
+                <a class="btn_show_active" href="/generos/<%= genero %>/animes">Mostrar solo animes</a>
+              <% } else { %>
+                <a class="btn_show_active" href="/generos/<%= genero %>">Mostrar Todo</a>
+                <a href="/generos/<%= genero %>/peliculas">Mostrar solo peliculas</a>
+                <a href="/generos/<%= genero %>/series">Mostrar solo series</a>
+                <a href="/generos/<%= genero %>/animes">Mostrar solo animes</a>
+              <% } %>
+              
+            </div>
+          <% } else { %>
+            <% if(yearActive) { %>
+              <div class="select__options__show">
+                <% if(section == 'Peliculas') { %>
+                  <a href="/year/<%= year %>">Mostrar Todo</a>
+                  <a class="btn_show_active" href="/year/<%= year %>/peliculas">Mostrar solo peliculas</a>
+                  <a href="/year/<%= year %>/series">Mostrar solo series</a>
+                  <a href="/year/<%= year %>/animes">Mostrar solo animes</a>
+                <% } else if(section == 'Series') { %>
+                  <a href="/year/<%= year %>">Mostrar Todo</a>
+                  <a href="/year/<%= year %>/peliculas">Mostrar solo peliculas</a>
+                  <a class="btn_show_active" href="/year/<%= year %>/series">Mostrar solo series</a>
+                  <a href="/year/<%= year %>/animes">Mostrar solo animes</a>
+                <% } else if(section == 'Animes') { %>
+                  <a href="/year/<%= year %>">Mostrar Todo</a>
+                  <a href="/year/<%= year %>/peliculas">Mostrar solo peliculas</a>
+                  <a href="/year/<%= year %>/series">Mostrar solo series</a>
+                  <a class="btn_show_active" href="/year/<%= year %>/animes">Mostrar solo animes</a>
+                <% } else { %>
+                  <a class="btn_show_active" href="/year/<%= year %>">Mostrar Todo</a>
+                  <a href="/year/<%= year %>/peliculas">Mostrar solo peliculas</a>
+                  <a href="/year/<%= year %>/series">Mostrar solo series</a>
+                  <a href="/year/<%= year %>/animes">Mostrar solo animes</a>
+                <% } %>
+                
+              </div>
+              <script>
+                let year = '<%= year %>';
+              </script>
+            <% } %>
+          <% } %>
+          <div class="content_img_videos peliculas__content">
+            <% movies.forEach((peli) => { %>
+              <% if(peli.type == 'Pelicula') { %>
+                <a
+                href="/<%= 'pelicula' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
+                class="carousel__elemento wave tooltip_auto"
+                data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
+              >
+              
+              <div class="type__video__indicator__peli">Película</div>
+                <img
+                  class="image-loading"
+                  src="/img/placeholder-image.png"
+                  data-src="<%= peli.image %>"
+                  alt=""
+                />
+                <p class="title-video"><%= peli.title %> (<%= peli.year %>)</p>
+                <div class="rating icon-star">
+                  <i class="fas fa-star"></i>
+                  <label class="score"><%= peli.score %></label>
+                </div>
+              </a>
+              <% } else if(peli.type == 'Serie') { %>
+                <a
+              href="/<%= 'serie' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
+              class="carousel__elemento wave tooltip_auto"
+              data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
+            >
+            <div class="type__video__indicator__serie">Serie</div>
+              <img
+                class="image-loading"
+                src="/img/placeholder-image.png"
+                data-src="<%= peli.image %>"
+                alt=""
+              />
+              <p class="title-video"><%= peli.title %> (<%= peli.year %>)</p>
+              <div class="rating icon-star">
+                <i class="fas fa-star"></i>
+                <label class="score"><%= peli.score %></label>
+              </div>
+            </a>
+              <% } else if(peli.type == 'Anime') { %>
+                <a
+                href="/<%= 'anime' %>/<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
+                class="carousel__elemento wave tooltip_auto"
+                data-tippy-content="<%= peli.title %> (<%= peli.year %>)" data-video-id="<% if(peli.video_id) { %><%= peli.video_id %><% } else { %><%= peli._id %><% } %>"
+              >
+              <div class="type__video__indicator__anime">Anime</div>
+                <img
+                  class="image-loading"
+                  src="/img/placeholder-image.png"
+                  data-src="<%= peli.image %>"
+                  alt=""
+                />
+                <p class="title-video"><%= peli.title %> (<%= peli.year %>)</p>
+                <div class="rating icon-star">
+                  <i class="fas fa-star"></i>
+                  <label class="score"><%= peli.score %></label>
+                </div>
+              </a>
+              <% } %>
+            
+            <% }) %>
+          </div>
+          <div class="content_img_videos series__content d-none"></div>
+        </div>
+        <script>
+          let genero = '<%= genero %>';
+        </script>
+      <% } %>
+      
+      <% if(pagesInactive) { %>
+        <a class="more__videos__content">
+          <button class="btnMoreVideos wave">Ver más</button>
+        </a>
+      <% } else { %>
+        <div id="pagination_container"></div>
+        <div id="data_container"></div>
+      <% } %>
+    </div>
+    <% if(genreIndicate) { %>
+      <% if(!genero) { %>
+        <% if(!yearActive) { %>
+          <% if(titleSearch) { %>
+            <script>
+              let titleSearchInit = '<%= titleSearch %>'
+            </script>
+          <% } %>
+        <% } %>
+      <% } %>
+    <% } %>

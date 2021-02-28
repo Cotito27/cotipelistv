@@ -272,6 +272,8 @@ $(document).ready(function() {
     $('.sidebar').toggle('d-none');
     let container = document.querySelector('.container');
     container.classList.toggle('extend-block-left');
+    let footer = document.querySelector('.content-footer');
+    footer.classList.toggle('extend-block-left');
     if(window.innerWidth <= 568) {
       let blockContainer = document.querySelector('.block__container__sidebar');
       if(blockContainer.classList.contains('d-none')) {

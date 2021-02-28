@@ -1,0 +1,13 @@
+.content-footer {
+  border-color: transparent;
+  box-shadow: 2px -1px 28px 3px rgb(0 0 0 / 43%);
+  padding: 0 30px;
+}
+footer {
+  display: block;
+}
+.content-footer .footer {
+  padding: 20px 0;
+  font-size: 90%;
+  border-top: 1px solid #e9eaec;
+}
