@@ -468,10 +468,12 @@
           'PlusTo'; %> <% } %> <% if(item.includes('dood.to')) { %> <% nameItem
           = 'DoodStream'; %> <% } %> <% if(item.includes('videos.sh')) { %> <%
           nameItem = 'VideoS'; %> <% } %> <%
-          if(item.includes('embed.mystream.to')) { %> <% nameItem = 'Mystream';
+          if(item.includes('embed.mystream.to') || item.includes('mstream.tech')) { %> <% nameItem = 'Mystream';
           %> <% } %> <% if(item.includes('upstream.to')) { %> <% nameItem =
-          'Upfast'; %> <% } %> <% if(item.includes('uqload.com')) { %> <%
-          nameItem = 'Uqload'; %> <% } %> <% if(i == 0) { %>
+          'Upfast'; %> <% } %> <% if(item.includes('uqload.com')) { %> 
+            <% nameItem = 'Uqload'; %> 
+          <% } %>
+          <% if(i == 0) { %>
           <button
             class="option__available tablinks active__stream"
             data-target-video="<%= item %>"
