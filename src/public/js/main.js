@@ -255,7 +255,7 @@ $(document).ready(function() {
       var target = $(event.target);   
       // console.log($('.grab_audio').hasClass('d-none'));
       if(!$('.sidebar').hasClass('d-none')) {
-        if (!target.closest(".sidebar").length && !target.closest(".menu__bars").length) {
+        if (!target.closest(".sidebar").length && !target.closest(".menu__bars").length && !target.closest(".multiple__options")) {
           // closeMenu(function() {
           //     $(document).off("click.grab_audio");
           // });

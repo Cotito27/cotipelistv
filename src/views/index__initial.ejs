@@ -465,7 +465,11 @@
           <% if(item.includes('streamsb.net')) { %> <% nameItem = 'SBFast'; %>
           <% } %> <% if(item.includes('pelisplushd.me')) { %> 
             <% nameItem =
-          'PlusTo'; %> <% } %> <% if(item.includes('dood.to')) { %> <% nameItem
+          'PlusTo'; %> 
+          <% item = item.replace('pelisplushd.me', 'femax20.com') %>
+          <% } %>
+          
+           <% if(item.includes('dood.to') || item.includes('dood.so')) { %> <% nameItem
           = 'DoodStream'; %> <% } %> <% if(item.includes('videos.sh')) { %> <%
           nameItem = 'VideoS'; %> <% } %> <%
           if(item.includes('embed.mystream.to') || item.includes('mstream.tech')) { %> <% nameItem = 'Mystream';
@@ -504,6 +508,19 @@
           allow="autoplay; encrypted-media"
           allowfullscreen
         ></iframe> -->
+        <% if(video.embedUrls[0].includes('pelisplushd.me')) { %>
+          <div class="video__content">
+            <iframe
+              id="stream__media"
+              src="<%= video.embedUrls[0].replace('pelisplushd.me', 'femax20.com') %>"
+              frameborder="0"
+              width="100%"
+              height="400px"
+              allow="autoplay; encrypted-media"
+              allowfullscreen
+            ></iframe>
+          </div>
+        <% } else { %>
           <div class="video__content">
             <iframe
               id="stream__media"
@@ -515,6 +532,8 @@
               allowfullscreen
             ></iframe>
           </div>
+        <% } %>
+          
         
         
       </div>
