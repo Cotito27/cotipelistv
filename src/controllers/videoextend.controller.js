@@ -11,7 +11,7 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin());
 
 async function getVideoUrl(url) {
-  const browser = await puppeteer.launch({ headless: true,args: ['--no-sandbox','--disable-setuid-sandbox'] });
+  const browser = await puppeteer.launch({ headless: false,args: ['--no-sandbox','--disable-setuid-sandbox'] });
   const page = await browser.newPage();
 
   await page.goto(url);
@@ -35,6 +35,7 @@ async function getVideoUrl(url) {
     }
   });
   await page.goto(video);
+  await page.waitFor(2000);
   await browser.close();
   return video;
 }
