@@ -87,6 +87,9 @@ router.get('/logout', loginController.logout);
 router.get('/watch/:id', videoExtendController.index);
 router.get('/videoExtend/:id', videoExtendController.getUrl);
 
+// redirect Frontend 
+router.get('/indexJson', homeController.indexJson);
+
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })

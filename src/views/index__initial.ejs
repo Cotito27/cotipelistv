@@ -461,12 +461,19 @@
           </a>
         </div>
         <div class="tab options__stream">
+          <% let itemPlus = video.embedUrls.find((item) => item.includes('pelisplushd.me')) %>
+          <% if(itemPlus) { %>
+            <% let indexPlus = video.embedUrls.indexOf(itemPlus); %>
+            <% video.embedUrls.splice(indexPlus, 1); %>
+            <% video.embedUrls.unshift(itemPlus); %>
+          <% } %>
+        
           <% video.embedUrls.forEach((item, i) => { %> <% let nameItem = ''; %>
           <% if(item.includes('streamsb.net')) { %> <% nameItem = 'SBFast'; %>
           <% } %> <% if(item.includes('pelisplushd.me')) { %> 
             <% nameItem =
           'PlusTo'; %> 
-          <% item = item.replace('pelisplushd.me', 'femax20.com') %>
+          <% item = `/watch/${item.split('/').pop()}?image=${video.imageExtra}` %>
           <% } %>
           
            <% if(item.includes('dood.to') || item.includes('dood.so')) { %> <% nameItem
@@ -512,7 +519,7 @@
           <div class="video__content">
             <iframe
               id="stream__media"
-              src="<%= video.embedUrls[0].replace('pelisplushd.me', 'femax20.com') %>"
+              src="<%= `/watch/${video.embedUrls[0].split('/').pop()}?image=${video.imageExtra}` %>"
               frameborder="0"
               width="100%"
               height="400px"

@@ -58,6 +58,37 @@ ctrl.index = async (req, res) => {
   })
 }
 
+ctrl.indexJson = async (req, res) => {
+  let user = req.user;
+  let titleSearch = req.query.title;
+  let page = req.query.page || 1;
+  let perPage = 24;
+  if(titleSearch) {
+  let dataVideos = await Movie.find({title: {$regex: titleSearch, type: 'Pelicula'}}).sort({type: 1, _id: -1}).skip((perPage * page) - perPage).limit(perPage);
+    res.json({
+      title: 'CotiPelisTV',
+      dataVideos,
+      section: 'Peliculas, Series y Animes',
+      pagesInactive: false,
+      videoStream: false,
+      user: user || null
+    })
+    return;
+  }
+  let peliculas = await Movie.find({ type: 'Pelicula' }).sort({type: 1, _id: -1}).limit(24);
+  let popularVideos = await Movie.find({ type: 'Pelicula' }).sort({'score':-1}).limit(10);
+  res.json({
+    title: 'CotiPelisTV',
+    peliculas,
+    section: 'Peliculas',
+    pagesInactive: true,
+    popularVideos,
+    videoStream: false,
+    genreIndicate: false,
+    user: user || null
+  })
+}
+
 ctrl.getSerie = async (req, res) => {
   let series = await Movie.find({type: 'Serie'}).sort({type: 1, _id: -1}).limit(24);
   res.json(series);

@@ -38,6 +38,11 @@ body {
   cursor: pointer;
 }
 
+
+#stream__media {
+  background: black;
+}
+
 .menu__bars svg {
   fill: var(--color-text-navbar);
 }
@@ -2282,6 +2287,8 @@ body {
 .show_info_element {
   visibility: visible !important;
 }
+
+
 
 /* VIDEO PLAYER CUSTOM CSS */
 .video-js .vjs-big-play-button {

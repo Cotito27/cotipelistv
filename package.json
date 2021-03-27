@@ -32,6 +32,9 @@
     "passport-local": "^1.0.0",
     "passport-outlook": "^2.3.0",
     "path": "^0.12.7",
+    "puppeteer": "^8.0.0",
+    "puppeteer-extra": "^3.1.18",
+    "puppeteer-extra-plugin-adblocker": "^2.11.11",
     "socket.io": "^3.1.1",
     "sweetalert2": "^10.15.0",
     "uuid": "^8.3.2"

@@ -24,6 +24,17 @@ $(document).ready(function() {
       $(this).find('span').html(`<i class="fas fa-caret-right"></i>`);
     }
   });
+
+  let htmlLoadVideo = '';
+            for(let i = 0; i < 24; i++) {
+              htmlLoadVideo += `<div className="skeletor-preview-video">
+              <div class="skeletor-preview-content">
+              <div class="skeletor-img-preview"></div>
+              <div class="line line-1"></div>
+              <div class="line line-3"></div>
+            </div>
+              </div>`
+            }
   function addPreLoadingImg() {
     let options = {
       root: null,
@@ -1390,7 +1401,13 @@ $(document).ready(function() {
   // </div>`);
       let htmlLoading = '';
       for(let i = 0; i < 24; i++) {
-        htmlLoading += `<div class="background__loading"></div>`
+        htmlLoading += `<div className="skeletor-preview-video">
+        <div class="skeletor-preview-content">
+                    <div class="skeletor-img-preview"></div>
+                    <div class="line line-1"></div>
+                    <div class="line line-3"></div>
+                  </div>
+        </div>`
       }
       $('.series__content').html(htmlLoading);
       let response = await fetch('/getSerie');
@@ -1425,7 +1442,13 @@ $(document).ready(function() {
   // </div>`);
       let htmlLoading = '';
       for(let i = 0; i < 24; i++) {
-        htmlLoading += `<div class="background__loading"></div>`
+        htmlLoading += `<div className="skeletor-preview-video">
+        <div class="skeletor-preview-content">
+                    <div class="skeletor-img-preview"></div>
+                    <div class="line line-1"></div>
+                    <div class="line line-3"></div>
+                  </div>
+        </div>`
       }
       $('.animes__content').html(htmlLoading);
       let response = await fetch('/getAnime');
@@ -1675,9 +1698,8 @@ $(document).ready(function() {
     
           
           if(numVeriPages > 1) {
-            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
-              <div></div>
-          </div></div>`);
+            
+            $('.content_img_videos').html(htmlLoadVideo);
               history.pushState(null, "", `/search/${titleVideo}?page=${page}`);
               let response = await fetch(`/searchVideo/${titleVideo}?page=${page}`);
               let res = await response.json();
@@ -1808,9 +1830,7 @@ $(document).ready(function() {
     
           
           if(numVeriPages > 1) {
-            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
-              <div></div>
-          </div></div>`);
+            $('.content_img_videos').html(htmlLoadVideo);
               history.pushState(null, "", `/search/${titleVideo}?page=${page}`);
               let response = await fetch(`/searchVideo/${titleVideo}?page=${page}`);
               let res = await response.json();
@@ -2205,9 +2225,7 @@ $(document).ready(function() {
             numVeriPages ++;
             let response;
             if(numVeriPages > 1) {
-              $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
-              <div></div>
-          </div></div>`);
+              $('.content_img_videos').html(htmlLoadVideo);
               if(location.href.includes('/peliculas')) {
                 history.pushState(null, "", `/year/${year}/peliculas?page=${page}`);
                 response = await fetch(`/getFindYearType/${page}/peliculas?year=${year}`);
@@ -2284,9 +2302,7 @@ $(document).ready(function() {
       
             
             if(numVeriPages > 1) {
-              $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
-              <div></div>
-          </div></div>`);
+              $('.content_img_videos').html(htmlLoadVideo);
                 history.pushState(null, "", `/search/${titleSearchInit}?page=${page}`);
                 let response = await fetch(`/searchVideo/${titleSearchInit}?page=${page}`);
                 let res = await response.json();
@@ -2345,9 +2361,7 @@ $(document).ready(function() {
           numVeriPages ++;
           let response;
           if(numVeriPages > 1) {
-            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
-              <div></div>
-          </div></div>`);
+            $('.content_img_videos').html(htmlLoadVideo);
               history.pushState(null, "", `/my-list/${page}`);
               response = await fetch(`/findMyList/${page}`);
               
@@ -2409,9 +2423,7 @@ $(document).ready(function() {
       
             
             if(numVeriPages > 1) {
-              $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
-              <div></div>
-          </div></div>`);
+              $('.content_img_videos').html(htmlLoadVideo);
               if(sectionPage == 'Peliculas') {
                 
                 history.pushState(null, "", `/peliculas/${page}`);
@@ -2494,9 +2506,7 @@ $(document).ready(function() {
           numVeriPages ++;
           let response;
           if(numVeriPages > 1) {
-            $('.content_img_videos').html(`<div class="preloading__items__video"><div class="la-ball-clip-rotate la-light la-sm">
-              <div></div>
-          </div></div>`);
+            $('.content_img_videos').html(htmlLoadVideo);
             if(location.href.includes('/peliculas')) {
               history.pushState(null, "", `/generos/${genero}/peliculas?page=${page}`);
               response = await fetch(`/getFindGenreType/${page}/peliculas?genero=${genero}`);
