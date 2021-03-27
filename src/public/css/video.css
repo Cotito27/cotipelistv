@@ -25,6 +25,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   padding: 10px;
 }
 
@@ -37,3 +38,5 @@ body {
 .error__stream p a {
   color: rgb(57, 128, 235);
 }
+
+.info-error{color:white;}
