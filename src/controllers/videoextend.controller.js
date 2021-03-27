@@ -34,7 +34,7 @@ async function getVideoUrl(url) {
       return '';
     }
   });
-
+  await page.goto(video);
   await browser.close();
   return video;
 }
