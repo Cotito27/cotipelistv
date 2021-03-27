@@ -43,13 +43,14 @@ ctrl.index = async (req, res) => {
  let idVideo = req.params.id || '6zk7qs035-ykke-';
  let imageExtra = req.query.image;
  let targetVideoExtend = await Movie.findOne({imageExtra});
- let value = await getVideoUrl(`https://pelisplushd.me/v/${idVideo}`).catch(() => {
+ let value = await getVideoUrl(`https://pelisplushd.me/v/${idVideo}`).catch((err) => {
    return res.render('videoStream', {
      id: idVideo,
      title: 'CotiPelisTV',
      imageExtra,
      error: true,
-     target: targetVideoExtend.titleDownload
+     target: targetVideoExtend.titleDownload,
+     infoError: err
    })
  });
  res.render('videoStream', {

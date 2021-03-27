@@ -14,6 +14,7 @@
   <% if(error) { %>
     <div class="error__stream">
       <p>Video no encontrado :(. Puedes ingresar a <a href="<%= target %>" target="_blank">pelisplushd.net</a> para verlo</p>
+      <small class="info-error"><%= infoError %></small>
     </div>
   <% } else { %>
     <div class="stream__custom__player">
