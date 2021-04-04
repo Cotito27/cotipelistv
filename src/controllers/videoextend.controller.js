@@ -40,6 +40,52 @@ async function getVideoUrl(url) {
   return video;
 }
 
+async function downloadVideo(url) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+
+  let urlDownload = url;
+
+  await page.goto('https://tool.baoxinh.com/fembed.cg');
+  await page.type('#input', urlDownload);
+  await page.click('#btnAct');
+  
+  // await page.click('#loading > div > svg');
+
+  // await page.evaluate(() => {
+  //   const myConfirm = document.querySelector('.myConfirm');
+  //   if(myConfirm) {
+  //     await page.click('#resume_no');
+  //   }
+  // });
+
+  await page.waitForSelector('.btn-download-gg');
+
+  let enlace = await page.evaluate(async () => {
+    let enlaceElement = document.querySelectorAll('.btn-download-gg');
+    let enlaces = [];
+    enlaceElement.forEach((item) => {
+      if(!item.href.includes('skachat')) {
+        enlaces.push({
+          url: item.href,
+          quality: item.querySelector('b').textContent.trim().split(' ').pop().replace('p', '')
+        });
+      }
+    });
+    // if(enlaceElement) {
+    //   return enlaceElement.href;
+    // } else {
+    //   return '';
+    // }
+    return enlaces;
+  });
+  // await page.goto(video);
+  // console.log(enlace);
+
+  await browser.close();
+  return enlace;
+}
+
 ctrl.index = async (req, res) => {
  let idVideo = req.params.id || '6zk7qs035-ykke-';
  let imageExtra = req.query.image;
@@ -62,6 +108,29 @@ ctrl.index = async (req, res) => {
     error: false
   });
 //  console.log(value);
+}
+
+ctrl.download = async (req, res) => {
+  let idVideo = req.params.id || '6zk7qs035-ykke-';
+  let imageExtra = req.query.image;
+  let targetVideoExtend = await Movie.findOne({imageExtra});
+  let value = await downloadVideo(`https://femax20.com/v/${idVideo}`).catch((err) => {
+    return res.render('videoStream', {
+      id: idVideo,
+      title: 'CotiPelisTV',
+      imageExtra,
+      error: true,
+      target: targetVideoExtend.titleDownload,
+      infoError: err
+    })
+  });
+  res.render('videoStream', {
+     id: idVideo,
+     title: 'CotiPelisTV',
+     videoSrc: value,
+     imageExtra,
+     error: false
+   });
 }
 
 ctrl.getUrl = async (req, res) => {

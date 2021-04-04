@@ -84,7 +84,7 @@ router.get('/getLikesVideo/:id', reactionController.index);
 router.post('/deleteWatchList/', watchlistController.delete);
 router.get('/logout', loginController.logout);
 
-router.get('/watch/:id', videoExtendController.index);
+router.get('/watch/:id', videoExtendController.download);
 router.get('/videoExtend/:id', videoExtendController.getUrl);
 
 // redirect Frontend 

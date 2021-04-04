@@ -39,4 +39,12 @@ body {
   color: rgb(57, 128, 235);
 }
 
-.info-error{color:white;}
+.info-error{color:white; text-align: center;}
+
+.stream__custom__player {
+  height: 100vh;
+}
+
+.plyr--full-ui.plyr--video {
+  height: 100%;
+}
