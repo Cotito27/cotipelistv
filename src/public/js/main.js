@@ -1,5 +1,6 @@
 let moreDescription = document.querySelector('.more__description');
 let descriptionVideo = document.querySelector('.description__video');
+if(descriptionVideo) {
   if(descriptionVideo.scrollHeight <= 80) {
     moreDescription.style.display = 'none';
     // moreDescription.style.maxHeight = '80px';
@@ -7,6 +8,8 @@ let descriptionVideo = document.querySelector('.description__video');
     moreDescription.style.display = 'block';
     // moreDescription.style.maxHeight = '100%';
   }
+}
+if(moreDescription) {
 moreDescription.addEventListener('click', function() {
   
   if(this.innerHTML.trim() == 'Ver más') {
@@ -17,9 +20,11 @@ moreDescription.addEventListener('click', function() {
     this.innerHTML = 'Ver más';
   }
 });
-  $('.more__description').on('click', function() {
+}
+
+  // $('.more__description').on('click', function() {
     
-  });
+  // });
 
 $(document).ready(function() {
   
