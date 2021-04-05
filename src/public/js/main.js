@@ -1,4 +1,28 @@
+let moreDescription = document.querySelector('.more__description');
+let descriptionVideo = document.querySelector('.description__video');
+  if(descriptionVideo.scrollHeight <= 80) {
+    moreDescription.style.display = 'none';
+    // moreDescription.style.maxHeight = '80px';
+  } else {
+    moreDescription.style.display = 'block';
+    // moreDescription.style.maxHeight = '100%';
+  }
+moreDescription.addEventListener('click', function() {
+  
+  if(this.innerHTML.trim() == 'Ver más') {
+    descriptionVideo.style.maxHeight = '100%';
+    this.innerHTML = 'Ver menos';
+  } else {
+    descriptionVideo.style.maxHeight = '80px';
+    this.innerHTML = 'Ver más';
+  }
+});
+  $('.more__description').on('click', function() {
+    
+  });
+
 $(document).ready(function() {
+  
   $('.genres__extend__button').on('click', function() {
     if($('.dropdown-content2').is(':visible')) {
       $('.dropdown-content2').toggle('show');
